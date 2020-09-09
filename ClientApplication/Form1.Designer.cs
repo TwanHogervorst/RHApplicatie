@@ -35,6 +35,10 @@
             this.buttonSendData = new System.Windows.Forms.Button();
             this.trackBarSpeed = new System.Windows.Forms.TrackBar();
             this.trackBarHeartbeat = new System.Windows.Forms.TrackBar();
+            this.labelCurrentSpeedText = new System.Windows.Forms.Label();
+            this.labelCurrentSpeedValue = new System.Windows.Forms.Label();
+            this.labelCurrentHeartbeatText = new System.Windows.Forms.Label();
+            this.labelCurrentHeartbeatValue = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarHeartbeat)).BeginInit();
             this.SuspendLayout();
@@ -102,11 +106,53 @@
             this.trackBarHeartbeat.Value = 50;
             this.trackBarHeartbeat.Scroll += new System.EventHandler(this.trackBarHeartbeat_Scroll);
             // 
+            // labelCurrentSpeedText
+            // 
+            this.labelCurrentSpeedText.AutoSize = true;
+            this.labelCurrentSpeedText.Location = new System.Drawing.Point(270, 15);
+            this.labelCurrentSpeedText.Name = "labelCurrentSpeedText";
+            this.labelCurrentSpeedText.Size = new System.Drawing.Size(110, 20);
+            this.labelCurrentSpeedText.TabIndex = 8;
+            this.labelCurrentSpeedText.Text = "Current Speed: ";
+            // 
+            // labelCurrentSpeedValue
+            // 
+            this.labelCurrentSpeedValue.AutoSize = true;
+            this.labelCurrentSpeedValue.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.labelCurrentSpeedValue.Location = new System.Drawing.Point(408, 15);
+            this.labelCurrentSpeedValue.Name = "labelCurrentSpeedValue";
+            this.labelCurrentSpeedValue.Size = new System.Drawing.Size(127, 20);
+            this.labelCurrentSpeedValue.TabIndex = 9;
+            this.labelCurrentSpeedValue.Text = "waiting for value";
+            // 
+            // labelCurrentHeartbeatText
+            // 
+            this.labelCurrentHeartbeatText.AutoSize = true;
+            this.labelCurrentHeartbeatText.Location = new System.Drawing.Point(270, 35);
+            this.labelCurrentHeartbeatText.Name = "labelCurrentHeartbeatText";
+            this.labelCurrentHeartbeatText.Size = new System.Drawing.Size(135, 20);
+            this.labelCurrentHeartbeatText.TabIndex = 10;
+            this.labelCurrentHeartbeatText.Text = "Current Heartbeat: ";
+            // 
+            // labelCurrentHeartbeatValue
+            // 
+            this.labelCurrentHeartbeatValue.AutoSize = true;
+            this.labelCurrentHeartbeatValue.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.labelCurrentHeartbeatValue.Location = new System.Drawing.Point(408, 35);
+            this.labelCurrentHeartbeatValue.Name = "labelCurrentHeartbeatValue";
+            this.labelCurrentHeartbeatValue.Size = new System.Drawing.Size(127, 20);
+            this.labelCurrentHeartbeatValue.TabIndex = 11;
+            this.labelCurrentHeartbeatValue.Text = "waiting for value";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.labelCurrentHeartbeatValue);
+            this.Controls.Add(this.labelCurrentHeartbeatText);
+            this.Controls.Add(this.labelCurrentSpeedValue);
+            this.Controls.Add(this.labelCurrentSpeedText);
             this.Controls.Add(this.trackBarHeartbeat);
             this.Controls.Add(this.trackBarSpeed);
             this.Controls.Add(this.buttonSendData);
@@ -132,6 +178,10 @@
         private System.Windows.Forms.Button buttonSendData;
         private System.Windows.Forms.TrackBar trackBarSpeed;
         private System.Windows.Forms.TrackBar trackBarHeartbeat;
+        private System.Windows.Forms.Label labelCurrentSpeedText;
+        private System.Windows.Forms.Label labelCurrentSpeedValue;
+        private System.Windows.Forms.Label labelCurrentHeartbeatText;
+        private System.Windows.Forms.Label labelCurrentHeartbeatValue;
     }
 }
 
