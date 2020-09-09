@@ -20,7 +20,7 @@ namespace ClientApplication
 
         private void trackBarSpeed_Scroll(object sender, EventArgs e)
         {
-            textBoxSpeed.Text = "" + trackBarSpeed.Value;
+            textBoxSpeed.Text = "" + (double)(trackBarSpeed.Value)/100.0;
         }
 
         private void trackBarHeartbeat_Scroll(object sender, EventArgs e)
@@ -36,30 +36,39 @@ namespace ClientApplication
                 {
                     try
                     {
-                        if (int.Parse(textBoxSpeed.Text) >= trackBarSpeed.Minimum && int.Parse(textBoxSpeed.Text) <= trackBarSpeed.Maximum)
-                        {
-                            trackBarSpeed.Value = int.Parse(textBoxSpeed.Text);
+                        string text = textBoxSpeed.Text;
+                        if (text.Contains('.')) {
+                            text = text.Replace(".",",");
                         }
-                        else if (int.Parse(textBoxSpeed.Text) > trackBarSpeed.Maximum)
+                        int speedValue = (int)(double.Parse(text) * 100);
+
+                        if (speedValue >= trackBarSpeed.Minimum && speedValue <= trackBarSpeed.Maximum)
+                        {
+                            trackBarSpeed.Value = speedValue;
+                        }
+                        else if (speedValue > trackBarSpeed.Maximum)
                         {
                             textBoxSpeed.Text = trackBarSpeed.Maximum + "";
+                            textBoxSpeed.Text = textBoxSpeed.Text.Insert(2, ",");
                             trackBarSpeed.Value = trackBarSpeed.Maximum;
                         }
-                        else if (int.Parse(textBoxSpeed.Text) < trackBarSpeed.Minimum)
+                        else if (speedValue < trackBarSpeed.Minimum)
                         {
                             textBoxSpeed.Text = trackBarSpeed.Minimum + "";
+                            textBoxSpeed.Text = textBoxSpeed.Text.Insert(2, ",");
                             trackBarSpeed.Value = trackBarSpeed.Minimum;
                         }
                     }
                     catch
                     {
-                        textBoxSpeed.Text = trackBarSpeed.Value + "";
-
+                        textBoxSpeed.Text = (double)(trackBarSpeed.Value)/100.0 + "";
+                        textBoxSpeed.Text = textBoxSpeed.Text.Insert(2, ",");
                     }
                 }
                 else
                 {
-                    textBoxSpeed.Text = trackBarSpeed.Minimum + "";
+                    textBoxSpeed.Text = (double)(trackBarSpeed.Minimum) / 100.0 + "";
+                    textBoxSpeed.Text = textBoxSpeed.Text.Insert(2, ",");
                     trackBarSpeed.Value = trackBarSpeed.Minimum;
                 }
 

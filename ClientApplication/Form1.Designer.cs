@@ -66,11 +66,11 @@
             // labelSpeed
             // 
             this.labelSpeed.AutoSize = true;
-            this.labelSpeed.Location = new System.Drawing.Point(245, 160);
+            this.labelSpeed.Location = new System.Drawing.Point(227, 160);
             this.labelSpeed.Name = "labelSpeed";
-            this.labelSpeed.Size = new System.Drawing.Size(51, 20);
+            this.labelSpeed.Size = new System.Drawing.Size(90, 20);
             this.labelSpeed.TabIndex = 3;
-            this.labelSpeed.Text = "Speed";
+            this.labelSpeed.Text = "Speed (m/s)";
             // 
             // labelHeartbeat
             // 
@@ -93,7 +93,7 @@
             // trackBarSpeed
             // 
             this.trackBarSpeed.Location = new System.Drawing.Point(200, 226);
-            this.trackBarSpeed.Maximum = 40;
+            this.trackBarSpeed.Maximum = 4000;
             this.trackBarSpeed.Name = "trackBarSpeed";
             this.trackBarSpeed.Size = new System.Drawing.Size(147, 56);
             this.trackBarSpeed.TabIndex = 7;
