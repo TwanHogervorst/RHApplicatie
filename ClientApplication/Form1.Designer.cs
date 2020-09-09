@@ -39,6 +39,8 @@
             this.labelCurrentSpeedValue = new System.Windows.Forms.Label();
             this.labelCurrentHeartbeatText = new System.Windows.Forms.Label();
             this.labelCurrentHeartbeatValue = new System.Windows.Forms.Label();
+            this.labelCurrentResistanceText = new System.Windows.Forms.Label();
+            this.labelCurrentResistanceValue = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarHeartbeat)).BeginInit();
             this.SuspendLayout();
@@ -49,6 +51,7 @@
             this.textBoxSpeed.Name = "textBoxSpeed";
             this.textBoxSpeed.Size = new System.Drawing.Size(147, 27);
             this.textBoxSpeed.TabIndex = 0;
+            this.textBoxSpeed.Text = "0";
             this.textBoxSpeed.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSpeed_KeyPress);
             // 
             // textBoxHeartbeat
@@ -57,6 +60,7 @@
             this.textBoxHeartbeat.Name = "textBoxHeartbeat";
             this.textBoxHeartbeat.Size = new System.Drawing.Size(147, 27);
             this.textBoxHeartbeat.TabIndex = 1;
+            this.textBoxHeartbeat.Text = "0";
             this.textBoxHeartbeat.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxHeartbeat_KeyPress);
             // 
             // labelSpeed
@@ -144,11 +148,32 @@
             this.labelCurrentHeartbeatValue.TabIndex = 11;
             this.labelCurrentHeartbeatValue.Text = "waiting for value";
             // 
+            // labelCurrentResistanceText
+            // 
+            this.labelCurrentResistanceText.AutoSize = true;
+            this.labelCurrentResistanceText.Location = new System.Drawing.Point(270, 55);
+            this.labelCurrentResistanceText.Name = "labelCurrentResistanceText";
+            this.labelCurrentResistanceText.Size = new System.Drawing.Size(137, 20);
+            this.labelCurrentResistanceText.TabIndex = 12;
+            this.labelCurrentResistanceText.Text = "Current Resistance: ";
+            // 
+            // labelCurrentResistanceValue
+            // 
+            this.labelCurrentResistanceValue.AutoSize = true;
+            this.labelCurrentResistanceValue.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.labelCurrentResistanceValue.Location = new System.Drawing.Point(408, 55);
+            this.labelCurrentResistanceValue.Name = "labelCurrentResistanceValue";
+            this.labelCurrentResistanceValue.Size = new System.Drawing.Size(127, 20);
+            this.labelCurrentResistanceValue.TabIndex = 13;
+            this.labelCurrentResistanceValue.Text = "waiting for value";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.labelCurrentResistanceValue);
+            this.Controls.Add(this.labelCurrentResistanceText);
             this.Controls.Add(this.labelCurrentHeartbeatValue);
             this.Controls.Add(this.labelCurrentHeartbeatText);
             this.Controls.Add(this.labelCurrentSpeedValue);
@@ -182,6 +207,8 @@
         private System.Windows.Forms.Label labelCurrentSpeedValue;
         private System.Windows.Forms.Label labelCurrentHeartbeatText;
         private System.Windows.Forms.Label labelCurrentHeartbeatValue;
+        private System.Windows.Forms.Label labelCurrentResistanceText;
+        private System.Windows.Forms.Label labelCurrentResistanceValue;
     }
 }
 
