@@ -45,7 +45,6 @@
             this.textBoxSpeed.Name = "textBoxSpeed";
             this.textBoxSpeed.Size = new System.Drawing.Size(147, 27);
             this.textBoxSpeed.TabIndex = 0;
-            this.textBoxSpeed.TextChanged += new System.EventHandler(this.textBoxSpeed_TextChanged);
             this.textBoxSpeed.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSpeed_KeyPress);
             // 
             // textBoxHeartbeat
@@ -54,7 +53,6 @@
             this.textBoxHeartbeat.Name = "textBoxHeartbeat";
             this.textBoxHeartbeat.Size = new System.Drawing.Size(147, 27);
             this.textBoxHeartbeat.TabIndex = 1;
-            this.textBoxHeartbeat.TextChanged += new System.EventHandler(this.textBoxHeartbeat_TextChanged);
             this.textBoxHeartbeat.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxHeartbeat_KeyPress);
             // 
             // labelSpeed
