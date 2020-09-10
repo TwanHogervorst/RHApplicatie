@@ -44,6 +44,12 @@
             this.labelResistance = new System.Windows.Forms.Label();
             this.textBoxResistance = new System.Windows.Forms.TextBox();
             this.trackBarResistance = new System.Windows.Forms.TrackBar();
+            this.labelCurrentElapsedTimeText = new System.Windows.Forms.Label();
+            this.labelCurrentElapsedTimeValue = new System.Windows.Forms.Label();
+            this.labelDistanceTraveledText = new System.Windows.Forms.Label();
+            this.labelCurrentDistanceTraveledValue = new System.Windows.Forms.Label();
+            this.labelCurrentPowerText = new System.Windows.Forms.Label();
+            this.labelCurrentPowerValue = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarHeartbeat)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarResistance)).BeginInit();
@@ -87,7 +93,7 @@
             // 
             // buttonSendData
             // 
-            this.buttonSendData.Location = new System.Drawing.Point(347, 359);
+            this.buttonSendData.Location = new System.Drawing.Point(362, 389);
             this.buttonSendData.Name = "buttonSendData";
             this.buttonSendData.Size = new System.Drawing.Size(94, 29);
             this.buttonSendData.TabIndex = 6;
@@ -117,7 +123,7 @@
             // labelCurrentSpeedText
             // 
             this.labelCurrentSpeedText.AutoSize = true;
-            this.labelCurrentSpeedText.Location = new System.Drawing.Point(523, 8);
+            this.labelCurrentSpeedText.Location = new System.Drawing.Point(473, 8);
             this.labelCurrentSpeedText.Name = "labelCurrentSpeedText";
             this.labelCurrentSpeedText.Size = new System.Drawing.Size(110, 20);
             this.labelCurrentSpeedText.TabIndex = 8;
@@ -127,7 +133,7 @@
             // 
             this.labelCurrentSpeedValue.AutoSize = true;
             this.labelCurrentSpeedValue.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.labelCurrentSpeedValue.Location = new System.Drawing.Point(661, 8);
+            this.labelCurrentSpeedValue.Location = new System.Drawing.Point(661, 9);
             this.labelCurrentSpeedValue.Name = "labelCurrentSpeedValue";
             this.labelCurrentSpeedValue.Size = new System.Drawing.Size(127, 20);
             this.labelCurrentSpeedValue.TabIndex = 9;
@@ -136,7 +142,7 @@
             // labelCurrentHeartbeatText
             // 
             this.labelCurrentHeartbeatText.AutoSize = true;
-            this.labelCurrentHeartbeatText.Location = new System.Drawing.Point(523, 28);
+            this.labelCurrentHeartbeatText.Location = new System.Drawing.Point(473, 39);
             this.labelCurrentHeartbeatText.Name = "labelCurrentHeartbeatText";
             this.labelCurrentHeartbeatText.Size = new System.Drawing.Size(135, 20);
             this.labelCurrentHeartbeatText.TabIndex = 10;
@@ -146,7 +152,7 @@
             // 
             this.labelCurrentHeartbeatValue.AutoSize = true;
             this.labelCurrentHeartbeatValue.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.labelCurrentHeartbeatValue.Location = new System.Drawing.Point(661, 28);
+            this.labelCurrentHeartbeatValue.Location = new System.Drawing.Point(661, 39);
             this.labelCurrentHeartbeatValue.Name = "labelCurrentHeartbeatValue";
             this.labelCurrentHeartbeatValue.Size = new System.Drawing.Size(127, 20);
             this.labelCurrentHeartbeatValue.TabIndex = 11;
@@ -155,7 +161,7 @@
             // labelCurrentResistanceText
             // 
             this.labelCurrentResistanceText.AutoSize = true;
-            this.labelCurrentResistanceText.Location = new System.Drawing.Point(523, 48);
+            this.labelCurrentResistanceText.Location = new System.Drawing.Point(473, 70);
             this.labelCurrentResistanceText.Name = "labelCurrentResistanceText";
             this.labelCurrentResistanceText.Size = new System.Drawing.Size(137, 20);
             this.labelCurrentResistanceText.TabIndex = 12;
@@ -165,7 +171,7 @@
             // 
             this.labelCurrentResistanceValue.AutoSize = true;
             this.labelCurrentResistanceValue.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.labelCurrentResistanceValue.Location = new System.Drawing.Point(661, 48);
+            this.labelCurrentResistanceValue.Location = new System.Drawing.Point(661, 70);
             this.labelCurrentResistanceValue.Name = "labelCurrentResistanceValue";
             this.labelCurrentResistanceValue.Size = new System.Drawing.Size(127, 20);
             this.labelCurrentResistanceValue.TabIndex = 13;
@@ -200,11 +206,74 @@
             this.trackBarResistance.Value = 1;
             this.trackBarResistance.Scroll += new System.EventHandler(this.trackBarResistance_Scroll);
             // 
+            // labelCurrentElapsedTimeText
+            // 
+            this.labelCurrentElapsedTimeText.AutoSize = true;
+            this.labelCurrentElapsedTimeText.Location = new System.Drawing.Point(473, 101);
+            this.labelCurrentElapsedTimeText.Name = "labelCurrentElapsedTimeText";
+            this.labelCurrentElapsedTimeText.Size = new System.Drawing.Size(157, 20);
+            this.labelCurrentElapsedTimeText.TabIndex = 17;
+            this.labelCurrentElapsedTimeText.Text = "Current Elapsed Time: ";
+            // 
+            // labelCurrentElapsedTimeValue
+            // 
+            this.labelCurrentElapsedTimeValue.AutoSize = true;
+            this.labelCurrentElapsedTimeValue.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.labelCurrentElapsedTimeValue.Location = new System.Drawing.Point(661, 101);
+            this.labelCurrentElapsedTimeValue.Name = "labelCurrentElapsedTimeValue";
+            this.labelCurrentElapsedTimeValue.Size = new System.Drawing.Size(127, 20);
+            this.labelCurrentElapsedTimeValue.TabIndex = 18;
+            this.labelCurrentElapsedTimeValue.Text = "waiting for value";
+            // 
+            // labelDistanceTraveledText
+            // 
+            this.labelDistanceTraveledText.AutoSize = true;
+            this.labelDistanceTraveledText.Location = new System.Drawing.Point(473, 132);
+            this.labelDistanceTraveledText.Name = "labelDistanceTraveledText";
+            this.labelDistanceTraveledText.Size = new System.Drawing.Size(185, 20);
+            this.labelDistanceTraveledText.TabIndex = 19;
+            this.labelDistanceTraveledText.Text = "Current Distance Traveled: ";
+            // 
+            // labelCurrentDistanceTraveledValue
+            // 
+            this.labelCurrentDistanceTraveledValue.AutoSize = true;
+            this.labelCurrentDistanceTraveledValue.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.labelCurrentDistanceTraveledValue.Location = new System.Drawing.Point(661, 132);
+            this.labelCurrentDistanceTraveledValue.Name = "labelCurrentDistanceTraveledValue";
+            this.labelCurrentDistanceTraveledValue.Size = new System.Drawing.Size(127, 20);
+            this.labelCurrentDistanceTraveledValue.TabIndex = 20;
+            this.labelCurrentDistanceTraveledValue.Text = "waiting for value";
+            // 
+            // labelCurrentPowerText
+            // 
+            this.labelCurrentPowerText.AutoSize = true;
+            this.labelCurrentPowerText.Location = new System.Drawing.Point(473, 163);
+            this.labelCurrentPowerText.Name = "labelCurrentPowerText";
+            this.labelCurrentPowerText.Size = new System.Drawing.Size(108, 20);
+            this.labelCurrentPowerText.TabIndex = 21;
+            this.labelCurrentPowerText.Text = "Current Power: ";
+            // 
+            // labelCurrentPowerValue
+            // 
+            this.labelCurrentPowerValue.AutoSize = true;
+            this.labelCurrentPowerValue.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.labelCurrentPowerValue.Location = new System.Drawing.Point(661, 163);
+            this.labelCurrentPowerValue.Name = "labelCurrentPowerValue";
+            this.labelCurrentPowerValue.Size = new System.Drawing.Size(127, 20);
+            this.labelCurrentPowerValue.TabIndex = 22;
+            this.labelCurrentPowerValue.Text = "waiting for value";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.labelCurrentPowerValue);
+            this.Controls.Add(this.labelCurrentPowerText);
+            this.Controls.Add(this.labelCurrentDistanceTraveledValue);
+            this.Controls.Add(this.labelDistanceTraveledText);
+            this.Controls.Add(this.labelCurrentElapsedTimeValue);
+            this.Controls.Add(this.labelCurrentElapsedTimeText);
             this.Controls.Add(this.trackBarResistance);
             this.Controls.Add(this.textBoxResistance);
             this.Controls.Add(this.labelResistance);
@@ -249,6 +318,12 @@
         private System.Windows.Forms.Label labelResistance;
         private System.Windows.Forms.TextBox textBoxResistance;
         private System.Windows.Forms.TrackBar trackBarResistance;
+        private System.Windows.Forms.Label labelCurrentElapsedTimeText;
+        private System.Windows.Forms.Label labelCurrentElapsedTimeValue;
+        private System.Windows.Forms.Label labelDistanceTraveledText;
+        private System.Windows.Forms.Label labelCurrentDistanceTraveledValue;
+        private System.Windows.Forms.Label labelCurrentPowerText;
+        private System.Windows.Forms.Label labelCurrentPowerValue;
     }
 }
 
