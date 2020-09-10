@@ -28,6 +28,11 @@ namespace ClientApplication
             textBoxHeartbeat.Text = "" + trackBarHeartbeat.Value;
         }
 
+        private void trackBarResistance_Scroll(object sender, EventArgs e)
+        {
+            textBoxResistance.Text = "" + trackBarResistance.Value;
+        }
+
         private void textBoxSpeed_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter)
@@ -112,5 +117,44 @@ namespace ClientApplication
 
             }
         }
+
+        private void textBoxResistance_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                if (!string.IsNullOrEmpty(textBoxResistance.Text))
+                {
+                    try
+                    {
+                        if (int.Parse(textBoxResistance.Text) >= trackBarResistance.Minimum && int.Parse(textBoxResistance.Text) <= trackBarResistance.Maximum)
+                        {
+                            trackBarResistance.Value = int.Parse(textBoxResistance.Text);
+                        }
+                        else if (int.Parse(textBoxResistance.Text) > trackBarResistance.Maximum)
+                        {
+                            textBoxResistance.Text = trackBarResistance.Maximum + "";
+                            trackBarResistance.Value = trackBarResistance.Maximum;
+                        }
+                        else if (int.Parse(textBoxResistance.Text) < trackBarResistance.Minimum)
+                        {
+                            textBoxResistance.Text = trackBarResistance.Minimum + "";
+                            trackBarResistance.Value = trackBarResistance.Minimum;
+                        }
+                    }
+                    catch
+                    {
+                        textBoxResistance.Text = trackBarResistance.Value + "";
+
+                    }
+                }
+                else
+                {
+                    textBoxResistance.Text = trackBarResistance.Minimum + "";
+                    trackBarResistance.Value = trackBarResistance.Minimum;
+                }
+
+            }
+        }
+ 
     }
 }
