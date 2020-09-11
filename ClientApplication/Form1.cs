@@ -37,14 +37,15 @@ namespace ClientApplication
 
             Utility.DisableAllChildControls(groupBoxSimulator);
 
-            
+            this.bike = new SimulatorBikeTrainer(this.trackBarSpeed, this.trackBarHeartbeat);
+
         }
 
         #region Trackbar Events
 
         private void trackBarSpeed_Scroll(object sender, EventArgs e)
         {
-            textBoxSpeed.Text = "" + (double)(trackBarSpeed.Value)/100.0;
+            textBoxSpeed.Text = "" + (double)(trackBarSpeed.Value) / 100.0;
         }
 
         private void trackBarHeartbeat_Scroll(object sender, EventArgs e)
@@ -55,7 +56,8 @@ namespace ClientApplication
         private void trackBarResistance_Scroll(object sender, EventArgs e)
         {
             textBoxResistance.Text = "" + trackBarResistance.Value;
-            labelCurrentResistanceValue.Text = textBoxResistance.Text;
+            labelCurrentResistanceValue.Text = double.Parse(textBoxResistance.Text) / 2 + " %";
+            this.bike.SetResistance(trackBarResistance.Value);
         }
 
         #endregion
@@ -71,8 +73,9 @@ namespace ClientApplication
                     try
                     {
                         string text = textBoxSpeed.Text;
-                        if (text.Contains('.')) {
-                            text = text.Replace(".",",");
+                        if (text.Contains('.'))
+                        {
+                            text = text.Replace(".", ",");
                         }
                         int speedValue = (int)(double.Parse(text) * 100);
 
@@ -95,7 +98,7 @@ namespace ClientApplication
                     }
                     catch
                     {
-                        textBoxSpeed.Text = (double)(trackBarSpeed.Value)/100.0 + "";
+                        textBoxSpeed.Text = (double)(trackBarSpeed.Value) / 100.0 + "";
                         textBoxSpeed.Text = textBoxSpeed.Text.Insert(2, ",");
                     }
                 }
@@ -175,7 +178,7 @@ namespace ClientApplication
                         textBoxResistance.Text = trackBarResistance.Value + "";
 
                     }
-                    labelCurrentResistanceValue.Text = textBoxResistance.Text;
+                    labelCurrentResistanceValue.Text = double.Parse(textBoxResistance.Text) / 2 + " %";
                     this.bike.SetResistance(trackBarResistance.Value);
                 }
                 else
@@ -183,7 +186,7 @@ namespace ClientApplication
                     textBoxResistance.Text = trackBarResistance.Minimum + "";
                     trackBarResistance.Value = trackBarResistance.Minimum;
 
-                    labelCurrentResistanceValue.Text = textBoxResistance.Text;
+                    labelCurrentResistanceValue.Text = double.Parse(textBoxResistance.Text) / 2 + " %";
                     this.bike.SetResistance(trackBarResistance.Value);
                 }
 
@@ -196,12 +199,13 @@ namespace ClientApplication
 
         private void radioButtonBike_CheckedChanged(object sender, EventArgs e)
         {
-            if(radioButtonBike.Checked)
+            if (radioButtonBike.Checked)
             {
                 radioButtonSimulator.Checked = false;
 
                 textBoxBikeName.Enabled = true;
                 buttonConnect.Enabled = true;
+                timerElapsedTime.Stop();
             }
             else
             {
@@ -217,7 +221,7 @@ namespace ClientApplication
 
         private void radioButtonSimulator_CheckedChanged(object sender, EventArgs e)
         {
-            if(radioButtonSimulator.Checked)
+            if (radioButtonSimulator.Checked)
             {
                 radioButtonBike.Checked = false;
 
@@ -225,6 +229,7 @@ namespace ClientApplication
 
                 this.bike = new SimulatorBikeTrainer(this.trackBarSpeed, this.trackBarHeartbeat);
                 this.bike.BikeDataReceived += Bike_BikeDataReceived;
+                timerElapsedTime.Start();
             }
             else
             {
@@ -236,7 +241,7 @@ namespace ClientApplication
 
         private void buttonConnect_Click(object sender, EventArgs e)
         {
-            if(!string.IsNullOrWhiteSpace(this.textBoxBikeName.Text))
+            if (!string.IsNullOrWhiteSpace(this.textBoxBikeName.Text))
             {
                 this.bike = new EspBikeTrainer(this.textBoxBikeName.Text);
                 this.bike.BikeConnectionChanged += Bike_BikeConnectionChanged;
@@ -248,6 +253,11 @@ namespace ClientApplication
                 this.textBoxBikeName.Enabled = false;
 
                 this.bike.StartReceiving();
+
+                // TODO: Better fix
+                trackBarResistance.Value = 0;
+                textBoxResistance.Text = trackBarResistance.Value + "";
+                labelCurrentResistanceValue.Text = "0 %";
             }
             else
             {
@@ -264,15 +274,15 @@ namespace ClientApplication
 
         private void Bike_BikeConnectionChanged(object sender, BikeConnectionStateChangedEventArgs args)
         {
-            if(args.ConnectionState == BikeConnectionState.Connected)
+            if (args.ConnectionState == BikeConnectionState.Connected)
             {
                 this.buttonConnect.Text = "Connected";
             }
-            if(args.ConnectionState == BikeConnectionState.Error)
+            if (args.ConnectionState == BikeConnectionState.Error)
             {
                 MessageBox.Show(args.Exception.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            if(args.ConnectionState == BikeConnectionState.Error || args.ConnectionState == BikeConnectionState.Disconnected)
+            if (args.ConnectionState == BikeConnectionState.Error || args.ConnectionState == BikeConnectionState.Disconnected)
             {
                 this.bike = null;
 
@@ -288,25 +298,39 @@ namespace ClientApplication
             switch (args.Type)
             {
                 case BikeDataType.HeartBeat:
-                    labelCurrentHeartbeatValue.Invoke((MethodInvoker)delegate () { labelCurrentHeartbeatValue.Text = args.Data.HeartBeat.ToString(); });
+                    labelCurrentHeartbeatValue.Invoke((MethodInvoker)delegate () { labelCurrentHeartbeatValue.Text = args.Data.HeartBeat.ToString() + " BPM"; });
                     break;
                 case BikeDataType.GeneralFEData:
                     this.Invoke((MethodInvoker)delegate ()
                     {
-                        labelCurrentElapsedTimeValue.Text = args.Data.ElapsedTime.ToString();
-                        labelCurrentDistanceTraveledValue.Text = args.Data.DistanceTraveled.ToString();
-                        labelCurrentSpeedValue.Text = args.Data.Speed.ToString();
+                        labelCurrentElapsedTimeValue.Text = (((double)args.Data.ElapsedTime) / 4).ToString("0.00") + " s";
+                        labelCurrentDistanceTraveledValue.Text = args.Data.DistanceTraveled.ToString() + " m";
+                        labelCurrentSpeedValue.Text = ((double)(args.Data.Speed) / 1000).ToString("0.00") + " m/s";
                     });
                     break;
                 case BikeDataType.SpecificBikeData:
                     this.Invoke((MethodInvoker)delegate ()
                     {
-                        labelCurrentPowerValue.Text = args.Data.Power.ToString();
+                        labelCurrentPowerValue.Text = args.Data.Power.ToString() + " W";
                     });
                     break;
             }
         }
 
         #endregion
+
+        private void timerElapsedTime_Tick(object sender, EventArgs e)
+        {
+            if (labelCurrentElapsedTimeValue.Text.Equals("waiting for value"))
+            {
+                labelCurrentElapsedTimeValue.Text = 0 + " s";
+                labelCurrentDistanceTraveledValue.Text = 0 + " m";
+            }
+            labelCurrentElapsedTimeValue.Text = labelCurrentElapsedTimeValue.Text.Remove(labelCurrentElapsedTimeValue.Text.IndexOf('s'));
+            string time = labelCurrentElapsedTimeValue.Text;
+            labelCurrentElapsedTimeValue.Text = (double.Parse(labelCurrentElapsedTimeValue.Text) + 0.25).ToString("0.00") + " s";
+            labelCurrentDistanceTraveledValue.Text = labelCurrentDistanceTraveledValue.Text.Remove(labelCurrentDistanceTraveledValue.Text.IndexOf('m'));
+            labelCurrentDistanceTraveledValue.Text = (double.Parse(time) * double.Parse(labelCurrentDistanceTraveledValue.Text)) + " m";
+        }
     }
 }

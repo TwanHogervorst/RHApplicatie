@@ -21,7 +21,7 @@ namespace ClientApplication.Core
 
         private void SpeedTrackBar_Scroll(object sender, EventArgs e)
         {
-            int speed = ((TrackBar)sender).Value;
+            int speed = ((TrackBar)sender).Value * 10;
 
             DBikeGeneralFEData data = new DBikeGeneralFEData
             {

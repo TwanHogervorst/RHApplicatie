@@ -122,6 +122,7 @@ namespace ClientApplication.Core
                 {
                     this.BikeConnectionChanged?.Invoke(this, new BikeConnectionStateChangedEventArgs(BikeConnectionState.Connected));
                 }
+                this.SetResistance(0);
             }
             else
             {
@@ -129,6 +130,7 @@ namespace ClientApplication.Core
                     BikeConnectionState.Error,
                     new BLEException(errorCode, $"Cannot find {this.bikeName}. Make sure it's turned on!")));
             }
+            
         }
 
         public void StopReceiving()
@@ -139,10 +141,9 @@ namespace ClientApplication.Core
 
         public async void SetResistance(int resistance)
         {
-
             Int32 intValue = Convert.ToInt32(resistance);
 
-            List<byte> message = new List<byte>() { 0xA4, 0x09, 0x4E, 0x05, 0x30, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, (byte)intValue };
+            List<byte> message = new List<byte>() { 0x4A, 0x09, 0x4E, 0x05, 0x30, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, (byte)intValue };
 
             byte checksum = (byte)message.Aggregate(0, (accu, e) =>
             {
