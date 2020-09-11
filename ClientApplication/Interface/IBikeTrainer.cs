@@ -19,6 +19,8 @@ namespace ClientApplication.Interface
 
         public void StopReceiving();
 
+        public void SetResistance(int resistance);
+
     }
 
     public class BikeDataReceivedEventArgs

@@ -37,5 +37,9 @@ namespace ClientApplication.Core
         public void StopReceiving()
         {
         }
+
+        public void SetResistance(int resistance)
+        {
+        }
     }
 }

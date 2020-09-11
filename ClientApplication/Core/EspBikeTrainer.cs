@@ -137,6 +137,10 @@ namespace ClientApplication.Core
             this.bleHeart.CloseDevice();
         }
 
+        public void SetResistance(int resistance)
+        {
+        }
+
         private void BleHeartValueReceived(object sender, BLESubscriptionValueChangedEventArgs e)
         {
             if(e.Data.Length == 2) // if false: not a ushort, so data corrupted
