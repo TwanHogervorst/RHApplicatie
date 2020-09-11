@@ -17,6 +17,8 @@ namespace ClientApplication.Core
         private double time;
         private double distance;
         private Timer timerElapsedTime;
+        private int power;
+        private int resistance;
 
         public SimulatorBikeTrainer(TrackBar speedTrackBar, TrackBar bpmTrackBar)
         {
@@ -30,13 +32,15 @@ namespace ClientApplication.Core
             speed = speedTrackBar.Value * 10;
             time = 0.0;
             distance = 0.0;
+            power = 0;
+            resistance = 0;
         }
 
         private void timerElapsedTime_Tick(object sender, EventArgs e)
         {
             time += 0.25;
             distance = (0.25 * speed/1000) + distance;
-
+            power = (int)(Math.Min(250, (speed/1000.0) * 12.21) + Math.Min(250, ((speed/1000.0) * 12.21) * resistance / 200.0));
             DBikeGeneralFEData data = new DBikeGeneralFEData
             {
                 Speed = (ushort)speed,
@@ -45,6 +49,13 @@ namespace ClientApplication.Core
             };
 
             BikeDataReceived?.Invoke(this, new BikeDataReceivedEventArgs(BikeDataType.GeneralFEData, data));
+
+            DBikeSpecificBikeData data1 = new DBikeSpecificBikeData
+            {
+                Power = (ushort)power
+            };
+
+            BikeDataReceived?.Invoke(this, new BikeDataReceivedEventArgs(BikeDataType.SpecificBikeData, data1));
         }
 
         private void SpeedTrackBar_Scroll(object sender, EventArgs e)
@@ -84,8 +95,9 @@ namespace ClientApplication.Core
             timerElapsedTime.Stop();
         }
 
-        public void SetResistance(int resistance)
+        public void SetResistance(int res)
         {
+            resistance = res;
         }
     }
 }
