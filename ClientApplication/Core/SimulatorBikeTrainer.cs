@@ -13,10 +13,26 @@ namespace ClientApplication.Core
         public event BikeDataReceivedEventHandler BikeDataReceived;
         public event BikeConnectionStateChanged BikeConnectionChanged;
 
-        private double speed;
+        private BikeConnectionState _connectionState; // DONT USE
+        public BikeConnectionState ConnectionState 
+        { 
+            get 
+            { 
+                return this._connectionState;
+            }  
+            private set 
+            { 
+                this._connectionState = value;
+                if(this._connectionState != BikeConnectionState.Error)
+                    this.BikeConnectionChanged?.Invoke(this, new BikeConnectionStateChangedEventArgs(this._connectionState));
+            } 
+        }
+
+        private ushort heartbeat;
+        private int speed;
         private double time;
-        private double distance;
-        private Timer timerElapsedTime;
+        private int distance;
+        private Timer sendTimer;
         private int power;
         private int resistance;
 
@@ -25,79 +41,80 @@ namespace ClientApplication.Core
             speedTrackBar.ValueChanged += SpeedTrackBar_Scroll;
             bpmTrackBar.ValueChanged += HeartBeatTrackBar_Scroll;
 
-            timerElapsedTime = new Timer();
-            timerElapsedTime.Interval = 250;
-            timerElapsedTime.Tick += new System.EventHandler(this.timerElapsedTime_Tick);
+            sendTimer = new Timer();
+            sendTimer.Interval = 250;
+            sendTimer.Tick += this.sendTimer_Tick;
 
+            heartbeat = (ushort)bpmTrackBar.Value;
             speed = speedTrackBar.Value * 10;
             time = 0.0;
-            distance = 0.0;
+            distance = 0;
             power = 0;
             resistance = 0;
         }
 
-        private void timerElapsedTime_Tick(object sender, EventArgs e)
+        private void sendTimer_Tick(object sender, EventArgs e)
         {
             time += 0.25;
-            distance = (0.25 * speed/1000) + distance;
-            power = (int)(Math.Min(250, (speed/1000.0) * 12.21) + Math.Min(250, ((speed/1000.0) * 12.21) * resistance / 200.0));
-            DBikeGeneralFEData data = new DBikeGeneralFEData
+            if (time > 64) time = 0;
+
+            distance = (int)Math.Round(0.25 * (speed / 1000.0)) + distance;
+            if (distance > 255) distance = 0;
+
+            DBikeGeneralFEData generalData = new DBikeGeneralFEData
             {
                 Speed = (ushort)speed,
                 ElapsedTime = (byte)(time * 4),
                 DistanceTraveled = (byte)distance,
             };
+            BikeDataReceived?.Invoke(this, new BikeDataReceivedEventArgs(BikeDataType.GeneralFEData, generalData));
 
-            BikeDataReceived?.Invoke(this, new BikeDataReceivedEventArgs(BikeDataType.GeneralFEData, data));
-
-            DBikeSpecificBikeData data1 = new DBikeSpecificBikeData
+            DBikeSpecificBikeData specificData = new DBikeSpecificBikeData
             {
                 Power = (ushort)power
             };
+            BikeDataReceived?.Invoke(this, new BikeDataReceivedEventArgs(BikeDataType.SpecificBikeData, specificData));
 
-            BikeDataReceived?.Invoke(this, new BikeDataReceivedEventArgs(BikeDataType.SpecificBikeData, data1));
+            DBikeHeartBeat heartBeatData = new DBikeHeartBeat
+            {
+                HeartBeat = this.heartbeat
+            };
+            BikeDataReceived?.Invoke(this, new BikeDataReceivedEventArgs(BikeDataType.HeartBeat, heartBeatData));
         }
 
         private void SpeedTrackBar_Scroll(object sender, EventArgs e)
         {
-            speed = ((TrackBar)sender).Value * 10;
-            
-
-            DBikeGeneralFEData data = new DBikeGeneralFEData
-            {
-                Speed = (ushort)speed,
-                ElapsedTime = (byte) time,
-                DistanceTraveled = (byte) distance,
-            };
-
-            BikeDataReceived?.Invoke(this, new BikeDataReceivedEventArgs(BikeDataType.GeneralFEData, data));
+            this.speed = ((TrackBar)sender).Value * 10;
+            this.power = (int)(Math.Min(250, (speed / 1000.0) * 12.21) + Math.Min(250, ((speed / 1000.0) * 12.21) * resistance / 200.0));
         }
 
         private void HeartBeatTrackBar_Scroll(object sender, EventArgs e)
         {
-            int bpm = ((TrackBar)sender).Value;
-
-            DBikeHeartBeat data = new DBikeHeartBeat
-            {
-                HeartBeat = (ushort)bpm
-            };
-
-            BikeDataReceived?.Invoke(this, new BikeDataReceivedEventArgs(BikeDataType.HeartBeat, data));
+            this.heartbeat = (ushort)((TrackBar)sender).Value;
         }
 
         public void StartReceiving()
         {
-            timerElapsedTime.Start();
+            if(this.ConnectionState != BikeConnectionState.Connected)
+            {
+                this.sendTimer.Start();
+                this.ConnectionState = BikeConnectionState.Connected;
+            }
         }
 
         public void StopReceiving()
         {
-            timerElapsedTime.Stop();
+            if(this.ConnectionState == BikeConnectionState.Connected)
+            {
+                this.sendTimer.Stop();
+                this.ConnectionState = BikeConnectionState.Disconnected;
+            }
         }
 
         public void SetResistance(int res)
         {
-            resistance = res;
+            this.resistance = res;
+            this.power = (int)(Math.Min(250, (this.speed / 1000.0) * 12.21) + Math.Min(250, ((this.speed / 1000.0) * 12.21) * this.resistance / 200.0));
         }
     }
 }

@@ -24,5 +24,16 @@ namespace ClientApplication
         {
             foreach (Control ctrl in groupBox.Controls) ctrl.Enabled = false;
         }
+
+        /// <summary>
+        /// Makes sure <paramref name="value"/> is between <paramref name="min"/> and <paramref name="max"/>.
+        /// If <paramref name="value"/> is smaller than <paramref name="min"/>, then the result will be <paramref name="min"/>.
+        /// If <paramref name="value"/> is larger than <paramref name="max"/>, then the result will be <paramref name="max"/>.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
+        public static decimal Bound(decimal value, decimal min, decimal max) => Math.Min(Math.Max(min, value), max);
     }
 }

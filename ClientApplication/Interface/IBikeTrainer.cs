@@ -15,6 +15,8 @@ namespace ClientApplication.Interface
         public event BikeDataReceivedEventHandler BikeDataReceived;
         public event BikeConnectionStateChanged BikeConnectionChanged;
 
+        public BikeConnectionState ConnectionState { get; }
+
         public void StartReceiving();
 
         public void StopReceiving();
