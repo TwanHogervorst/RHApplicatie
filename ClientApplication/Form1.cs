@@ -1,4 +1,7 @@
-﻿using System;
+﻿using ClientApplication.Core;
+using ClientApplication.Exception;
+using ClientApplication.Interface;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,6 +19,42 @@ namespace ClientApplication
         public Form1()
         {
             InitializeComponent();
+
+            IBikeTrainer bike = new EspBikeTrainer("Avans Bike B69C");
+            bike.BikeDataReceived += Bike_BikeDataReceived;
+
+            try
+            {
+                bike.StartReceiving();
+            }
+            catch (BLEException)
+            {
+
+            }
+        }
+
+        private void Bike_BikeDataReceived(object sender, BikeDataReceivedEventArgs args)
+        {
+            switch (args.Type)
+            {
+                case BikeDataType.HeartBeat:
+                    labelCurrentHeartbeatValue.Invoke((MethodInvoker)delegate () { labelCurrentHeartbeatValue.Text = args.Data.HeartBeat.ToString(); });
+                    break;
+                case BikeDataType.GeneralFEData:
+                    this.Invoke((MethodInvoker)delegate () 
+                    {
+                        labelCurrentElapsedTimeValue.Text = args.Data.ElapsedTime.ToString();
+                        labelCurrentDistanceTraveledValue.Text = args.Data.DistanceTraveled.ToString();
+                        labelCurrentSpeedValue.Text = args.Data.Speed.ToString();
+                    });
+                    break;
+                case BikeDataType.SpecificBikeData:
+                    this.Invoke((MethodInvoker)delegate ()
+                    {
+                        labelCurrentPowerValue.Text = args.Data.Power.ToString();
+                    });
+                    break;
+            }
         }
 
         private void trackBarSpeed_Scroll(object sender, EventArgs e)
@@ -155,6 +194,6 @@ namespace ClientApplication
 
             }
         }
- 
+
     }
 }
