@@ -11,6 +11,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Avans.TI.BLE;
 
 namespace ClientApplication
 {
@@ -185,14 +186,45 @@ namespace ClientApplication
                         textBoxResistance.Text = trackBarResistance.Value + "";
 
                     }
+                    labelCurrentResistanceValue.Text = textBoxResistance.Text;
+                    sendResistance(textBoxResistance.Text);
                 }
                 else
                 {
                     textBoxResistance.Text = trackBarResistance.Minimum + "";
                     trackBarResistance.Value = trackBarResistance.Minimum;
+                    labelCurrentResistanceValue.Text = textBoxResistance.Text;
+                    sendResistance(textBoxResistance.Text);
                 }
 
             }
+        }
+
+        private async Task sendResistance(String value)
+        {
+            Int32 intValue = Convert.ToInt32(value);
+
+            int errorCode = 0;
+            BLE bleBike = new BLE();
+
+            var services = bleBike.GetServices;
+            foreach (var service in services)
+            {
+                Console.WriteLine($"Service: {service}");
+            }
+
+            errorCode = await bleBike.SetService("6e40fec1-b5a3-f393-e0a9-e50e24dcca9e"); 
+
+            List<byte> message = new List<byte>() { 0xA4, 0x09, 0x4E, 0x05, 0x30, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, (byte)intValue };
+
+            byte checksum = (byte)message.Aggregate(0, (accu, e) =>
+            {
+                return accu ^= e;
+            });
+
+            message.Add(checksum);
+
+            await bleBike.WriteCharacteristic("6E40FEC3-B5A3-F393-E0A9-E50E24DCCA9E", message.ToArray());
         }
 
     }
