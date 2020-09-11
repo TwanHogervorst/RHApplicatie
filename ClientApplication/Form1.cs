@@ -16,46 +16,31 @@ namespace ClientApplication
 {
     public partial class Form1 : Form
     {
+
+        private IBikeTrainer bike;
+
         public Form1()
         {
             InitializeComponent();
 
-            IBikeTrainer bike = new EspBikeTrainer("Avans Bike B69C");
-            bike.BikeDataReceived += Bike_BikeDataReceived;
+            /*this.bike = new EspBikeTrainer("Avans Bike B69C");
+            this.bike.BikeDataReceived += Bike_BikeDataReceived;
 
             try
             {
-                bike.StartReceiving();
+                this.bike.StartReceiving();
             }
             catch (BLEException)
             {
 
-            }
+            }*/
+
+            Utility.DisableAllChildControls(groupBoxSimulator);
+
+            
         }
 
-        private void Bike_BikeDataReceived(object sender, BikeDataReceivedEventArgs args)
-        {
-            switch (args.Type)
-            {
-                case BikeDataType.HeartBeat:
-                    labelCurrentHeartbeatValue.Invoke((MethodInvoker)delegate () { labelCurrentHeartbeatValue.Text = args.Data.HeartBeat.ToString(); });
-                    break;
-                case BikeDataType.GeneralFEData:
-                    this.Invoke((MethodInvoker)delegate () 
-                    {
-                        labelCurrentElapsedTimeValue.Text = args.Data.ElapsedTime.ToString();
-                        labelCurrentDistanceTraveledValue.Text = args.Data.DistanceTraveled.ToString();
-                        labelCurrentSpeedValue.Text = args.Data.Speed.ToString();
-                    });
-                    break;
-                case BikeDataType.SpecificBikeData:
-                    this.Invoke((MethodInvoker)delegate ()
-                    {
-                        labelCurrentPowerValue.Text = args.Data.Power.ToString();
-                    });
-                    break;
-            }
-        }
+        #region Trackbar Events
 
         private void trackBarSpeed_Scroll(object sender, EventArgs e)
         {
@@ -71,6 +56,10 @@ namespace ClientApplication
         {
             textBoxResistance.Text = "" + trackBarResistance.Value;
         }
+
+        #endregion
+
+        #region TextBox KeyPress Events
 
         private void textBoxSpeed_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -194,6 +183,125 @@ namespace ClientApplication
 
             }
         }
+
+        #endregion
+
+        #region RadioButton Events
+
+        private void radioButtonBike_CheckedChanged(object sender, EventArgs e)
+        {
+            if(radioButtonBike.Checked)
+            {
+                radioButtonSimulator.Checked = false;
+
+                textBoxBikeName.Enabled = true;
+                buttonConnect.Enabled = true;
+            }
+            else
+            {
+                textBoxBikeName.Enabled = false;
+                buttonConnect.Enabled = false;
+
+                this.bike?.StopReceiving();
+                this.bike = null;
+
+                this.buttonConnect.Text = "Connect";
+            }
+        }
+
+        private void radioButtonSimulator_CheckedChanged(object sender, EventArgs e)
+        {
+            if(radioButtonSimulator.Checked)
+            {
+                radioButtonBike.Checked = false;
+
+                Utility.EnableAllChildControls(groupBoxSimulator);
+
+                this.bike = new SimulatorBikeTrainer(this.trackBarSpeed, this.trackBarHeartbeat);
+                this.bike.BikeDataReceived += Bike_BikeDataReceived;
+            }
+            else
+            {
+                Utility.DisableAllChildControls(groupBoxSimulator);
+            }
+        }
+
+        #endregion
+
+        private void buttonConnect_Click(object sender, EventArgs e)
+        {
+            if(!string.IsNullOrWhiteSpace(this.textBoxBikeName.Text))
+            {
+                this.bike = new EspBikeTrainer(this.textBoxBikeName.Text);
+                this.bike.BikeConnectionChanged += Bike_BikeConnectionChanged;
+                this.bike.BikeDataReceived += Bike_BikeDataReceived;
+
+                this.buttonConnect.Text = "Connecting...";
+                this.buttonConnect.Enabled = false;
+
+                this.textBoxBikeName.Enabled = false;
+
+                this.bike.StartReceiving();
+            }
+            else
+            {
+                MessageBox.Show("Please enter a bike name!", "Missing bike name", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.bike?.StopReceiving();
+        }
+
+        #region Bike Events
+
+        private void Bike_BikeConnectionChanged(object sender, BikeConnectionStateChangedEventArgs args)
+        {
+            if(args.ConnectionState == BikeConnectionState.Connected)
+            {
+                this.buttonConnect.Text = "Connected";
+            }
+            if(args.ConnectionState == BikeConnectionState.Error)
+            {
+                MessageBox.Show(args.Exception.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            if(args.ConnectionState == BikeConnectionState.Error || args.ConnectionState == BikeConnectionState.Disconnected)
+            {
+                this.bike = null;
+
+                this.textBoxBikeName.Enabled = true;
+
+                this.buttonConnect.Text = "Connect";
+                this.buttonConnect.Enabled = true;
+            }
+        }
+
+        private void Bike_BikeDataReceived(object sender, BikeDataReceivedEventArgs args)
+        {
+            switch (args.Type)
+            {
+                case BikeDataType.HeartBeat:
+                    labelCurrentHeartbeatValue.Invoke((MethodInvoker)delegate () { labelCurrentHeartbeatValue.Text = args.Data.HeartBeat.ToString(); });
+                    break;
+                case BikeDataType.GeneralFEData:
+                    this.Invoke((MethodInvoker)delegate ()
+                    {
+                        labelCurrentElapsedTimeValue.Text = args.Data.ElapsedTime.ToString();
+                        labelCurrentDistanceTraveledValue.Text = args.Data.DistanceTraveled.ToString();
+                        labelCurrentSpeedValue.Text = args.Data.Speed.ToString();
+                    });
+                    break;
+                case BikeDataType.SpecificBikeData:
+                    this.Invoke((MethodInvoker)delegate ()
+                    {
+                        labelCurrentPowerValue.Text = args.Data.Power.ToString();
+                    });
+                    break;
+            }
+        }
+
+        #endregion
 
     }
 }

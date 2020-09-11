@@ -5,7 +5,6 @@ using ClientApplication.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ClientApplication.Core
@@ -15,7 +14,7 @@ namespace ClientApplication.Core
 
         // BLE Service Identifiers
         private const string BIKE_SERVICE = "6e40fec1-b5a3-f393-e0a9-e50e24dcca9e";
-        private const string BIKE_SPEED_CHARACTERISTIC = "6e40fec2-b5a3-f393-e0a9-e50e24dcca9e";
+        private const string BIKE_RECEIVE_CHARACTERISTIC = "6e40fec2-b5a3-f393-e0a9-e50e24dcca9e";
         private const string HEART_SERVICE = "HeartRate";
         private const string HEART_RATE_CHARACTERISTIC = "HeartRateMeasurement";
 
@@ -27,6 +26,7 @@ namespace ClientApplication.Core
 
         // Events
         public event BikeDataReceivedEventHandler BikeDataReceived;
+        public event BikeConnectionStateChanged BikeConnectionChanged;
 
         // public
 
@@ -58,25 +58,83 @@ namespace ClientApplication.Core
             if(bleBikeList.Contains(this.bikeName))
             {
                 errorCode = await this.bleBike.OpenDevice(this.bikeName);
-                if (errorCode != 0) throw new BLEException(errorCode);
+                if (errorCode != 0)
+                {
+                    this.BikeConnectionChanged?.Invoke(this, new BikeConnectionStateChangedEventArgs(
+                        BikeConnectionState.Error,
+                        new BLEException(errorCode, $"Cannot connect to {this.bikeName}. Make sure it's turned on!")));
+
+                    return;
+                }
 
                 errorCode = await this.bleBike.SetService(EspBikeTrainer.BIKE_SERVICE);
-                if (errorCode != 0) throw new BLEException(errorCode);
+                if (errorCode != 0)
+                {
+                    this.BikeConnectionChanged?.Invoke(this, new BikeConnectionStateChangedEventArgs(
+                        BikeConnectionState.Error,
+                        new BLEException(errorCode, $"Cannot connect to {this.bikeName} bike service.")));
+
+                    return;
+                }
 
                 this.bleBike.SubscriptionValueChanged += BleBikeValueReceived;
-                errorCode = await this.bleBike.SubscribeToCharacteristic(EspBikeTrainer.BIKE_SPEED_CHARACTERISTIC);
-                if (errorCode != 0) throw new BLEException(errorCode);
+                errorCode = await this.bleBike.SubscribeToCharacteristic(EspBikeTrainer.BIKE_RECEIVE_CHARACTERISTIC);
+                if (errorCode != 0)
+                {
+                    this.BikeConnectionChanged?.Invoke(this, new BikeConnectionStateChangedEventArgs(
+                        BikeConnectionState.Error,
+                        new BLEException(errorCode, $"Cannot subscribe to {this.bikeName} receive characteristic.")));
+
+                    return;
+                }
 
                 errorCode = await this.bleHeart.OpenDevice(this.bikeName);
-                if (errorCode != 0) throw new BLEException(errorCode);
+                if (errorCode != 0)
+                {
+                    this.BikeConnectionChanged?.Invoke(this, new BikeConnectionStateChangedEventArgs(
+                        BikeConnectionState.Error,
+                        new BLEException(errorCode, $"Cannot connect to {this.bikeName}. Make sure it's turned on!")));
+
+                    return;
+                }
 
                 errorCode = await this.bleHeart.SetService(EspBikeTrainer.HEART_SERVICE);
-                if (errorCode != 0) throw new BLEException(errorCode);
+                if (errorCode != 0)
+                {
+                    this.BikeConnectionChanged?.Invoke(this, new BikeConnectionStateChangedEventArgs(
+                        BikeConnectionState.Error,
+                        new BLEException(errorCode, $"Cannot connect to {this.bikeName} heartrate service.")));
+
+                    return;
+                }
 
                 this.bleHeart.SubscriptionValueChanged += BleHeartValueReceived;
                 errorCode = await this.bleHeart.SubscribeToCharacteristic(EspBikeTrainer.HEART_RATE_CHARACTERISTIC);
-                if (errorCode != 0) throw new BLEException(errorCode);
+                if (errorCode != 0)
+                {
+                    this.BikeConnectionChanged?.Invoke(this, new BikeConnectionStateChangedEventArgs(
+                        BikeConnectionState.Error,
+                        new BLEException(errorCode, $"Cannot subscribe to {this.bikeName} heartrate characteristic.")));
+
+                    return;
+                }
+                else
+                {
+                    this.BikeConnectionChanged?.Invoke(this, new BikeConnectionStateChangedEventArgs(BikeConnectionState.Connected));
+                }
             }
+            else
+            {
+                this.BikeConnectionChanged?.Invoke(this, new BikeConnectionStateChangedEventArgs(
+                    BikeConnectionState.Error,
+                    new BLEException(errorCode, $"Cannot find {this.bikeName}. Make sure it's turned on!")));
+            }
+        }
+
+        public void StopReceiving()
+        {
+            this.bleBike.CloseDevice();
+            this.bleHeart.CloseDevice();
         }
 
         private void BleHeartValueReceived(object sender, BLESubscriptionValueChangedEventArgs e)

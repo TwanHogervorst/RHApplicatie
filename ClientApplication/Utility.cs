@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace ClientApplication
 {
@@ -13,5 +14,15 @@ namespace ClientApplication
         public static byte[] ReverseIfBigEndian(byte[] byteArray) => Utility.ReverseIfBigEndian((IEnumerable<byte>)byteArray).ToArray();
 
         public static List<byte> ReverseIfBigEndian(List<byte> byteList) => Utility.ReverseIfBigEndian((IEnumerable<byte>)byteList).ToList();
+
+        public static void EnableAllChildControls(GroupBox groupBox)
+        {
+            foreach (Control ctrl in groupBox.Controls) ctrl.Enabled = true;
+        }
+
+        public static void DisableAllChildControls(GroupBox groupBox)
+        {
+            foreach (Control ctrl in groupBox.Controls) ctrl.Enabled = false;
+        }
     }
 }

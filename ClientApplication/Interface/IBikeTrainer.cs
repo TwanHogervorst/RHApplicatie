@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClientApplication.Exception;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,13 +7,17 @@ namespace ClientApplication.Interface
 {
 
     public delegate void BikeDataReceivedEventHandler(object sender, BikeDataReceivedEventArgs args);
+    public delegate void BikeConnectionStateChanged(object sender, BikeConnectionStateChangedEventArgs args);
 
     public interface IBikeTrainer
     {
 
         public event BikeDataReceivedEventHandler BikeDataReceived;
+        public event BikeConnectionStateChanged BikeConnectionChanged;
 
         public void StartReceiving();
+
+        public void StopReceiving();
 
     }
 
@@ -29,10 +34,29 @@ namespace ClientApplication.Interface
         }
     }
 
+    public class BikeConnectionStateChangedEventArgs
+    {
+        public BikeConnectionState ConnectionState { get; private set; }
+        public BLEException Exception { get; private set; }
+
+        public BikeConnectionStateChangedEventArgs(BikeConnectionState state, BLEException exception = null)
+        {
+            this.ConnectionState = state;
+            this.Exception = exception;
+        }
+    }
+
     public enum BikeDataType
     {
         HeartBeat,
         GeneralFEData,
         SpecificBikeData
+    }
+
+    public enum BikeConnectionState
+    {
+        Disconnected,
+        Connected,
+        Error
     }
 }
