@@ -16,6 +16,7 @@ namespace ClientApplication.Core
         public SimulatorBikeTrainer(TrackBar speedTrackBar, TrackBar bpmTrackBar)
         {
             speedTrackBar.ValueChanged += SpeedTrackBar_Scroll;
+            bpmTrackBar.ValueChanged += HeartBeatTrackBar_Scroll;
         }
 
         private void SpeedTrackBar_Scroll(object sender, EventArgs e)
@@ -28,6 +29,18 @@ namespace ClientApplication.Core
             };
 
             BikeDataReceived?.Invoke(this, new BikeDataReceivedEventArgs(BikeDataType.GeneralFEData, data));
+        }
+
+        private void HeartBeatTrackBar_Scroll(object sender, EventArgs e)
+        {
+            int bpm = ((TrackBar)sender).Value;
+
+            DBikeHeartBeat data = new DBikeHeartBeat
+            {
+                HeartBeat = (ushort)bpm
+            };
+
+            BikeDataReceived?.Invoke(this, new BikeDataReceivedEventArgs(BikeDataType.HeartBeat, data));
         }
 
         public void StartReceiving()

@@ -55,6 +55,7 @@ namespace ClientApplication
         private void trackBarResistance_Scroll(object sender, EventArgs e)
         {
             textBoxResistance.Text = "" + trackBarResistance.Value;
+            labelCurrentResistanceValue.Text = textBoxResistance.Text;
         }
 
         #endregion
@@ -174,11 +175,16 @@ namespace ClientApplication
                         textBoxResistance.Text = trackBarResistance.Value + "";
 
                     }
+                    labelCurrentResistanceValue.Text = textBoxResistance.Text;
+                    this.bike.SetResistance(trackBarResistance.Value);
                 }
                 else
                 {
                     textBoxResistance.Text = trackBarResistance.Minimum + "";
                     trackBarResistance.Value = trackBarResistance.Minimum;
+
+                    labelCurrentResistanceValue.Text = textBoxResistance.Text;
+                    this.bike.SetResistance(trackBarResistance.Value);
                 }
 
             }
@@ -302,6 +308,5 @@ namespace ClientApplication
         }
 
         #endregion
-
     }
 }

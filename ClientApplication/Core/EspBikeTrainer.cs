@@ -55,7 +55,7 @@ namespace ClientApplication.Core
 
             List<string> bleBikeList = this.bleBike.ListDevices();
 
-            if(bleBikeList.Contains(this.bikeName))
+            if (bleBikeList.Contains(this.bikeName))
             {
                 errorCode = await this.bleBike.OpenDevice(this.bikeName);
                 if (errorCode != 0)
@@ -137,13 +137,27 @@ namespace ClientApplication.Core
             this.bleHeart.CloseDevice();
         }
 
-        public void SetResistance(int resistance)
+        public async void SetResistance(int resistance)
         {
+
+            Int32 intValue = Convert.ToInt32(resistance);
+
+            List<byte> message = new List<byte>() { 0xA4, 0x09, 0x4E, 0x05, 0x30, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, (byte)intValue };
+
+            byte checksum = (byte)message.Aggregate(0, (accu, e) =>
+            {
+                return accu ^= e;
+            });
+
+            message.Add(checksum);
+
+            await bleBike.WriteCharacteristic("6E40FEC3-B5A3-F393-E0A9-E50E24DCCA9E", message.ToArray());
         }
+
 
         private void BleHeartValueReceived(object sender, BLESubscriptionValueChangedEventArgs e)
         {
-            if(e.Data.Length == 2) // if false: not a ushort, so data corrupted
+            if (e.Data.Length == 2) // if false: not a ushort, so data corrupted
             {
                 this.BikeDataReceived?.Invoke(this, new BikeDataReceivedEventArgs(BikeDataType.HeartBeat, new DBikeHeartBeat()
                 {
@@ -154,7 +168,7 @@ namespace ClientApplication.Core
 
         private void BleBikeValueReceived(object sender, BLESubscriptionValueChangedEventArgs e)
         {
-            if(e.Data.Length > 3)
+            if (e.Data.Length > 3)
             {
                 byte syncByte = e.Data[0];
                 byte dataLength = e.Data[1];
