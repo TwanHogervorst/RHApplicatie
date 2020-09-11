@@ -205,7 +205,7 @@ namespace ClientApplication
 
                 textBoxBikeName.Enabled = true;
                 buttonConnect.Enabled = true;
-                timerElapsedTime.Stop();
+                this.bike.StopReceiving();
             }
             else
             {
@@ -228,8 +228,15 @@ namespace ClientApplication
                 Utility.EnableAllChildControls(groupBoxSimulator);
 
                 this.bike = new SimulatorBikeTrainer(this.trackBarSpeed, this.trackBarHeartbeat);
+                labelCurrentDistanceTraveledValue.Text = "waiting for value";
+                labelCurrentElapsedTimeValue.Text = "waiting for value";
+                labelCurrentHeartbeatValue.Text = "waiting for value";
+                labelCurrentResistanceValue.Text = "waiting for value";
+                labelCurrentPowerValue.Text = "waiting for value";
+                labelCurrentSpeedValue.Text = "waiting for value";
+
                 this.bike.BikeDataReceived += Bike_BikeDataReceived;
-                timerElapsedTime.Start();
+                this.bike.StartReceiving();
             }
             else
             {
@@ -303,7 +310,7 @@ namespace ClientApplication
                 case BikeDataType.GeneralFEData:
                     this.Invoke((MethodInvoker)delegate ()
                     {
-                        labelCurrentElapsedTimeValue.Text = (((double)args.Data.ElapsedTime) / 4).ToString("0.00") + " s";
+                        labelCurrentElapsedTimeValue.Text = (((double)args.Data.ElapsedTime / 4)).ToString("0.00") + " s";
                         labelCurrentDistanceTraveledValue.Text = args.Data.DistanceTraveled.ToString() + " m";
                         labelCurrentSpeedValue.Text = ((double)(args.Data.Speed) / 1000).ToString("0.00") + " m/s";
                     });
@@ -319,18 +326,6 @@ namespace ClientApplication
 
         #endregion
 
-        private void timerElapsedTime_Tick(object sender, EventArgs e)
-        {
-            if (labelCurrentElapsedTimeValue.Text.Equals("waiting for value"))
-            {
-                labelCurrentElapsedTimeValue.Text = 0 + " s";
-                labelCurrentDistanceTraveledValue.Text = 0 + " m";
-            }
-            labelCurrentElapsedTimeValue.Text = labelCurrentElapsedTimeValue.Text.Remove(labelCurrentElapsedTimeValue.Text.IndexOf('s'));
-            string time = labelCurrentElapsedTimeValue.Text;
-            labelCurrentElapsedTimeValue.Text = (double.Parse(labelCurrentElapsedTimeValue.Text) + 0.25).ToString("0.00") + " s";
-            labelCurrentDistanceTraveledValue.Text = labelCurrentDistanceTraveledValue.Text.Remove(labelCurrentDistanceTraveledValue.Text.IndexOf('m'));
-            labelCurrentDistanceTraveledValue.Text = (double.Parse(time) * double.Parse(labelCurrentDistanceTraveledValue.Text)) + " m";
-        }
+        
     }
 }

@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.textBoxSpeed = new System.Windows.Forms.TextBox();
             this.textBoxHeartbeat = new System.Windows.Forms.TextBox();
             this.labelSpeed = new System.Windows.Forms.Label();
@@ -59,7 +58,6 @@
             this.labelUseText = new System.Windows.Forms.Label();
             this.labelBikeNameText = new System.Windows.Forms.Label();
             this.groupBoxBikeData = new System.Windows.Forms.GroupBox();
-            this.timerElapsedTime = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarHeartbeat)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarResistance)).BeginInit();
@@ -389,11 +387,6 @@
             this.groupBoxBikeData.TabStop = false;
             this.groupBoxBikeData.Text = "Bike Data";
             // 
-            // timerElapsedTime
-            // 
-            this.timerElapsedTime.Interval = 250;
-            this.timerElapsedTime.Tick += new System.EventHandler(this.timerElapsedTime_Tick);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -454,7 +447,6 @@
         private System.Windows.Forms.Label labelBikeNameText;
         private System.Windows.Forms.Button buttonConnect;
         private System.Windows.Forms.GroupBox groupBoxBikeData;
-        private System.Windows.Forms.Timer timerElapsedTime;
     }
 }
 
