@@ -1,4 +1,4 @@
-﻿namespace ClientApplication
+﻿namespace NESessionList
 {
     partial class Form1
     {
