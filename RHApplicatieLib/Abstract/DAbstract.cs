@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ClientApplication.Interface
+namespace RHApplicationLib.Abstract
 {
     public abstract class DAbstract
     {
