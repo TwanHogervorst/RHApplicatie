@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic.CompilerServices;
+using Newtonsoft.Json;
 using RHApplicationLib.Core;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,8 @@ namespace NESessionList
             this.port = port;
 
             Connect(this.IPAdress, "{\"id\" : \"session/list\"}");
+
+
         }
 
         //public void Connect(string IPAdress, int port)
@@ -63,18 +66,35 @@ namespace NESessionList
                 // Receive the TcpServer.response.
 
                 // Buffer to store the response bytes.
-                data = new Byte[4];
-                stream.Read(data, 0, data.Length);
 
-                Byte[] input = new Byte[BitConverter.ToInt32(data)*10];
+                byte[] dataLengthBytes = new byte[4];
 
-                stream.Read(input, 0, input.Length);
-                String responseData = String.Empty;
+                stream.Read(dataLengthBytes, 0, dataLengthBytes.Length);
+                int dataLength = BitConverter.ToInt32(dataLengthBytes);
 
-                responseData = System.Text.Encoding.ASCII.GetString(input);
+                foreach (byte bit in dataLengthBytes)
+                {
+                    Console.WriteLine(bit);
+                }
 
-                Console.WriteLine("Received: {0}", responseData);
-                Console.WriteLine(BitConverter.ToInt32(data));
+                byte[] dataBuffer = new byte[dataLength];
+                int bytesRead = 0;
+
+                while (bytesRead < dataLength)
+                {
+                    bytesRead += stream.Read(dataBuffer, Math.Max(0, bytesRead - 1), dataBuffer.Length - bytesRead);
+                }
+
+                string responseString = Encoding.ASCII.GetString(dataBuffer);
+
+                Console.WriteLine(responseString);
+
+                dynamic inputData = JsonConvert.DeserializeObject(responseString);
+
+                Console.WriteLine("ServerID: " + inputData.data[0].id);
+
+                string serverID = inputData.data[0].id;
+
 
                 // Close everything.
                 stream.Close();
