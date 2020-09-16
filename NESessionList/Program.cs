@@ -14,12 +14,13 @@ namespace NESessionList
         [STAThread]
         static void Main()
         {
-            //Application.SetHighDpiMode(HighDpiMode.SystemAware);
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new Form1());
+            Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Form1 form = new Form1();
+            VRClient client = new VRClient("145.48.6.10", 6666, ref form);
+            Application.Run(form);
 
-            VRClient client = new VRClient("145.48.6.10", 6666);
         }
     }
 }
