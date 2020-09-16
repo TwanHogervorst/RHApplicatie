@@ -16,6 +16,7 @@ namespace NESessionList
         private int port;
         private string serverID;
         private string tunnelID;
+        private NetworkStream stream;
 
         public VRClient(string iPAdress, int port)
         {
@@ -39,11 +40,11 @@ namespace NESessionList
                 // combination.
                 Int32 port = 6666;
                 TcpClient client = new TcpClient(server, port);
-                NetworkStream stream = client.GetStream();
+                this.stream = client.GetStream();
 
-                sendData(stream, "{\"id\" : \"session/list\"}");
+                sendData("{\"id\" : \"session/list\"}");
 
-                string responseString = receiveData(stream);
+                string responseString = receiveData();
 
                 dynamic inputData = JsonConvert.DeserializeObject(responseString);
 
@@ -52,15 +53,15 @@ namespace NESessionList
                 this.serverID = inputData.data[0].id;
                 Console.WriteLine(this.serverID);
 
-                sendData(stream, "{\"id\":\"tunnel/create\",\"data\":{\"session\":\""+ this.serverID + "\",\"key\":\"\"}}");
-                responseString = receiveData(stream);
+                sendData("{\"id\":\"tunnel/create\",\"data\":{\"session\":\"" + this.serverID + "\",\"key\":\"\"}}");
+                responseString = receiveData();
                 inputData = JsonConvert.DeserializeObject(responseString);
 
                 this.tunnelID = inputData.data.id;
                 Console.WriteLine(this.tunnelID);
 
-                sendData(stream, "{\"id\":\"tunnel/send\",\"data\":{\"dest\":\"" + this.tunnelID + "\",\"data\":{\"id\":\"scene/reset\",\"data\":{}}}}");
-                responseString = receiveData(stream);
+                sendData("{\"id\":\"tunnel/send\",\"data\":{\"dest\":\"" + this.tunnelID + "\",\"data\":{\"id\":\"scene/reset\",\"data\":{}}}}");
+                responseString = receiveData();
                 inputData = JsonConvert.DeserializeObject(responseString);
 
                 Console.WriteLine("DONE");
@@ -82,7 +83,7 @@ namespace NESessionList
             Console.Read();
         }
 
-        public void sendData(NetworkStream stream, string message)
+        public void sendData(string message)
         {
             Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
 
@@ -96,16 +97,16 @@ namespace NESessionList
 
             Byte[] byteMessage = dataList.ToArray();
             // Send the message to the connected TcpServer.
-            stream.Write(byteMessage, 0, byteMessage.Length);
+            this.stream.Write(byteMessage, 0, byteMessage.Length);
 
             Console.WriteLine("Sent: {0}", byteMessage.ToString());
         }
 
-        public string receiveData(NetworkStream stream)
+        public string receiveData()
         {
             byte[] dataLengthBytes = new byte[4];
 
-            stream.Read(dataLengthBytes, 0, dataLengthBytes.Length);
+            this.stream.Read(dataLengthBytes, 0, dataLengthBytes.Length);
             int dataLength = BitConverter.ToInt32(dataLengthBytes);
 
             foreach (byte bit in dataLengthBytes)
@@ -118,7 +119,7 @@ namespace NESessionList
 
             while (bytesRead < dataLength)
             {
-                bytesRead += stream.Read(dataBuffer, Math.Max(0, bytesRead - 1), dataBuffer.Length - bytesRead);
+                bytesRead += this.stream.Read(dataBuffer, Math.Max(0, bytesRead - 1), dataBuffer.Length - bytesRead);
             }
 
             string responseString = Encoding.ASCII.GetString(dataBuffer);
@@ -127,5 +128,16 @@ namespace NESessionList
 
             return responseString;
         }
+
+        public void AddNode()
+        {
+            sendData("{\"id\":\"scene/node/add\",\"data\":{\"name\":\"name\",\"parent\":\"guid\",\"components\"" +
+                "               :{\"transform\":{\"position\":[0,0,0],\"scale\":1,\"rotation\":[0,0,0]},\"model\":{\"file\"" +
+                "               :\"filename\",\"cullbackfaces\":true,\"animated\":false,\"animation\":\"animationname\"},\"terrain\"" +
+                "               :{\"smoothnormals\":true},\"panel\":{\"size\":[1,1],\"resolution\":[512,512],\"background\":[1,1,1,1]," +
+                "               \"castShadow\":true},\"water\":{\"size\":[20,20],\"resolution\":0.1}}}}");
+
+        }
     }
+
 }
