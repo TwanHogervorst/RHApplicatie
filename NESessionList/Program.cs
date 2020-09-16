@@ -18,9 +18,8 @@ namespace NESessionList
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new Form1());
-            Console.WriteLine("After form");
+
             VRClient client = new VRClient("145.48.6.10", 6666);
-            Console.WriteLine("after VRCLient");
         }
     }
 }
