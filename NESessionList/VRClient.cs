@@ -129,15 +129,36 @@ namespace NESessionList
             return responseString;
         }
 
-        public void AddNode()
+        public void AddNode(string name, int xPos, int yPos, int zPos, int scale, int xRot, int yRot, int zRot,
+                            string filename, int width, int height, int panelWidth, int panelHeight, bool cullbackfaces = true, bool animated = false,
+                            string animationName = null, bool smoothnormals = true, int resolutionX = 512, int resolutionY = 512,
+                            bool castShadow = true)
         {
-            sendData("{\"id\":\"scene/node/add\",\"data\":{\"name\":\"name\",\"parent\":\"guid\",\"components\"" +
-                "               :{\"transform\":{\"position\":[0,0,0],\"scale\":1,\"rotation\":[0,0,0]},\"model\":{\"file\"" +
-                "               :\"filename\",\"cullbackfaces\":true,\"animated\":false,\"animation\":\"animationname\"},\"terrain\"" +
-                "               :{\"smoothnormals\":true},\"panel\":{\"size\":[1,1],\"resolution\":[512,512],\"background\":[1,1,1,1]," +
-                "               \"castShadow\":true},\"water\":{\"size\":[20,20],\"resolution\":0.1}}}}");
+            sendData(
+                "{\"id\":\"scene/node/add\",\"data\":{\"name\":\"" + name + "\",\"parent\":\"guid\",\"components\"" + ":{\"transform\":{\"position\"" +
+                ":[" + xPos + "," + yPos + "," + zPos + "],\"scale\":" + scale + ",\"rotation\":" + "[" + xRot + "," + yRot + "," + zRot + "]},\"model\"" +
+                ":{\"file\"" + ":\"" + filename + "\",\"cullbackfaces\":" + cullbackfaces + ",\"animated\":" + animated + ",\"animation\":\"" + animationName + "\"},\"terrain\"" + "" +
+                ":{\"smoothnormals\":" + smoothnormals + "},\"panel\":{\"size\":[" + panelWidth + "," + panelHeight + "],\"resolution\":[" + resolutionX + "," + resolutionY + "],\"background\"" +
+                ":[1,1,1,1]," + "\"castShadow\":" + castShadow + "}}}}");
 
+
+            //TODO: save name and parent in attribute
         }
+
+        public void AddNode(string name, int xPos, int yPos, int zPos, int scale, int xRot, int yRot, int zRot,
+                            string filename, bool cullbackfaces = true, bool animated = false,
+                            string animationName = null, bool smoothnormals = true)
+        {
+            sendData(
+                "{\"id\":\"scene/node/add\",\"data\":{\"name\":\"" + name + "\",\"parent\":\"guid\",\"components\"" + ":{\"transform\":{\"position\"" +
+                ":[" + xPos + "," + yPos + "," + zPos + "],\"scale\":" + scale + ",\"rotation\":" + "[" + xRot + "," + yRot + "," + zRot + "]},\"model\"" +
+                ":{\"file\"" + ":\"" + filename + "\",\"cullbackfaces\":" + cullbackfaces + ",\"animated\":" + animated + ",\"animation\":\"" + animationName + "\"},\"terrain\"" + "" +
+                ":{\"smoothnormals\":" + smoothnormals + "}}}}");
+
+            //TODO: save name and parent in attribute
+        }
+
+
     }
 
 }
