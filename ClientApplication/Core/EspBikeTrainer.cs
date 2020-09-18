@@ -214,7 +214,7 @@ namespace ClientApplication.Core
             {
                 this.BikeDataReceived?.Invoke(this, new BikeDataReceivedEventArgs(BikeDataType.HeartBeat, new DBikeHeartBeat()
                 {
-                    HeartBeat = BitConverter.ToUInt16(e.Data.Reverse().ToArray(), 0)
+                    HeartBeat = BitConverter.ToUInt16(Utility.ReverseIfBigEndian(e.Data), 0)
                 }));
             }
         }
