@@ -18,20 +18,18 @@ namespace NESessionList
         private string tunnelID;
         private NetworkStream stream;
 
-        public VRClient(string iPAdress, int port)
+        public VRClient(string iPAdress, int port, ref Form1 form)
         {
             this.IPAdress = iPAdress;
             this.port = port;
             this.serverID = String.Empty;
             this.tunnelID = String.Empty;
-
-            Connect(this.IPAdress);
-
-
+            Connect(this.IPAdress, ref form);
         }
 
-        public void Connect(String server)
+        public void Connect(String server, ref Form1 form)
         {
+            Console.WriteLine("Start connect");
             try
             {
                 // Create a TcpClient.
@@ -47,22 +45,25 @@ namespace NESessionList
                 string responseString = receiveData();
 
                 dynamic inputData = JsonConvert.DeserializeObject(responseString);
-
+                Newtonsoft.Json.Linq.JArray data = inputData.data;
+                foreach (Newtonsoft.Json.Linq.JObject obj in data){
+                    form.addRow(obj["clientinfo"]["user"].ToString() ,obj["id"].ToString());
+                }
                 //Console.WriteLine("ServerID: " + inputData.data[0].id);
 
                 this.serverID = inputData.data[0].id;
                 Console.WriteLine(this.serverID);
 
-                sendData("{\"id\":\"tunnel/create\",\"data\":{\"session\":\"" + this.serverID + "\",\"key\":\"\"}}");
-                responseString = receiveData();
-                inputData = JsonConvert.DeserializeObject(responseString);
+                //sendData("{\"id\":\"tunnel/create\",\"data\":{\"session\":\"" + this.serverID + "\",\"key\":\"\"}}");
+                //responseString = receiveData();
+                //inputData = JsonConvert.DeserializeObject(responseString);
 
-                this.tunnelID = inputData.data.id;
-                Console.WriteLine(this.tunnelID);
+                //this.tunnelID = inputData.data.id;
+                //Console.WriteLine(this.tunnelID);
 
-                sendData("{\"id\":\"tunnel/send\",\"data\":{\"dest\":\"" + this.tunnelID + "\",\"data\":{\"id\":\"scene/reset\",\"data\":{}}}}");
-                responseString = receiveData();
-                inputData = JsonConvert.DeserializeObject(responseString);
+                //sendData("{\"id\":\"tunnel/send\",\"data\":{\"dest\":\"" + this.tunnelID + "\",\"data\":{\"id\":\"scene/reset\",\"data\":{}}}}");
+                //responseString = receiveData();
+                //inputData = JsonConvert.DeserializeObject(responseString);
 
                 Console.WriteLine("DONE");
                 // Close everything.
@@ -79,8 +80,6 @@ namespace NESessionList
                 Console.WriteLine("SocketException: {0}", e);
             }
 
-            Console.WriteLine("\n Press Enter to continue...");
-            Console.Read();
         }
 
         public void sendData(string message)

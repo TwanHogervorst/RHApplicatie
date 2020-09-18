@@ -15,7 +15,12 @@ namespace NESessionList
         public Form1()
         {
             InitializeComponent();
-            string[] row0 = { "11/22/1968", "29" };
+        }
+
+        public void addRow(string name, string id)
+        {
+            Console.WriteLine($"add user: {name} | id: {id}");
+            string[] row0 = {name, id };
             dataGridView1.Rows.Add(row0);
         }
 
