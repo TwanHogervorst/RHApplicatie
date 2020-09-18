@@ -15,6 +15,12 @@ namespace RHApplicationLib.Core
 
         public static List<byte> ReverseIfBigEndian(List<byte> byteList) => Utility.ReverseIfBigEndian((IEnumerable<byte>)byteList).ToList();
 
+        public static IEnumerable<byte> ReverseIfLittleEndian(IEnumerable<byte> byteEnumerable) => BitConverter.IsLittleEndian ? byteEnumerable.Reverse() : byteEnumerable;
+
+        public static byte[] ReverseIfLittleEndian(byte[] byteArray) => Utility.ReverseIfLittleEndian((IEnumerable<byte>)byteArray).ToArray();
+
+        public static List<byte> ReverseIfLittleEndian(List<byte> byteList) => Utility.ReverseIfLittleEndian((IEnumerable<byte>)byteList).ToList();
+
         public static void EnableAllChildControls(GroupBox groupBox)
         {
             foreach (Control ctrl in groupBox.Controls) ctrl.Enabled = true;
