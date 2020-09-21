@@ -63,7 +63,7 @@ namespace NESessionList.Core
                     }
                 }) ;; ;
 
-                if (result != null) Console.WriteLine("Updated node");
+                if (result != null) Console.WriteLine($"Update node status: {result.data.status}");
             }
             catch (VRClientException ex)
             {
@@ -84,7 +84,7 @@ namespace NESessionList.Core
                     }
                 }); ; ;
 
-                if (result != null) Console.WriteLine("Deleted node");
+                if (result != null) Console.WriteLine($"Delete node status: {result.data.status}");
             }
             catch (VRClientException ex)
             {
@@ -112,7 +112,7 @@ namespace NESessionList.Core
                     }
                 }) ; ; ;
 
-                if (result != null) Console.WriteLine("Moved node");
+                if (result != null) Console.WriteLine($"Move node status: {result.data.status}");
             }
             catch (VRClientException ex)
             {
@@ -175,7 +175,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine("Deleted Terrain");
+                if (result != null) Console.WriteLine($"Delete Terrain status: {result.data.status}");
             }
             catch (VRClientException ex)
             {
