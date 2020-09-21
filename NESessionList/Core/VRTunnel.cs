@@ -206,6 +206,160 @@ namespace NESessionList.Core
             }
         }
 
+        public void AddRoad(string route_, string diffuse_, string normal_, string specular_, decimal heightoffset_)
+        {
+            try
+            {
+                DVRClientPacket<DVRAddRoadResult> result = this.SendAndReceiveData<DVRClientPacket<DVRAddRoadResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "scene/road/add",
+                    data = new DVRAddRoadPacket() // Create Add Road Packet
+                    {
+                        route = route_,
+                        diffuse = diffuse_,
+                        normal = normal_,
+                        specular = specular_,
+                        heightoffset = heightoffset_
+                    }
+                }); ;
+
+                if (result != null) Console.WriteLine($"Added Road uuid: {result.data.uuid}");
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"Add road failed: {ex.Message}");
+            }
+        }
+
+        public void UpdateRoad(string id_, string route_, string diffuse_, string normal_, string specular_, decimal heightoffset_)
+        {
+            try
+            {
+                DVRClientPacket<DVRUpdateRoadResult> result = this.SendAndReceiveData<DVRClientPacket<DVRUpdateRoadResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "scene/road/update",
+                    data = new DVRUpdateRoadPacket() // Create Update Road Packet
+                    {
+                        id = id_,
+                        route = route_,
+                        diffuse = diffuse_,
+                        normal = normal_,
+                        specular = specular_,
+                        heightoffset = heightoffset_
+                    }
+                }); ;
+
+                if (result != null) Console.WriteLine($"Updated Road uuid: {result.data.uuid}");
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"Update road failed: {ex.Message}");
+            }
+        }
+        public void AddRoute()
+        {
+            //TODO
+        }
+
+        public void UpdateRoute()
+        {
+            //TODO
+        }
+
+        public void DeleteRoute(string id_)
+        {
+            try
+            {
+                DVRClientPacket<DVRRouteDeleteResult> result = this.SendAndReceiveData<DVRClientPacket<DVRRouteDeleteResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "route/delete",
+                    data = new DVRRouteDeletePacket// Create Delete route packet
+                    {
+                        id = id_
+                    }
+                }); ;
+
+                if (result != null) Console.WriteLine($"Status deleted route: {result.data.status}");
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"Delete route failed: {ex.Message}");
+            }
+        }
+
+        public void FollowRoute(string route_, string node_, decimal speed_, decimal offset_, string rotate_,
+            decimal smoothing_, bool followHeight_, decimal[] rotateOffset_, decimal[] positionOffset_)
+        {
+            try
+            {
+                DVRClientPacket<DVRRouteFollowResult> result = this.SendAndReceiveData<DVRClientPacket<DVRRouteFollowResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "route/follow",
+                    data = new DVRRouteFollowPacket() // Create route follow packet
+                    {
+                        route = route_,
+                        node = node_,
+                        speed = speed_,
+                        offset = offset_,
+                        rotate = rotate_,
+                        smoothing = smoothing_,
+                        followHeight = followHeight_,
+                        rotateOffset = rotateOffset_,
+                        positionOffset = positionOffset_
+                    }
+                }); ;
+
+                if (result != null) Console.WriteLine($"Status follow route: {result.data.status}");
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"Follow route failed: {ex.Message}");
+            }
+        }
+
+        public void FollowRouteSpeed(string node_, decimal speed_)
+        {
+            try
+            {
+                DVRClientPacket<DVRRouteFollowSpeedResult> result = this.SendAndReceiveData<DVRClientPacket<DVRRouteFollowSpeedResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "route/follow/speed",
+                    data = new DVRRouteFollowSpeedPacket() // Create Update Road Packet
+                    {
+                        node = node_,
+                        speed = speed_
+                    }
+                }); ;
+
+                if (result != null) Console.WriteLine($"Status route follow: {result.data.status}");
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"route follow speed failed: {ex.Message}");
+            }
+        }
+
+        public void ShowRoute(bool show_)
+        {
+            try
+            {
+                DVRClientPacket<DVRRouteShowResult> result = this.SendAndReceiveData<DVRClientPacket<DVRRouteShowResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "route/show",
+                    data = new DVRRouteShowPacket() // Create Update Road Packet
+                    {
+                        show = show_
+                    }
+                }); ;
+
+                if (result != null) Console.WriteLine($"Status route show: {result.data.status}");
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"route show failed: {ex.Message}");
+            }
+        }
+
         private void SendData(DVRClientPacket<DAbstract> clientPacket)
         {
             if (!this.client.IsConnected) throw new InvalidOperationException("Not connected! Please connect to the server first");

@@ -270,4 +270,103 @@ namespace NESessionList.Data
     public class DVRSetTimeSkyBoxResult : DAbstract
     {
     }
+
+    public class DVRAddRoadPacket : DAbstract
+    {
+        public string route;
+        public string diffuse;
+        public string normal;
+        public string specular;
+        public decimal heightoffset;
+    }
+
+    public class DVRAddRoadResult : DAbstract
+    {
+        public string uuid;
+    }
+
+    public class DVRUpdateRoadPacket : DAbstract
+    {
+        public string id;
+        public string route;
+        public string diffuse;
+        public string normal;
+        public string specular;
+        public decimal heightoffset;
+    }
+
+    public class DVRUpdateRoadResult : DAbstract
+    {
+        public string uuid;
+    }
+
+    public class DVRAddRoutePacket : DAbstract
+    {
+        //TODO
+    }
+
+    public class DVRAddRouteResult : DAbstract
+    {
+        public string status;
+        public string uuid;
+    }
+
+    public class DVRRouteUpdatePacket : DAbstract
+    {
+        //TODO
+    }
+
+    public class DVRRouteUpdateResult : DAbstract
+    {
+        public string status;
+    }
+
+    public class DVRRouteDeletePacket : DAbstract
+    {
+        public string id;
+    }
+
+    public class DVRRouteDeleteResult : DAbstract
+    {
+        public string status;
+    }
+
+    public class DVRRouteFollowPacket : DAbstract
+    {
+        public string route;
+        public string node;
+        public decimal speed;
+        public decimal offset;
+        public string rotate;
+        public decimal smoothing;
+        public bool followHeight;
+        public decimal[] rotateOffset;
+        public decimal[] positionOffset;
+    }
+
+    public class DVRRouteFollowResult : DAbstract
+    {
+        public string status;
+    }
+
+    public class DVRRouteFollowSpeedPacket : DAbstract
+    {
+        public string node;
+        public decimal speed;
+    }
+
+    public class DVRRouteFollowSpeedResult : DAbstract
+    {
+        public string status;
+    }
+
+    public class DVRRouteShowPacket : DAbstract
+    {
+        public bool show;
+    }
+
+    public class DVRRouteShowResult : DAbstract
+    {
+        public string status;
+    }
 }
