@@ -37,8 +37,6 @@ namespace NESessionList.Core
                             panel = panel_,
                             water = water_
                         }
-
-
                     }
                 }) ; ;
 
@@ -47,6 +45,78 @@ namespace NESessionList.Core
             catch (VRClientException ex)
             {
                 Console.WriteLine($"Add Node failed: {ex.Message}");
+            }
+        }
+
+        public void UpdateNode(DVRUpdateNodePacket.DTransform transform_,DVRUpdateNodePacket.DAnimation animation_)
+        {
+            try
+            {
+                DVRClientPacket<DVRUpdateNodeResult> result = this.SendAndReceiveData<DVRClientPacket<DVRUpdateNodeResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "scene/node/update",
+                    data = new DVRUpdateNodePacket() // Create Add Node Packet
+                    {
+                        id = "TODO: UUID",
+                        transform = transform_,
+                        animation = animation_
+                    }
+                }) ;; ;
+
+                if (result != null) Console.WriteLine("Updated node");
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"Update Node failed: {ex.Message}");
+            }
+        }
+
+        public void DeleteNode(string id_)
+        {
+            try
+            {
+                DVRClientPacket<DVRDeleteNodeResult> result = this.SendAndReceiveData<DVRClientPacket<DVRDeleteNodeResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "scene/node/delete",
+                    data = new DVRDeleteNodePacket() // Create Add Node Packet
+                    {
+                        id = id_,
+                    }
+                }); ; ;
+
+                if (result != null) Console.WriteLine("Deleted node");
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"Delete Node failed: {ex.Message}");
+            }
+        }
+
+        public void MoveNodeTo(string id_, string stop_, decimal[] position_, string rotate_, string interpolate_, bool followheight_, decimal speed_, decimal time_)
+        {
+            try
+            {
+                DVRClientPacket<DVRMoveNodeToResult> result = this.SendAndReceiveData<DVRClientPacket<DVRMoveNodeToResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "scene/node/moveto",
+                    data = new DVRMoveNodeToPacket() // Create Add Node Packet
+                    {
+                        id = id_,
+                        stop = stop_,
+                        position = position_,
+                        rotate = rotate_,
+                        interpolate = interpolate_,
+                        followheight = followheight_,
+                        speed = speed_,
+                        time = time_
+                    }
+                }) ; ; ;
+
+                if (result != null) Console.WriteLine("Moved node");
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"Move Node failed: {ex.Message}");
             }
         }
 
@@ -67,7 +137,71 @@ namespace NESessionList.Core
             }
             catch (VRClientException ex)
             {
-                Console.WriteLine($"Add Node failed: {ex.Message}");
+                Console.WriteLine($"Add Terrain failed: {ex.Message}");
+
+            }
+        }
+
+        public void UpdateTerrain()
+        {
+            try
+            {
+                DVRClientPacket<DVRUpdateTerrainResult> result = this.SendAndReceiveData<DVRClientPacket<DVRUpdateTerrainResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "scene/terrain/update",
+                    data = new DVRUpdateTerrainPacket() // Create Add Node Packet
+                    {
+                    }
+                }); ;
+
+                if (result != null) Console.WriteLine("Updated Terrain");
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"Update Terrain failed: {ex.Message}");
+
+            }
+        }
+
+        public void DeleteTerrain()
+        {
+            try
+            {
+                DVRClientPacket<DVRDeleteTerrainResult> result = this.SendAndReceiveData<DVRClientPacket<DVRDeleteTerrainResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "scene/terrain/delete",
+                    data = new DVRDeleteTerrainPacket() // Create Add Node Packet
+                    {
+                    }
+                }); ;
+
+                if (result != null) Console.WriteLine("Deleted Terrain");
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"Delete Terrain failed: {ex.Message}");
+
+            }
+        }
+
+        public void SetTimeSkyBox(decimal time_)
+        {
+            try
+            {
+                DVRClientPacket<DVRSetTimeSkyBoxResult> result = this.SendAndReceiveData<DVRClientPacket<DVRSetTimeSkyBoxResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "scene/skybox/settime",
+                    data = new DVRSetTimeSkyBoxPacket() // Create Add Node Packet
+                    {
+                        time = time_
+                    }
+                }); ; ;
+
+                if (result != null) Console.WriteLine("Set time of SkyBox");
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"Set time of SkyBox failed: {ex.Message}");
 
             }
         }

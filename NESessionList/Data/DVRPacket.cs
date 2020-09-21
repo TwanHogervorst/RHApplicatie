@@ -160,10 +160,77 @@ namespace NESessionList.Data
         }
     }
 
+    public class DVRUpdateNodePacket : DAbstract
+    {
+        public string id;
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string parent;
+        public DTransform transform;
+        public DAnimation animation;
+
+        public class DTransform : DAbstract
+        {
+            public decimal[] position;
+            public decimal scale;
+            public decimal[] rotation;
+
+            public DTransform(decimal[] position, decimal scale, decimal[] rotation)
+            {
+                this.position = position;
+                this.scale = scale;
+                this.rotation = rotation;
+            }
+        }
+        public class DAnimation : DAbstract
+        {
+            public string name;
+            public decimal speed;
+
+            public DAnimation(string name_, decimal speed_)
+            {
+                this.name = name_;
+                this.speed = speed_;
+            }
+        }
+
+    }
+
+    public class DVRDeleteNodePacket : DAbstract
+    {
+        public string id;
+    }
+
+    public class DVRMoveNodeToPacket : DAbstract
+    {
+        public string id;
+        public string stop;
+        public decimal[] position;
+        public string rotate;
+        public string interpolate;
+        public bool followheight;
+        public decimal speed;
+        public decimal time;
+    }
+
     public class DVRAddTerrainPacket : DAbstract
     {
         public decimal[] size;
         public decimal[] heights;
+    }
+
+    public class DVRUpdateTerrainPacket : DAbstract
+    {
+
+    }
+
+    public class DVRDeleteTerrainPacket : DAbstract
+    {
+
+    }
+
+    public class DVRSetTimeSkyBoxPacket : DAbstract
+    {
+        public decimal time;
     }
 
     public class DVRAddNodeResult : DAbstract
@@ -172,7 +239,35 @@ namespace NESessionList.Data
         public string name;
     }
 
+    public class DVRUpdateNodeResult : DAbstract
+    {
+        public string status;
+    }
+
+    public class DVRDeleteNodeResult : DAbstract
+    {
+        public string status;
+    }
+
+    public class DVRMoveNodeToResult : DAbstract
+    {
+        public string status;
+    }
+
     public class DVRAddTerrainResult : DAbstract
+    {
+    }
+
+    public class DVRUpdateTerrainResult : DAbstract
+    {
+    } 
+
+    public class DVRDeleteTerrainResult : DAbstract
+    {
+        public string status;
+    }
+
+    public class DVRSetTimeSkyBoxResult : DAbstract
     {
     }
 }
