@@ -95,6 +95,13 @@ namespace NESessionList.Data
                 public decimal[] position;
                 public decimal scale;
                 public decimal[] rotation;
+
+                public DTransform(decimal[] position, decimal scale, decimal[] rotation)
+                {
+                    this.position = position;
+                    this.scale = scale;
+                    this.rotation = rotation;
+                }
             }
 
             public class DModel : DAbstract
@@ -103,11 +110,24 @@ namespace NESessionList.Data
                 public bool cullbackfaces = false;
                 public bool animated = false;
                 public string animation;
+
+                public DModel(string file, bool cullbackfaces, bool animated, string animation)
+                {
+                    this.file = file;
+                    this.cullbackfaces = cullbackfaces;
+                    this.animated = animated;
+                    this.animation = animation;
+                }
             }
 
             public class DTerrain : DAbstract
             {
                 public bool smoothnormals = true;
+
+                public DTerrain(bool smoothnormals)
+                {
+                    this.smoothnormals = smoothnormals;
+                }
             }
 
             public class DPanel : DAbstract
@@ -116,19 +136,43 @@ namespace NESessionList.Data
                 public decimal[] resolution;
                 public decimal[] background;
                 public bool castShadow = true;
+
+                public DPanel(decimal[] size, decimal[] resolution, decimal[] background, bool castShadow)
+                {
+                    this.size = size;
+                    this.resolution = resolution;
+                    this.background = background;
+                    this.castShadow = castShadow;
+                }
             }
 
             public class DWater : DAbstract
             {
                 public decimal[] size;
                 public decimal resolution;
+
+                public DWater(decimal[] size, decimal resolution)
+                {
+                    this.size = size;
+                    this.resolution = resolution;
+                }
             }
         }
+    }
+
+    public class DVRAddTerrainPacket : DAbstract
+    {
+        public decimal[] size;
+        public decimal[] heights;
     }
 
     public class DVRAddNodeResult : DAbstract
     {
         public string uuid;
         public string name;
+    }
+
+    public class DVRAddTerrainResult : DAbstract
+    {
     }
 }
