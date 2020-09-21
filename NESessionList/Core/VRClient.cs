@@ -93,11 +93,11 @@ namespace NESessionList.Core
 
         internal void SendData(DVRTunnelPacket data)
         {
-            this.SendData("tunnel/send", data);
+            this.SendData("tunnel/send", data); 
         }
 
         private void SendData(string id, DAbstract data = null) =>
-            this.SendData(new DVRClientPacket<DAbstract>() { id = id, data = data }.ToJson());
+            this.SendData(new DVRClientPacket<DAbstract>() { id = id, data = data }.ToJson()); // Create VRClientPacket
 
         private void SendData(string message)
         {

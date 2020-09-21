@@ -22,10 +22,10 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRAddNodeResult> result = this.SendAndReceiveData<DVRClientPacket<DVRAddNodeResult>>(new DVRClientPacket<DAbstract>()
+                DVRClientPacket<DVRAddNodeResult> result = this.SendAndReceiveData<DVRClientPacket<DVRAddNodeResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/node/add",
-                    data = new DVRAddNodePacket()
+                    data = new DVRAddNodePacket() // Create Add Node Packet
                     {
                         name = "Test"
                     }
@@ -43,7 +43,7 @@ namespace NESessionList.Core
         {
             if (!this.client.IsConnected) throw new InvalidOperationException("Not connected! Please connect to the server first");
 
-            client.SendData(new DVRTunnelPacket() { dest = this.tunnelId, data = clientPacket });
+            client.SendData(new DVRTunnelPacket() { dest = this.tunnelId, data = clientPacket }); // create Tunnel Packet
         }
 
         private T SendAndReceiveData<T>(DVRClientPacket<DAbstract> sendPacket) where T : DAbstract
@@ -52,7 +52,7 @@ namespace NESessionList.Core
 
             T result = default(T);
 
-            DVRTunnelReceivePacket<T> receivePacket = client.SendAndReceiveData<T>(new DVRTunnelPacket() { dest = this.tunnelId, data = sendPacket });
+            DVRTunnelReceivePacket<T> receivePacket = client.SendAndReceiveData<T>(new DVRTunnelPacket() { dest = this.tunnelId, data = sendPacket }); // create Tunnel Packet
 
             // unpack tunnel receive packet
             if (receivePacket.status != "error") result = receivePacket.data;
