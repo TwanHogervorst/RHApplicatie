@@ -302,7 +302,13 @@ namespace NESessionList.Data
 
     public class DVRAddRoutePacket : DAbstract
     {
-        //TODO
+        public List<DVRAddRouteNodesPacket> nodes;
+    }
+
+    public class DVRAddRouteNodesPacket
+    {
+        public decimal[] pos;
+        public decimal[] dir;
     }
 
     public class DVRAddRouteResult : DAbstract
@@ -313,7 +319,15 @@ namespace NESessionList.Data
 
     public class DVRRouteUpdatePacket : DAbstract
     {
-        //TODO
+        public string id;
+        public List<DVRUpdateRouteNodesPacket> nodes;
+    }
+
+    public class DVRUpdateRouteNodesPacket
+    {
+        public int index;
+        public decimal[] pos;
+        public decimal[] dir;
     }
 
     public class DVRRouteUpdateResult : DAbstract

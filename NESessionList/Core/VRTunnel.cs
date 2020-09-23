@@ -3,6 +3,8 @@ using NESessionList.Exception;
 using RHApplicationLib.Abstract;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace NESessionList.Core
@@ -12,14 +14,21 @@ namespace NESessionList.Core
         private string tunnelId;
         private VRClient client;
 
+        public Dictionary<string, string> nodeList { get; private set; }
+        public Dictionary<string, string> routeList { get; private set; }
+        public Dictionary<string, string> roadList { get; private set; }
+
         public VRTunnel(string tunnelId, VRClient client)
         {
             this.tunnelId = tunnelId;
             this.client = client;
+            this.nodeList = new Dictionary<string, string>();
+            this.routeList = new Dictionary<string, string>();
+            this.roadList = new Dictionary<string, string>();
         }
 
         public void AddNode(DVRAddNodePacket.DComponents.DTransform transform_, DVRAddNodePacket.DComponents.DModel model_,
-                            DVRAddNodePacket.DComponents.DTerrain terrain_, DVRAddNodePacket.DComponents.DPanel panel_, DVRAddNodePacket.DComponents.DWater water_  )
+                            DVRAddNodePacket.DComponents.DTerrain terrain_, DVRAddNodePacket.DComponents.DPanel panel_, DVRAddNodePacket.DComponents.DWater water_)
         {
             try
             {
@@ -38,9 +47,14 @@ namespace NESessionList.Core
                             water = water_
                         }
                     }
-                }) ; ;
+                }); ;
 
-                if (result != null) Console.WriteLine($"Added node: {result.data.name} (uuid: {result.data.uuid})");
+                if (result != null)
+                {
+                    Console.WriteLine($"Added node: {result.data.name} (uuid: {result.data.uuid})");
+
+                    nodeList.Add(result.data.name, result.data.uuid);
+                }
             }
             catch (VRClientException ex)
             {
@@ -48,20 +62,20 @@ namespace NESessionList.Core
             }
         }
 
-        public void UpdateNode(DVRUpdateNodePacket.DTransform transform_,DVRUpdateNodePacket.DAnimation animation_)
+        public void UpdateNode(string id_,  DVRUpdateNodePacket.DTransform transform_, DVRUpdateNodePacket.DAnimation animation_)
         {
             try
             {
                 DVRClientPacket<DVRUpdateNodeResult> result = this.SendAndReceiveData<DVRClientPacket<DVRUpdateNodeResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/node/update",
-                    data = new DVRUpdateNodePacket() // Create Add Node Packet
+                    data = new DVRUpdateNodePacket() // Create Update Node Packet
                     {
-                        id = "TODO: UUID",
+                        id = id_,
                         transform = transform_,
                         animation = animation_
                     }
-                }) ;; ;
+                }); ; ;
 
                 if (result != null) Console.WriteLine($"Update node status: {result.data.status}");
             }
@@ -78,13 +92,17 @@ namespace NESessionList.Core
                 DVRClientPacket<DVRDeleteNodeResult> result = this.SendAndReceiveData<DVRClientPacket<DVRDeleteNodeResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/node/delete",
-                    data = new DVRDeleteNodePacket() // Create Add Node Packet
+                    data = new DVRDeleteNodePacket() // Create Delete Node Packet
                     {
                         id = id_,
                     }
                 }); ; ;
 
-                if (result != null) Console.WriteLine($"Delete node status: {result.data.status}");
+                if (result != null)
+                {
+                    Console.WriteLine($"Delete node status: {result.data.status}");
+                    nodeList.Remove(nodeList.FirstOrDefault(e => e.Value == id_).Key);
+                }
             }
             catch (VRClientException ex)
             {
@@ -99,7 +117,7 @@ namespace NESessionList.Core
                 DVRClientPacket<DVRMoveNodeToResult> result = this.SendAndReceiveData<DVRClientPacket<DVRMoveNodeToResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/node/moveto",
-                    data = new DVRMoveNodeToPacket() // Create Add Node Packet
+                    data = new DVRMoveNodeToPacket() // Create Move Node To Packet
                     {
                         id = id_,
                         stop = stop_,
@@ -110,7 +128,7 @@ namespace NESessionList.Core
                         speed = speed_,
                         time = time_
                     }
-                }) ; ; ;
+                }); ; ;
 
                 if (result != null) Console.WriteLine($"Move node status: {result.data.status}");
             }
@@ -122,16 +140,17 @@ namespace NESessionList.Core
 
         public void AddTerrain(decimal[] size_, decimal[] heights_)
         {
-            try {
+            try
+            {
                 DVRClientPacket<DVRAddTerrainResult> result = this.SendAndReceiveData<DVRClientPacket<DVRAddTerrainResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/terrain/add",
-                    data = new DVRAddTerrainPacket() // Create Add Node Packet
+                    data = new DVRAddTerrainPacket() // Create Add Terrain Packet
                     {
                         size = size_,
                         heights = heights_
                     }
-                }) ; ;
+                }); ;
 
                 if (result != null) Console.WriteLine("Added Terrain");
             }
@@ -149,7 +168,7 @@ namespace NESessionList.Core
                 DVRClientPacket<DVRUpdateTerrainResult> result = this.SendAndReceiveData<DVRClientPacket<DVRUpdateTerrainResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/terrain/update",
-                    data = new DVRUpdateTerrainPacket() // Create Add Node Packet
+                    data = new DVRUpdateTerrainPacket() // Create Update Terrain Packet
                     {
                     }
                 }); ;
@@ -170,7 +189,7 @@ namespace NESessionList.Core
                 DVRClientPacket<DVRDeleteTerrainResult> result = this.SendAndReceiveData<DVRClientPacket<DVRDeleteTerrainResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/terrain/delete",
-                    data = new DVRDeleteTerrainPacket() // Create Add Node Packet
+                    data = new DVRDeleteTerrainPacket() // Create Delete Terrain Packet
                     {
                     }
                 }); ;
@@ -191,7 +210,7 @@ namespace NESessionList.Core
                 DVRClientPacket<DVRSetTimeSkyBoxResult> result = this.SendAndReceiveData<DVRClientPacket<DVRSetTimeSkyBoxResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/skybox/settime",
-                    data = new DVRSetTimeSkyBoxPacket() // Create Add Node Packet
+                    data = new DVRSetTimeSkyBoxPacket() // Create Set Time SkyBox Packet
                     {
                         time = time_
                     }
@@ -223,7 +242,11 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine($"Added Road uuid: {result.data.uuid}");
+                if (result != null)
+                {
+                    Console.WriteLine($"Added Road uuid: {result.data.uuid}");
+                    roadList.Add(route_, result.data.uuid);
+                }
             }
             catch (VRClientException ex)
             {
@@ -256,14 +279,51 @@ namespace NESessionList.Core
                 Console.WriteLine($"Update road failed: {ex.Message}");
             }
         }
-        public void AddRoute()
+        public void AddRoute(string name, List<DVRAddRouteNodesPacket> nodes_)
         {
-            //TODO
+            try
+            {
+                DVRClientPacket<DVRAddRouteResult> result = this.SendAndReceiveData<DVRClientPacket<DVRAddRouteResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "route/add",
+                    data = new DVRAddRoutePacket() // Create Add Route Packet
+                    {
+                        nodes = nodes_
+                    }
+                }); ;
+
+                if (result != null)
+                {
+                    Console.WriteLine($"Add Route : {result.data.uuid}");
+                    routeList.Add(name, result.data.uuid);
+                }
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"Add route failed: {ex.Message}");
+            }
         }
 
-        public void UpdateRoute()
+        public void UpdateRoute(string id_, List<DVRUpdateRouteNodesPacket> nodes_)
         {
-            //TODO
+            try
+            {
+                DVRClientPacket<DVRRouteUpdateResult> result = this.SendAndReceiveData<DVRClientPacket<DVRRouteUpdateResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "route/add",
+                    data = new DVRRouteUpdatePacket() // Create Update Route Packet
+                    {
+                        id = id_,
+                        nodes = nodes_
+                    }
+                }); ;
+
+                if (result != null) Console.WriteLine($"Update Route : {result.data.status}");
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"Update route failed: {ex.Message}");
+            }
         }
 
         public void DeleteRoute(string id_)
@@ -279,7 +339,12 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine($"Status deleted route: {result.data.status}");
+                if (result != null)
+                {
+                    Console.WriteLine($"Status deleted route: {result.data.status}");
+                    routeList.Remove(routeList.FirstOrDefault(e => e.Value == id_).Key);
+                    roadList.Remove(id_);
+                }
             }
             catch (VRClientException ex)
             {
@@ -369,7 +434,7 @@ namespace NESessionList.Core
 
         private T SendAndReceiveData<T>(DVRClientPacket<DAbstract> sendPacket) where T : DAbstract
         {
-            if(!this.client.IsConnected) throw new InvalidOperationException("Not connected! Please connect to the server first");
+            if (!this.client.IsConnected) throw new InvalidOperationException("Not connected! Please connect to the server first");
 
             T result = default(T);
 
