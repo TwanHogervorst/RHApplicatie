@@ -140,7 +140,7 @@ namespace NESessionList.Core
 
             // get message as string
             result = Encoding.ASCII.GetString(dataBuffer);
-
+           
             return result;
         }
     }
