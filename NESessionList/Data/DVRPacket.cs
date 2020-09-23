@@ -208,13 +208,16 @@ namespace NESessionList.Data
     public class DVRMoveNodeToPacket : DAbstract
     {
         public string id;
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string stop;
         public decimal[] position;
         public string rotate;
         public string interpolate;
         public bool followheight;
-        public decimal speed;
-        public decimal time;
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public decimal speed = 0;
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public decimal time = 0;
     }
 
     public class DVRAddTerrainPacket : DAbstract
@@ -314,6 +317,12 @@ namespace NESessionList.Data
     {
         public decimal[] pos;
         public decimal[] dir;
+
+        public DVRAddRouteNodesPacket(decimal[] pos, decimal[] dir)
+        {
+            this.pos = pos;
+            this.dir = dir;
+        }
     }
 
     public class DVRAddRouteResult : DAbstract

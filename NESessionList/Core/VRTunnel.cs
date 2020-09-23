@@ -47,7 +47,7 @@ namespace NESessionList.Core
             }
         }
 
-        public void AddNode(DVRAddNodePacket.DComponents.DTransform transform_, DVRAddNodePacket.DComponents.DModel model_,
+        public void AddNode(string name_, DVRAddNodePacket.DComponents.DTransform transform_, DVRAddNodePacket.DComponents.DModel model_,
                             DVRAddNodePacket.DComponents.DTerrain terrain_, DVRAddNodePacket.DComponents.DPanel panel_, DVRAddNodePacket.DComponents.DWater water_)
         {
             try
@@ -57,7 +57,7 @@ namespace NESessionList.Core
                     id = "scene/node/add",
                     data = new DVRAddNodePacket() // Create Add Node Packet
                     {
-                        name = "Test",
+                        name = name_,
                         components = new DVRAddNodePacket.DComponents
                         {
                             transform = transform_,
@@ -130,7 +130,7 @@ namespace NESessionList.Core
             }
         }
 
-        public void MoveNodeTo(string id_, string stop_, decimal[] position_, string rotate_, string interpolate_, bool followheight_, decimal speed_, decimal time_)
+        public void MoveNodeTo(string id_, decimal[] position_, string rotate_, string interpolate_, bool followheight_, decimal speed_ = 0, decimal time_ = 0, string stop_ = null)
         {
             try
             {
