@@ -47,10 +47,7 @@ namespace NESessionList
 
                     if (tunnel != null)
                     {
-                        //tunnel.SetTimeSkyBox(new decimal(20));
-                        //tunnel.AddTerrain(new decimal[] {512,512}, new decimal[] {0});
-                        //tunnel.AddNode(new DVRAddNodePacket.DComponents.DTransform(new decimal[] {0,5,10}, new decimal(1),new decimal[]{0,0,0}),
-                        //new DVRAddNodePacket.DComponents.DModel("adesert_cracks_d.jpg",false,false,null), null, null, new DVRAddNodePacket.DComponents.DWater(new decimal[] { 1,1},new decimal(0.1)));
+                        tunnel.AddTerrain(new decimal[] { 256,256}, new decimal[256*256]);
                     }
                 }
                 catch (VRClientException ex)

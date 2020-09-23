@@ -70,7 +70,12 @@ namespace NESessionList.Data
         public string key;
     }
 
-    public class DVRAddNodePacket : DAbstract
+    public class DVRSceneResetResult : DAbstract
+    {
+    }
+
+
+        public class DVRAddNodePacket : DAbstract
     {
         public string name;
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]

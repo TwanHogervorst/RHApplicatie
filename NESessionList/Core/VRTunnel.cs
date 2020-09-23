@@ -27,6 +27,26 @@ namespace NESessionList.Core
             this.roadList = new Dictionary<string, string>();
         }
 
+        public void SceneReset()
+        {
+            try
+            {
+                DVRClientPacket<DVRSceneResetResult> result = this.SendAndReceiveData<DVRClientPacket<DVRSceneResetResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "scene/reset"
+                }); ;
+
+                if (result != null)
+                {
+                    Console.WriteLine($"Scene Reset");
+                }
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"Scene Reset failed: {ex.Message}");
+            }
+        }
+
         public void AddNode(DVRAddNodePacket.DComponents.DTransform transform_, DVRAddNodePacket.DComponents.DModel model_,
                             DVRAddNodePacket.DComponents.DTerrain terrain_, DVRAddNodePacket.DComponents.DPanel panel_, DVRAddNodePacket.DComponents.DWater water_)
         {
