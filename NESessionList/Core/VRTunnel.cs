@@ -117,7 +117,7 @@ namespace NESessionList.Core
             //TODO werkt nog niet
             try
             {
-                DVRClientPacketArrayResponse<DVRFindNodeResult> result = this.SendAndReceiveData<DVRClientPacketArrayResponse<DVRFindNodeResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientPacket<DVRFindNodeResult> result = this.SendAndReceiveData<DVRClientPacket<DVRFindNodeResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/node/find",
                     data = new DVRFindNodePacket // Create Find Node Packet
@@ -208,7 +208,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine("Added Terrain");
+                if (result != null) Console.WriteLine($"Added Terrain");
             }
             catch (VRClientException ex)
             {

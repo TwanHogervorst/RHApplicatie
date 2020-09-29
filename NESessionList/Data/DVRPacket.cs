@@ -204,6 +204,7 @@ namespace NESessionList.Data
     public class DVRFindNodePacket : DAbstract
     {
         public string name;
+       
     }
 
 
@@ -274,7 +275,7 @@ namespace NESessionList.Data
     public class DVRFindNodeResult : DAbstract 
     {
         //TODO werkt nog niet
-        public List<DVRAddNodePacket> content;
+        public string uuid;
     }
 
 
@@ -285,6 +286,7 @@ namespace NESessionList.Data
 
     public class DVRAddTerrainResult : DAbstract
     {
+     
     }
 
     public class DVRUpdateTerrainResult : DAbstract
