@@ -2,27 +2,23 @@ using System;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
-namespace Client
+namespace ClientApplication.Core
 {
-    class Program
+    class ServerClient
     {
-        private static string password;
-        private static TcpClient client;
-        private static NetworkStream stream;
-        private static byte[] buffer = new byte[1024];
-        private static string totalBuffer;
-        private static string username;
+        private string password;
+        private TcpClient client;
+        private NetworkStream stream;
+        private byte[] buffer = new byte[1024];
+        private string totalBuffer;
+        private string username;
 
-        private static bool loggedIn = false;
+        private bool loggedIn = false;
 
-        static void Main(string[] args)
+        public ServerClient(string username, string password)
         {
-            Console.WriteLine("Hello Client!");
-            Console.WriteLine("Wat is je gebruikersnaam? ");
-            username = Console.ReadLine();
-            Console.WriteLine("Wat is je wachtwoord? ");
-            password = Console.ReadLine();
-
+            this.username = username;
+            this.password = password;
             client = new TcpClient();
             client.BeginConnect("localhost", 15243, new AsyncCallback(OnConnect), null);
 
@@ -30,25 +26,25 @@ namespace Client
 
             while (true)
             {
-                Console.WriteLine("Voer een chatbericht in:");
+                Console.WriteLine("Fill in your message here:");
                 string newChatMessage = Console.ReadLine();
                 if (loggedIn)
                     write($"chat\r\n{newChatMessage}");
                 else
-                    Console.WriteLine("Je bent nog niet ingelogd");
+                    Console.WriteLine("You have not been logged in yet");
             }
         }
 
-        private static void OnConnect(IAsyncResult ar)
+        private void OnConnect(IAsyncResult ar)
         {
             client.EndConnect(ar);
-            Console.WriteLine("Verbonden!");
+            Console.WriteLine("Connected!");
             stream = client.GetStream();
             stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnRead), null);
             write($"login\r\n{username}\r\n{password}");
         }
 
-        private static void OnRead(IAsyncResult ar)
+        private void OnRead(IAsyncResult ar)
         {
             int receivedBytes = stream.EndRead(ar);
             string receivedText = System.Text.Encoding.ASCII.GetString(buffer, 0, receivedBytes);
@@ -63,14 +59,14 @@ namespace Client
             }
             stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnRead), null);
         }
-        private static void write(string data)
+        private void write(string data)
         {
             var dataAsBytes = System.Text.Encoding.ASCII.GetBytes(data + "\r\n\r\n");
             stream.Write(dataAsBytes, 0, dataAsBytes.Length);
             stream.Flush();
         }
 
-        private static void handleData(string[] packetData)
+        private void handleData(string[] packetData)
         {
             Console.WriteLine($"Packet ontvangen: {packetData[0]}");
 
@@ -86,7 +82,7 @@ namespace Client
                         Console.WriteLine(packetData[1]);
                     break;
                 case "chat":
-                    Console.WriteLine($"Chat ontvangen: '{packetData[1]}'");
+                    Console.WriteLine($"Chat received: '{packetData[1]}'");
                     break;
             }
 
