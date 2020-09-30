@@ -19,6 +19,7 @@ namespace ClientApplication
     public partial class MainForm : Form
     {
 
+        private ServerClient client;
         private IBikeTrainer _bike; // DONT USE THIS VARIABLE
         private IBikeTrainer bike
         {
@@ -40,6 +41,8 @@ namespace ClientApplication
         public MainForm()
         {
             InitializeComponent();
+
+            this.client = new ServerClient();
 
             Utility.DisableAllChildControls(groupBoxSimulator);
 
@@ -285,6 +288,18 @@ namespace ClientApplication
         }
 
         #endregion
-        
+
+        private void buttonChatSend_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonLogin_Click(object sender, EventArgs e)
+        {
+            if (textBoxUserName.Text != null || textBoxPassword.Text != null)
+            {
+                client.Connect(textBoxUserName.Text, textBoxPassword.Text);
+            }
+        }
     }
 }

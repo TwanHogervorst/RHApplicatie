@@ -1,4 +1,7 @@
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
@@ -12,26 +15,39 @@ namespace ClientApplication.Core
         private byte[] buffer = new byte[1024];
         private string totalBuffer;
         private string username;
+        private Dictionary<string, string> clientList = new Dictionary<string, string>();
 
         private bool loggedIn = false;
 
-        public ServerClient(string username, string password)
+        public ServerClient()
         {
-            this.username = username;
-            this.password = password;
-            client = new TcpClient();
-            client.BeginConnect("localhost", 15243, new AsyncCallback(OnConnect), null);
+            this.clientList = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText("ClientList.txt"));
+        }
 
-
-
-            while (true)
+        public void Connect(string username, string password)
+        {
+            if (!loggedIn)
             {
-                Console.WriteLine("Fill in your message here:");
-                string newChatMessage = Console.ReadLine();
-                if (loggedIn)
-                    write($"chat\r\n{newChatMessage}");
-                else
-                    Console.WriteLine("You have not been logged in yet");
+
+                this.username = username;
+                this.password = password;
+
+                if (this.clientList.ContainsKey(this.username) && this.clientList[this.username] == this.password)
+                {
+                    client = new TcpClient();
+                    client.BeginConnect("localhost", 15243, new AsyncCallback(OnConnect), null);
+                    this.loggedIn = true;
+                    while (true)
+                    {
+                        Console.WriteLine("Fill in your message here:");
+                        string newChatMessage = Console.ReadLine();
+                        if (loggedIn)
+                            write($"chat\r\n{newChatMessage}");
+                        else
+                            Console.WriteLine("You have not been logged in yet");
+                    }
+                }
+
             }
         }
 

@@ -20,4 +20,10 @@
     <ProjectReference Include="..\RHApplicatieLib\RHApplicatieLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="ClientList.txt">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

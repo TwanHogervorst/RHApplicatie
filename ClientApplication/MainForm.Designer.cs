@@ -58,6 +58,14 @@
             this.labelUseText = new System.Windows.Forms.Label();
             this.labelBikeNameText = new System.Windows.Forms.Label();
             this.groupBoxBikeData = new System.Windows.Forms.GroupBox();
+            this.labelUserName = new System.Windows.Forms.Label();
+            this.labelPassWord = new System.Windows.Forms.Label();
+            this.textBoxUserName = new System.Windows.Forms.TextBox();
+            this.textBoxPassword = new System.Windows.Forms.TextBox();
+            this.buttonLogin = new System.Windows.Forms.Button();
+            this.textBoxChat = new System.Windows.Forms.TextBox();
+            this.textBoxSendChat = new System.Windows.Forms.TextBox();
+            this.buttonChatSend = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarHeartbeat)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarResistance)).BeginInit();
@@ -383,11 +391,87 @@
             this.groupBoxBikeData.TabStop = false;
             this.groupBoxBikeData.Text = "Bike Data";
             // 
-            // Form1
+            // labelUserName
+            // 
+            this.labelUserName.AutoSize = true;
+            this.labelUserName.Location = new System.Drawing.Point(704, 28);
+            this.labelUserName.Name = "labelUserName";
+            this.labelUserName.Size = new System.Drawing.Size(60, 15);
+            this.labelUserName.TabIndex = 30;
+            this.labelUserName.Text = "Username";
+            // 
+            // labelPassWord
+            // 
+            this.labelPassWord.AutoSize = true;
+            this.labelPassWord.Location = new System.Drawing.Point(704, 77);
+            this.labelPassWord.Name = "labelPassWord";
+            this.labelPassWord.Size = new System.Drawing.Size(57, 15);
+            this.labelPassWord.TabIndex = 31;
+            this.labelPassWord.Text = "Password";
+            // 
+            // textBoxUserName
+            // 
+            this.textBoxUserName.Location = new System.Drawing.Point(770, 28);
+            this.textBoxUserName.Name = "textBoxUserName";
+            this.textBoxUserName.Size = new System.Drawing.Size(100, 23);
+            this.textBoxUserName.TabIndex = 32;
+            // 
+            // textBoxPassword
+            // 
+            this.textBoxPassword.Location = new System.Drawing.Point(770, 73);
+            this.textBoxPassword.Name = "textBoxPassword";
+            this.textBoxPassword.Size = new System.Drawing.Size(100, 23);
+            this.textBoxPassword.TabIndex = 33;
+            // 
+            // buttonLogin
+            // 
+            this.buttonLogin.Location = new System.Drawing.Point(914, 54);
+            this.buttonLogin.Name = "buttonLogin";
+            this.buttonLogin.Size = new System.Drawing.Size(75, 23);
+            this.buttonLogin.TabIndex = 34;
+            this.buttonLogin.Text = "Login";
+            this.buttonLogin.UseVisualStyleBackColor = true;
+            this.buttonLogin.Click += new System.EventHandler(this.buttonLogin_Click);
+            // 
+            // textBoxChat
+            // 
+            this.textBoxChat.Location = new System.Drawing.Point(770, 112);
+            this.textBoxChat.Multiline = true;
+            this.textBoxChat.Name = "textBoxChat";
+            this.textBoxChat.ReadOnly = true;
+            this.textBoxChat.Size = new System.Drawing.Size(219, 133);
+            this.textBoxChat.TabIndex = 35;
+            // 
+            // textBoxSendChat
+            // 
+            this.textBoxSendChat.Location = new System.Drawing.Point(770, 243);
+            this.textBoxSendChat.Name = "textBoxSendChat";
+            this.textBoxSendChat.Size = new System.Drawing.Size(176, 23);
+            this.textBoxSendChat.TabIndex = 36;
+            // 
+            // buttonChatSend
+            // 
+            this.buttonChatSend.Location = new System.Drawing.Point(943, 243);
+            this.buttonChatSend.Name = "buttonChatSend";
+            this.buttonChatSend.Size = new System.Drawing.Size(46, 23);
+            this.buttonChatSend.TabIndex = 37;
+            this.buttonChatSend.Text = "Send";
+            this.buttonChatSend.UseVisualStyleBackColor = true;
+            this.buttonChatSend.Click += new System.EventHandler(this.buttonChatSend_Click);
+            // 
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(700, 285);
+            this.ClientSize = new System.Drawing.Size(1081, 285);
+            this.Controls.Add(this.buttonChatSend);
+            this.Controls.Add(this.textBoxSendChat);
+            this.Controls.Add(this.textBoxChat);
+            this.Controls.Add(this.buttonLogin);
+            this.Controls.Add(this.textBoxPassword);
+            this.Controls.Add(this.textBoxUserName);
+            this.Controls.Add(this.labelPassWord);
+            this.Controls.Add(this.labelUserName);
             this.Controls.Add(this.groupBoxBikeData);
             this.Controls.Add(this.labelBikeNameText);
             this.Controls.Add(this.groupBoxBikeSettings);
@@ -395,7 +479,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.MaximizeBox = false;
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "Main Form";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).EndInit();
@@ -444,6 +528,14 @@
         private System.Windows.Forms.Label labelBikeNameText;
         private System.Windows.Forms.Button buttonConnect;
         private System.Windows.Forms.GroupBox groupBoxBikeData;
+        private System.Windows.Forms.Label labelUserName;
+        private System.Windows.Forms.Label labelPassWord;
+        private System.Windows.Forms.TextBox textBoxUserName;
+        private System.Windows.Forms.TextBox textBoxPassword;
+        private System.Windows.Forms.Button buttonLogin;
+        private System.Windows.Forms.TextBox textBoxChat;
+        private System.Windows.Forms.TextBox textBoxSendChat;
+        private System.Windows.Forms.Button buttonChatSend;
     }
 }
 
