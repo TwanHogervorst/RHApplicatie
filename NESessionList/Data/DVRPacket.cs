@@ -274,8 +274,9 @@ namespace NESessionList.Data
 
     public class DVRFindNodeResult : DAbstract 
     {
-        //TODO werkt nog niet
-        public string uuid;
+        public List<dynamic> components;
+        public string name;
+        public string uuid;  
     }
 
 

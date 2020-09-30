@@ -114,10 +114,10 @@ namespace NESessionList.Core
         public void FindNode(string name_)
         {
 
-            //TODO werkt nog niet
+            
             try
             {
-                DVRClientPacket<DVRFindNodeResult> result = this.SendAndReceiveData<DVRClientPacket<DVRFindNodeResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientPacketArrayResponse<DVRFindNodeResult> result = this.SendAndReceiveData<DVRClientPacketArrayResponse<DVRFindNodeResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/node/find",
                     data = new DVRFindNodePacket // Create Find Node Packet
@@ -128,7 +128,7 @@ namespace NESessionList.Core
 
                 if (result != null)
                 {
-                    Console.WriteLine($"Node info: ");
+                    Console.WriteLine($"Node info: {result.data[0].uuid}");
                 
                 }
             }

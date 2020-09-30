@@ -71,6 +71,7 @@ namespace NESessionList
 
                         
                         tunnel.FindNode("GroundPlane");
+                        tunnel.DeleteNode("4bf7f069-a3f1-451b-a422-044e529e59f1");
                         //tunnel.GetScene();
 
                     }
