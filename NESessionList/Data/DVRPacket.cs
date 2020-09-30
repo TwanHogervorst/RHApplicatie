@@ -2,6 +2,7 @@
 using RHApplicationLib.Abstract;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Text;
 
 namespace NESessionList.Data
@@ -205,6 +206,13 @@ namespace NESessionList.Data
         public string id;
     }
 
+    public class DVRFindNodePacket : DAbstract
+    {
+        public string name;
+       
+    }
+
+
     public class DVRMoveNodeToPacket : DAbstract
     {
         public string id;
@@ -218,6 +226,21 @@ namespace NESessionList.Data
         public decimal speed = 0;
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public decimal time = 0;
+    }
+
+    public class DVRNodeAddlayerPacket : DAbstract
+    {
+        public string id;
+        public string diffuse;
+        public string normal;
+        public decimal minHeight;
+        public decimal maxHeight;
+        public decimal fadeDist;
+    }
+
+    public class DVRNodeAddlayerResult : DAbstract
+    {
+
     }
 
     public class DVRAddTerrainPacket : DAbstract
@@ -257,6 +280,14 @@ namespace NESessionList.Data
         public string status;
     }
 
+    public class DVRFindNodeResult : DAbstract 
+    {
+        public List<dynamic> components;
+        public string name;
+        public string uuid;  
+    }
+
+
     public class DVRMoveNodeToResult : DAbstract
     {
         public string status;
@@ -264,6 +295,7 @@ namespace NESessionList.Data
 
     public class DVRAddTerrainResult : DAbstract
     {
+     
     }
 
     public class DVRUpdateTerrainResult : DAbstract
@@ -396,5 +428,15 @@ namespace NESessionList.Data
     public class DVRRouteShowResult : DAbstract
     {
         public string status;
+    }
+
+    public class DVRGetScenePacket : DAbstract
+    {
+
+    }
+
+    public class DVRGetSceneResult : DAbstract
+    {
+        public string sceneData;
     }
 }

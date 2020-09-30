@@ -141,6 +141,8 @@ namespace NESessionList.Core
             // get message as string
             result = Encoding.ASCII.GetString(dataBuffer);
 
+            Console.WriteLine(result);
+            
             return result;
         }
     }

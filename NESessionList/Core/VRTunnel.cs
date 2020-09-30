@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace NESessionList.Core
 {
@@ -130,6 +131,33 @@ namespace NESessionList.Core
             }
         }
 
+        public void FindNode(string name_)
+        {
+
+            
+            try
+            {
+                DVRClientPacketArrayResponse<DVRFindNodeResult> result = this.SendAndReceiveData<DVRClientPacketArrayResponse<DVRFindNodeResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "scene/node/find",
+                    data = new DVRFindNodePacket // Create Find Node Packet
+                    {
+                        name = name_
+                    }
+                }); ; ;
+
+                if (result != null)
+                {
+                    Console.WriteLine($"Node info: {result.data[0].uuid}");
+                
+                }
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"Delete Node failed: {ex.Message}");
+            }
+        }
+
         public void MoveNodeTo(string id_, decimal[] position_, string rotate_, string interpolate_, bool followheight_, decimal speed_ = 0, decimal time_ = 0, string stop_ = null)
         {
             try
@@ -155,6 +183,34 @@ namespace NESessionList.Core
             catch (VRClientException ex)
             {
                 Console.WriteLine($"Move Node failed: {ex.Message}");
+            }
+        }
+
+        public void AddNodeLayer(string id_, string diffuse_, string normal_, decimal minHeight_, 
+            decimal maxHeight_, decimal fadeDist_)
+        {
+            try
+            {
+                DVRClientPacket<DVRNodeAddlayerResult> result = this.SendAndReceiveData<DVRClientPacket<DVRNodeAddlayerResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "scene/terrain/add",
+                    data = new DVRNodeAddlayerPacket() // Create Add Node layer packet
+                    {
+                        id = id_,
+                        diffuse = diffuse_,
+                        normal = normal_,
+                        minHeight = minHeight_,
+                        maxHeight = maxHeight_,
+                        fadeDist = fadeDist_
+                    }
+                }) ; ;
+
+                if (result != null) Console.WriteLine("Added Terrain");
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"Add Terrain failed: {ex.Message}");
+
             }
         }
 
@@ -442,6 +498,31 @@ namespace NESessionList.Core
             catch (VRClientException ex)
             {
                 Console.WriteLine($"route show failed: {ex.Message}");
+            }
+        }
+
+        public void GetScene()
+        {
+            try
+            {
+                DVRClientPacket<DVRGetSceneResult> result = this.SendAndReceiveData<DVRClientPacket<DVRGetSceneResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "scene/get",
+                    data = new DVRRouteShowPacket() // Create get scene Packet
+                    {
+                    }
+                }); ;
+
+                if (result != null)
+                {
+                    Console.WriteLine($"Scene info: {result.data.sceneData.ToString()}");
+                } 
+               
+                
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"get scene failed: {ex.Message}");
             }
         }
 
