@@ -121,7 +121,7 @@ namespace NESessionList.Core
 
                 if (result != null)
                 {
-                    Console.WriteLine($"Delete node status: {result.data.status}");
+                    //Console.WriteLine($"Delete node status: {result.data.status}");
                     nodeList.Remove(nodeList.FirstOrDefault(e => e.Value == id_).Key);
                 }
             }
@@ -149,7 +149,7 @@ namespace NESessionList.Core
                 if (result != null)
                 {
                     Console.WriteLine($"Node info: {result.data[0].uuid}");
-                
+                    nodeList.Add(name_,result.data[0].uuid);
                 }
             }
             catch (VRClientException ex)
@@ -516,6 +516,14 @@ namespace NESessionList.Core
                 if (result != null)
                 {
                     Console.WriteLine($"Scene info: {result.data.sceneData.ToString()}");
+
+                    //foreach (node in result)
+                    //{
+                    //    if (!nodeList.ContainsKey(name))
+                    //    {
+                    //        nodeList.Add(name, uuid);
+                    //    }
+                    //}
                 } 
                
                 
