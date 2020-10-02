@@ -33,6 +33,9 @@ namespace ServerApplication
 
         private static void OnConnect(IAsyncResult ar)
         {
+            clientList = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText("ClientList.txt"));
+
+
             var tcpClient = listener.EndAcceptTcpClient(ar);
             Console.WriteLine($"Client connected from {tcpClient.Client.RemoteEndPoint}");
             clients.Add(new Client(tcpClient));

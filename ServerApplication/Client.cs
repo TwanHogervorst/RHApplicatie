@@ -1,4 +1,7 @@
-﻿using RHApplicationLib.Core;
+﻿using Newtonsoft.Json;
+using RHApplicationLib.Abstract;
+using RHApplicationLib.Core;
+using ServerUtils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,12 +19,15 @@ namespace ServerApplication
         private byte[] buffer = new byte[1024];
         private string totalBuffer = "";
         private bool isConnected;
+        private Dictionary<string, string> clientList = new Dictionary<string, string>();
 
         public string UserName { get; set; }
         public string PassWord { get; set; }
 
         public Client(TcpClient tcpClient)
         {
+            this.clientList = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText("ClientList.txt"));
+
             isConnected = true;
             this.tcpClient = tcpClient;
 
@@ -52,6 +58,66 @@ namespace ServerApplication
             result = Encoding.ASCII.GetString(dataBuffer);
 
             Console.WriteLine(result);
+
+            handleData(result);
+        }
+
+        private void handleData(string packetData)
+        {
+            dynamic data = JsonConvert.DeserializeObject(packetData);
+            switch (data.type)
+            {
+                case "LOGIN":
+                    Console.WriteLine("Received a login packet");
+                    if (this.clientList.ContainsKey(data.data.username))
+                    {
+                        if (this.clientList[data.data.username] == data.data.password)
+                        {
+                            SendData(new DataPacket<LoginResponse>()
+                            {
+                                type = "LOGINRESPONSE",
+                                data = new LoginResponse()
+                                {
+                                    status = "OK"
+                                }
+                            }.ToJson());
+                        }
+                        else
+                        {
+                            SendData(new DataPacket<LoginResponse>()
+                            {
+                                type = "LOGINRESPONSE",
+                                data = new LoginResponse()
+                                {
+                                    status = "ERROR"
+                                }
+                            }.ToJson());
+                        }
+                    }
+                    else
+                    {
+                        SendData(new DataPacket<LoginResponse>()
+                        {
+                            type = "LOGINRESPONSE",
+                            data = new LoginResponse()
+                            {
+                                status = "ERROR"
+                            }
+                        }.ToJson());
+                    }
+
+
+                    break;
+                case "CHAT":
+                    Console.WriteLine("Received a chat packet");
+                                       break;
+                case "BIKEDATA":
+                    Console.WriteLine("Received a bikeData packet");
+                    break;
+                default:
+                    Console.WriteLine("Unkown packetType");
+                    break;
+            }
         }
 
         //private void OnRead(IAsyncResult ar)
@@ -96,19 +162,16 @@ namespace ServerApplication
         }
 
 
-      
 
 
 
 
-        private void handleData(string[] packetData)
-        {
-            Console.WriteLine($"Got a packet: {packetData}");
-        }
+
+
 
         public void Write(string data)
         {
-            
+
         }
     }
 }
