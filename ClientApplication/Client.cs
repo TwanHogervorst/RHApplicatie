@@ -1,6 +1,0 @@
-﻿namespace ClientApplication
-{
-    class Client
-    {
-    }
-}
