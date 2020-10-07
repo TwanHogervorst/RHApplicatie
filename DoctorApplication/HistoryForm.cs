@@ -4,9 +4,11 @@ namespace DoctorApplication
 {
     public partial class HistoryForm : Form
     {
-        public HistoryForm()
+        private string selectedUser;
+        public HistoryForm(string selected)
         {
             InitializeComponent();
+            this.selectedUser = selected;
         }
     }
 }

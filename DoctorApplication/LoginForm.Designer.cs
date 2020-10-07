@@ -46,7 +46,6 @@
             this.LoginScreenLabel.TabIndex = 0;
             this.LoginScreenLabel.Text = "Login";
             this.LoginScreenLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.LoginScreenLabel.Click += new System.EventHandler(this.label1_Click);
             // 
             // NameLabel
             // 
@@ -74,7 +73,6 @@
             this.PasswordTextBox.PasswordChar = '*';
             this.PasswordTextBox.Size = new System.Drawing.Size(146, 23);
             this.PasswordTextBox.TabIndex = 4;
-            this.PasswordTextBox.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // PasswordLabel
             // 
@@ -85,7 +83,6 @@
             this.PasswordLabel.Size = new System.Drawing.Size(126, 29);
             this.PasswordLabel.TabIndex = 3;
             this.PasswordLabel.Text = "Password:";
-            this.PasswordLabel.Click += new System.EventHandler(this.label1_Click_1);
             // 
             // LoginButton
             // 

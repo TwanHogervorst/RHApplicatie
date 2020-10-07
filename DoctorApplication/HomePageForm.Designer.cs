@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.PatientListView = new System.Windows.Forms.ListView();
             this.BroadcastContainer = new System.Windows.Forms.SplitContainer();
             this.BroadcastTextBox = new System.Windows.Forms.TextBox();
             this.BroadcastSendButton = new System.Windows.Forms.Button();
@@ -49,15 +49,17 @@
             this.PatientButtonContainer.SuspendLayout();
             this.SuspendLayout();
             // 
-            // listView1
+            // PatientListView
             // 
-            this.listView1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(4, 4);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(160, 460);
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.PatientListView.Dock = System.Windows.Forms.DockStyle.Left;
+            this.PatientListView.HideSelection = false;
+            this.PatientListView.Location = new System.Drawing.Point(4, 4);
+            this.PatientListView.MultiSelect = false;
+            this.PatientListView.Name = "PatientListView";
+            this.PatientListView.Size = new System.Drawing.Size(160, 460);
+            this.PatientListView.TabIndex = 0;
+            this.PatientListView.UseCompatibleStateImageBehavior = false;
+            this.PatientListView.SelectedIndexChanged += new System.EventHandler(this.PatientListView_SelectedIndexChanged);
             // 
             // BroadcastContainer
             // 
@@ -143,6 +145,7 @@
             this.LiveSessionButton.TabIndex = 0;
             this.LiveSessionButton.Text = "Live Session";
             this.LiveSessionButton.UseVisualStyleBackColor = true;
+            this.LiveSessionButton.Click += new System.EventHandler(this.LiveSessionButton_Click);
             // 
             // HistoryButton
             // 
@@ -153,6 +156,7 @@
             this.HistoryButton.TabIndex = 0;
             this.HistoryButton.Text = "History";
             this.HistoryButton.UseVisualStyleBackColor = true;
+            this.HistoryButton.Click += new System.EventHandler(this.HistoryButton_Click);
             // 
             // HomePageForm
             // 
@@ -161,7 +165,7 @@
             this.ClientSize = new System.Drawing.Size(652, 468);
             this.Controls.Add(this.PatientInformationGroupBox);
             this.Controls.Add(this.BoradcastPanel);
-            this.Controls.Add(this.listView1);
+            this.Controls.Add(this.PatientListView);
             this.Name = "HomePageForm";
             this.Padding = new System.Windows.Forms.Padding(4);
             this.Text = "HomePage";
@@ -182,7 +186,7 @@
 
         #endregion
 
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ListView PatientListView;
         private System.Windows.Forms.SplitContainer BroadcastContainer;
         private System.Windows.Forms.TextBox BroadcastTextBox;
         private System.Windows.Forms.Button BroadcastSendButton;

@@ -12,9 +12,11 @@ namespace DoctorApplication
 {
     public partial class LiveSession : Form
     {
-        public LiveSession()
+        private string selectedUser;
+        public LiveSession(String selected)
         {
             InitializeComponent();
+            this.selectedUser = selected;
         }
 
         private void labelCurrentDistance_Click(object sender, EventArgs e)
