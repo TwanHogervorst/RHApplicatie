@@ -463,7 +463,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1081, 285);
+            this.ClientSize = new System.Drawing.Size(1081, 288);
             this.Controls.Add(this.buttonChatSend);
             this.Controls.Add(this.textBoxSendChat);
             this.Controls.Add(this.textBoxChat);
