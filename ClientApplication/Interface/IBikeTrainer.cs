@@ -1,7 +1,4 @@
 ﻿using ClientApplication.Exception;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using RHApplicationLib.Abstract;
 
 namespace ClientApplication.Interface
@@ -30,7 +27,7 @@ namespace ClientApplication.Interface
     {
         public BikeDataType Type { get; private set; }
         public dynamic Data { get; private set; } // use dynamic so you won't need to cast. Base type is always DAbstract
-                                                    // dynamic type can be found using BikeDataReceivedEventArgs.Type
+                                                  // dynamic type can be found using BikeDataReceivedEventArgs.Type
 
         public BikeDataReceivedEventArgs(BikeDataType type, DAbstract data)
         {

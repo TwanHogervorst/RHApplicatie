@@ -142,6 +142,7 @@
             this.labelCurrentSpeedText.Size = new System.Drawing.Size(88, 15);
             this.labelCurrentSpeedText.TabIndex = 8;
             this.labelCurrentSpeedText.Text = "Current Speed: ";
+            this.labelCurrentSpeedText.Click += new System.EventHandler(this.labelCurrentSpeedText_Click);
             // 
             // labelCurrentSpeedValue
             // 

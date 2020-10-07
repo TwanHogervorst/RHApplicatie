@@ -37,19 +37,7 @@ namespace DoctorApplication
             }
             else
             {
-                //MessageBox.Show("Invalid Password or Username", "Error");
-                Button button = (Button)sender;
-                Color backColor = button.BackColor;
-                Color foreColor = button.ForeColor;
-                button.Text = "Invalid Password or Username";
-                button.BackColor = Color.Red;
-                button.ForeColor = Color.Red;
-                Application.DoEvents();
-                System.Threading.Thread.Sleep(750);
-                button.Text = "Login";
-                button.BackColor = backColor;
-                button.ForeColor = foreColor;
-
+                MessageBox.Show("Invalid Password or Username", "Error");
             }
         }
     }

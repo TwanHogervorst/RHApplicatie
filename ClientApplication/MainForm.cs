@@ -1,18 +1,9 @@
 ﻿using ClientApplication.Core;
-using ClientApplication.Exception;
 using ClientApplication.Interface;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using RHApplicationLib.Core;
+using System;
+using System.Globalization;
+using System.Windows.Forms;
 
 namespace ClientApplication
 {
@@ -86,7 +77,7 @@ namespace ClientApplication
                     {
                         speedValue = (int)Utility.Bound(
                             (decimal)(double.Parse(textBoxSpeed.Text.Replace(',', '.'), CultureInfo.InvariantCulture) * 100),
-                            trackBarSpeed.Minimum, 
+                            trackBarSpeed.Minimum,
                             trackBarSpeed.Maximum);
                     }
                     catch
@@ -245,7 +236,7 @@ namespace ClientApplication
                 this.trackBarResistance.Enabled = false;
 
                 // reset values for data labels
-                foreach(Control control in this.groupBoxBikeData.Controls)
+                foreach (Control control in this.groupBoxBikeData.Controls)
                 {
                     if (control is Label && control.Name.EndsWith("Value")) control.Text = "waiting for value";
                 }
@@ -265,9 +256,9 @@ namespace ClientApplication
             switch (args.Type)
             {
                 case BikeDataType.HeartBeat:
-                    labelCurrentHeartbeatValue.Invoke((MethodInvoker)delegate () 
-                    { 
-                        labelCurrentHeartbeatValue.Text = args.Data.HeartBeat.ToString() + " BPM"; 
+                    labelCurrentHeartbeatValue.Invoke((MethodInvoker)delegate ()
+                    {
+                        labelCurrentHeartbeatValue.Text = args.Data.HeartBeat.ToString() + " BPM";
                     });
                     break;
                 case BikeDataType.GeneralFEData:
@@ -300,6 +291,11 @@ namespace ClientApplication
             {
                 client.Connect(textBoxUserName.Text, textBoxPassword.Text);
             }
+        }
+
+        private void labelCurrentSpeedText_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

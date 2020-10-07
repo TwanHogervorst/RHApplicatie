@@ -2,8 +2,6 @@
 using RHApplicationLib.Abstract;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Text;
 
 namespace NESessionList.Data
 {
@@ -76,7 +74,7 @@ namespace NESessionList.Data
     }
 
 
-        public class DVRAddNodePacket : DAbstract
+    public class DVRAddNodePacket : DAbstract
     {
         public string name;
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
@@ -209,7 +207,7 @@ namespace NESessionList.Data
     public class DVRFindNodePacket : DAbstract
     {
         public string name;
-       
+
     }
 
 
@@ -280,11 +278,11 @@ namespace NESessionList.Data
         public string status;
     }
 
-    public class DVRFindNodeResult : DAbstract 
+    public class DVRFindNodeResult : DAbstract
     {
         public List<dynamic> components;
         public string name;
-        public string uuid;  
+        public string uuid;
     }
 
 
@@ -295,12 +293,12 @@ namespace NESessionList.Data
 
     public class DVRAddTerrainResult : DAbstract
     {
-     
+
     }
 
     public class DVRUpdateTerrainResult : DAbstract
     {
-    } 
+    }
 
     public class DVRDeleteTerrainResult : DAbstract
     {

@@ -3,10 +3,7 @@ using NESessionList.Exception;
 using RHApplicationLib.Abstract;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NESessionList.Core
 {
@@ -83,7 +80,7 @@ namespace NESessionList.Core
             }
         }
 
-        public void UpdateNode(string id_,  DVRUpdateNodePacket.DTransform transform_, DVRUpdateNodePacket.DAnimation animation_)
+        public void UpdateNode(string id_, DVRUpdateNodePacket.DTransform transform_, DVRUpdateNodePacket.DAnimation animation_)
         {
             try
             {
@@ -134,7 +131,7 @@ namespace NESessionList.Core
         public void FindNode(string name_)
         {
 
-            
+
             try
             {
                 DVRClientPacketArrayResponse<DVRFindNodeResult> result = this.SendAndReceiveData<DVRClientPacketArrayResponse<DVRFindNodeResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
@@ -149,7 +146,7 @@ namespace NESessionList.Core
                 if (result != null)
                 {
                     Console.WriteLine($"Node info: {result.data[0].uuid}");
-                    nodeList.Add(name_,result.data[0].uuid);
+                    nodeList.Add(name_, result.data[0].uuid);
                 }
             }
             catch (VRClientException ex)
@@ -186,7 +183,7 @@ namespace NESessionList.Core
             }
         }
 
-        public void AddNodeLayer(string id_, string diffuse_, string normal_, decimal minHeight_, 
+        public void AddNodeLayer(string id_, string diffuse_, string normal_, decimal minHeight_,
             decimal maxHeight_, decimal fadeDist_)
         {
             try
@@ -203,7 +200,7 @@ namespace NESessionList.Core
                         maxHeight = maxHeight_,
                         fadeDist = fadeDist_
                     }
-                }) ; ;
+                }); ;
 
                 if (result != null) Console.WriteLine("Added Terrain");
             }
@@ -524,9 +521,9 @@ namespace NESessionList.Core
                     //        nodeList.Add(name, uuid);
                     //    }
                     //}
-                } 
-               
-                
+                }
+
+
             }
             catch (VRClientException ex)
             {

@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using RHApplicationLib.Abstract;
 using RHApplicationLib.Core;
 using ServerUtils;
 using System;
@@ -7,8 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
 
 namespace ServerApplication
 {
@@ -110,7 +107,7 @@ namespace ServerApplication
                     break;
                 case "CHAT":
                     Console.WriteLine("Received a chat packet");
-                                       break;
+                    break;
                 case "BIKEDATA":
                     Console.WriteLine("Received a bikeData packet");
                     break;

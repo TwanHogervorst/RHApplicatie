@@ -4,7 +4,6 @@ using RHApplicationLib.Core;
 using ServerUtils;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -24,7 +23,7 @@ namespace ClientApplication.Core
 
         public ServerClient()
         {
-            
+
         }
 
         public void Connect(string username, string password)
@@ -52,7 +51,7 @@ namespace ClientApplication.Core
 
                 //Response on the check
                 DataPacket<LoginResponse> result = ReveiveData<DataPacket<LoginResponse>>();
-                
+
                 //Check if response is OK
                 if (result.type.Equals("LOGINRESPONSE") && result.data.status.Equals("OK"))
                 {

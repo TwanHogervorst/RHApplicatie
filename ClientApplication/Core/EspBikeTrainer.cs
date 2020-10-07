@@ -2,12 +2,12 @@
 using ClientApplication.Data;
 using ClientApplication.Exception;
 using ClientApplication.Interface;
+using RHApplicationLib.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using RHApplicationLib.Core;
 
 namespace ClientApplication.Core
 {
@@ -70,7 +70,7 @@ namespace ClientApplication.Core
 
         public async void StartReceiving()
         {
-            if(this.ConnectionState != BikeConnectionState.Connected)
+            if (this.ConnectionState != BikeConnectionState.Connected)
             {
                 this.bleBike = new BLE();
                 this.bleHeart = new BLE();
@@ -172,7 +172,7 @@ namespace ClientApplication.Core
 
                             this.ConnectionState = BikeConnectionState.Disconnected;
                         }
-                        
+
                     }
                 }
                 else
@@ -186,7 +186,7 @@ namespace ClientApplication.Core
 
         public void StopReceiving()
         {
-            if(this.ConnectionState == BikeConnectionState.Connected)
+            if (this.ConnectionState == BikeConnectionState.Connected)
             {
                 this.resistanceSetTimer.Stop();
                 this.bleBike.CloseDevice();

@@ -22,7 +22,7 @@ namespace ServerApplication
             clientList.Add("test", "test");
             string path = "ClientList.txt";
             string content = JsonConvert.SerializeObject(clientList);
-            File.WriteAllText(path, content); 
+            File.WriteAllText(path, content);
 
             listener = new TcpListener(IPAddress.Any, 15243);
             listener.Start();

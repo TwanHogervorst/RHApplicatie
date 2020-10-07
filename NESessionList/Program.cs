@@ -3,12 +3,6 @@ using NESessionList.Data;
 using NESessionList.Exception;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Xml;
 
 namespace NESessionList
 {
@@ -26,12 +20,12 @@ namespace NESessionList
             Application.Run(new Form1());*/
 
             VRClient client = new VRClient("145.48.6.10", 6666);
-            if(client.Connect())
+            if (client.Connect())
             {
                 List<DVRSessionItem> sessionList = client.GetSessionList();
-                for(int i = 0; i < sessionList.Count; i++)
+                for (int i = 0; i < sessionList.Count; i++)
                 {
-                    Console.WriteLine($"{i+1} {sessionList[i].clientinfo.user}");
+                    Console.WriteLine($"{i + 1} {sessionList[i].clientinfo.user}");
                 }
 
                 Console.Write("Select Session: ");
@@ -94,13 +88,13 @@ namespace NESessionList
                 {
                     Console.WriteLine($"Create Tunnel failed: {ex.Message}");
                 }
-                
+
             }
             else
             {
                 Console.WriteLine("Connection Failed!");
             }
-            
+
         }
     }
 }

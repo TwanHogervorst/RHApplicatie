@@ -6,11 +6,9 @@ using RHApplicationLib.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Xml.Serialization;
 
 namespace NESessionList.Core
 {
@@ -39,7 +37,7 @@ namespace NESessionList.Core
 
             try
             {
-                if(!this.IsConnected)
+                if (!this.IsConnected)
                 {
                     this.client = new TcpClient(this.ipAddress, this.port);
                     this.stream = this.client.GetStream();
@@ -58,7 +56,7 @@ namespace NESessionList.Core
 
         public List<DVRSessionItem> GetSessionList()
         {
-            if(!this.IsConnected) throw new InvalidOperationException("Not connected! Please connect to the server first");
+            if (!this.IsConnected) throw new InvalidOperationException("Not connected! Please connect to the server first");
 
             this.SendData("session/list", null);
 
@@ -93,7 +91,7 @@ namespace NESessionList.Core
 
         internal void SendData(DVRTunnelPacket data)
         {
-            this.SendData("tunnel/send", data); 
+            this.SendData("tunnel/send", data);
         }
 
         private void SendData(string id, DAbstract data = null) =>
@@ -101,7 +99,7 @@ namespace NESessionList.Core
 
         private void SendData(string message)
         {
-            if(this.IsConnected)
+            if (this.IsConnected)
             {
                 // create the sendBuffer based on the message
                 List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(message));
@@ -133,7 +131,7 @@ namespace NESessionList.Core
 
             // read data and fill buffer
             int bytesRead = 0;
-            while(bytesRead < dataLength)
+            while (bytesRead < dataLength)
             {
                 bytesRead += this.stream.Read(dataBuffer, bytesRead, dataLength - bytesRead);
             }
@@ -142,7 +140,7 @@ namespace NESessionList.Core
             result = Encoding.ASCII.GetString(dataBuffer);
 
             Console.WriteLine(result);
-            
+
             return result;
         }
     }
