@@ -22,7 +22,6 @@ namespace ServerApplication
         private Dictionary<string, string> clientList = new Dictionary<string, string>();
 
         public string UserName { get; set; }
-        public string PassWord { get; set; }
 
         public Client(TcpClient tcpClient)
         {
@@ -75,6 +74,7 @@ namespace ServerApplication
                         {
                             SendData(new DataPacket<LoginResponse>()
                             {
+                                sender = this.UserName,
                                 type = "LOGINRESPONSE",
                                 data = new LoginResponse()
                                 {
@@ -86,6 +86,7 @@ namespace ServerApplication
                         {
                             SendData(new DataPacket<LoginResponse>()
                             {
+                                sender = this.UserName,
                                 type = "LOGINRESPONSE",
                                 data = new LoginResponse()
                                 {
@@ -98,15 +99,14 @@ namespace ServerApplication
                     {
                         SendData(new DataPacket<LoginResponse>()
                         {
+                            sender = this.UserName,
                             type = "LOGINRESPONSE",
                             data = new LoginResponse()
                             {
                                 status = "ERROR"
                             }
                         }.ToJson());
-                    }
-
-
+                    } 
                     break;
                 case "CHAT":
                     Console.WriteLine("Received a chat packet");

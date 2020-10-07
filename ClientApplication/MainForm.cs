@@ -43,11 +43,29 @@ namespace ClientApplication
             InitializeComponent();
 
             this.client = new ServerClient();
+            this.client.OnLogin += Client_OnLogin;
+            this.client.OnChatReceived += Client_OnChatReceived;
 
             Utility.DisableAllChildControls(groupBoxSimulator);
 
             this.textBoxResistance.Enabled = false;
             this.trackBarResistance.Enabled = false;
+        }
+
+        private void Client_OnChatReceived(string message)
+        {
+            //add message to chatTextBox
+        }
+
+        private void Client_OnLogin(bool status)
+        {
+            if (status)
+            {
+                //turn all groups on, and give dialog that you are succesfully logged in
+            }else
+            {
+                //give dialog that logged in was unsuccesfull
+            }
         }
 
         #region Trackbar Events
@@ -291,14 +309,14 @@ namespace ClientApplication
 
         private void buttonChatSend_Click(object sender, EventArgs e)
         {
-
+            //this.client.SendData(TextBoxChat.Text);
         }
 
         private void buttonLogin_Click(object sender, EventArgs e)
         {
             if (textBoxUserName.Text != null || textBoxPassword.Text != null)
             {
-                client.Connect(textBoxUserName.Text, textBoxPassword.Text);
+                client.SendLogin(textBoxUserName.Text, textBoxPassword.Text);
             }
         }
     }

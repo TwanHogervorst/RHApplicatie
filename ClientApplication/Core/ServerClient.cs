@@ -11,75 +11,110 @@ using System.Text.RegularExpressions;
 
 namespace ClientApplication.Core
 {
+
+    public delegate void LoginCallback(bool status);
+    public delegate void ChatCallback(string message);
+
     class ServerClient
     {
-        private string password;
         private TcpClient client;
         private NetworkStream stream;
-        private byte[] buffer = new byte[1024];
-        private string totalBuffer;
+        private byte[] buffer = new byte[4];
         private string username;
-
         private bool loggedIn = false;
+
+        public event LoginCallback OnLogin;
+        public event ChatCallback OnChatReceived;
 
         public ServerClient()
         {
-            
+            this.client = new TcpClient();
+            this.client.BeginConnect("localhost", 15243, new AsyncCallback(Connect), null);
+
         }
 
-        public void Connect(string username, string password)
+        public void Connect(IAsyncResult ar)
         {
+            this.client.EndConnect(ar);
+
             if (!this.loggedIn)
             {
-                this.username = username;
-                this.password = password;
-
-                this.client = new TcpClient();
-                this.client.BeginConnect("localhost", 15243, new AsyncCallback(OnConnect), null);
                 this.stream = client.GetStream();
-
-                //Send username and password to check
-                SendData(JsonConvert.SerializeObject(new DataPacket<LoginPacket>()
-                {
-                    type = "LOGIN",
-                    data = new LoginPacket()
-                    {
-                        username = this.username,
-                        password = this.password
-
-                    }
-                }));
-
-                //Response on the check
-                DataPacket<LoginResponse> result = ReveiveData<DataPacket<LoginResponse>>();
-                
-                //Check if response is OK
-                if (result.type.Equals("LOGINRESPONSE") && result.data.status.Equals("OK"))
-                {
-                    this.loggedIn = true;
-                    Console.WriteLine("You are logged in!");
-                }
-                else
-                {
-                    Console.WriteLine("Your username and/or password are incorrect!");
-                }
             }
-
-            //Loop where you are sending the chat messages
-            while (this.loggedIn)
-            {
-                Console.WriteLine("Fill in your message here:");
-                string newChatMessage = Console.ReadLine();
-                SendData(JsonConvert.SerializeObject(newChatMessage));
-            }
+            this.stream.BeginRead(this.buffer, 0, this.buffer.Length, new AsyncCallback(ReceiveLengthInt), null);
         }
 
-        private void SendData(string message)
+        public void SendLogin(string username, string password)
+        {
+            this.username = username;
+            //Send username and password to check
+            sendData(new DataPacket<LoginPacket>()
+            {
+                type = "LOGIN",
+                data = new LoginPacket()
+                {
+                    username = username,
+                    password = password
+
+                }
+            });
+        }
+
+        private void ReceiveLengthInt(IAsyncResult ar)
+        {
+            int dataLength = BitConverter.ToInt32(Utility.ReverseIfBigEndian(this.buffer));
+
+            // create data buffer
+            this.buffer = new byte[dataLength];
+
+            this.stream.BeginRead(this.buffer, 0, this.buffer.Length, new AsyncCallback(ReceiveData), null);
+        }
+
+        private void ReceiveData(IAsyncResult ar)
+        {
+            string data = System.Text.Encoding.ASCII.GetString(this.buffer);
+
+            DataPacket dataPacket = JsonConvert.DeserializeObject<DataPacket>(data);
+            handleData(dataPacket);
+
+            this.buffer = new byte[4];
+            this.stream.BeginRead(this.buffer, 0, this.buffer.Length, new AsyncCallback(ReceiveLengthInt), null);
+        }
+
+
+
+        private void sendData(DataPacket<LoginPacket> loginInfo)
+        {
+            // create the sendBuffer based on the message
+            List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(loginInfo)));
+
+            // append the message length (in bytes)
+            sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+            // send the message
+            this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+        }
+
+        public void SendData(decimal speed, decimal heartbeat, decimal resistance, decimal power, decimal distanceTraveled)
         {
             if (this.loggedIn)
             {
+                DataPacket<BikeDataPacket> dataPacket = new DataPacket<BikeDataPacket>()
+                {
+                   sender = this.username,
+                   type = "BIKEDATA",
+                   data = new BikeDataPacket()
+                   {
+                       speed = speed,
+                       heartbeat = heartbeat,
+                       resistance = resistance,
+                       power = power,
+                       distanceTraveled = distanceTraveled
+                   }
+                };
+
                 // create the sendBuffer based on the message
-                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(message));
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
 
                 // append the message length (in bytes)
                 sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
@@ -89,86 +124,61 @@ namespace ClientApplication.Core
             }
         }
 
-        private T ReveiveData<T>() where T : DAbstract
+        public void SendChatMessage(string message)
         {
-            return JsonConvert.DeserializeObject<T>(this.ReceiveData());
-        }
-
-        private string ReceiveData()
-        {
-            string result = null;
-
-            // Get data length
-            byte[] dataLengthBytes = new byte[4];
-            this.stream.Read(dataLengthBytes, 0, 4);
-            int dataLength = BitConverter.ToInt32(Utility.ReverseIfBigEndian(dataLengthBytes));
-
-            // create data buffer
-            byte[] dataBuffer = new byte[dataLength];
-
-            // read data and fill buffer
-            int bytesRead = 0;
-            while (bytesRead < dataLength)
+            if (this.loggedIn)
             {
-                bytesRead += this.stream.Read(dataBuffer, bytesRead, dataLength - bytesRead);
-            }
-
-            // get message as string
-            result = Encoding.ASCII.GetString(dataBuffer);
-
-            Console.WriteLine(result);
-
-            return result;
-        }
-
-        private void OnConnect(IAsyncResult ar)
-        {
-            client.EndConnect(ar);
-            Console.WriteLine("Connected!");
-            stream = client.GetStream();
-            stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnRead), null);
-            write($"login\r\n{username}\r\n{password}");
-        }
-
-        private void OnRead(IAsyncResult ar)
-        {
-            int receivedBytes = stream.EndRead(ar);
-            string receivedText = System.Text.Encoding.ASCII.GetString(buffer, 0, receivedBytes);
-            totalBuffer += receivedText;
-
-            while (totalBuffer.Contains("\r\n\r\n"))
-            {
-                string packet = totalBuffer.Substring(0, totalBuffer.IndexOf("\r\n\r\n"));
-                totalBuffer = totalBuffer.Substring(totalBuffer.IndexOf("\r\n\r\n") + 4);
-                string[] packetData = Regex.Split(packet, "\r\n");
-                handleData(packetData);
-            }
-            stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnRead), null);
-        }
-        private void write(string data)
-        {
-            var dataAsBytes = System.Text.Encoding.ASCII.GetBytes(data + "\r\n\r\n");
-            stream.Write(dataAsBytes, 0, dataAsBytes.Length);
-            stream.Flush();
-        }
-
-        private void handleData(string[] packetData)
-        {
-            Console.WriteLine($"Packet ontvangen: {packetData[0]}");
-
-            switch (packetData[0])
-            {
-                case "login":
-                    if (packetData[1] == "ok")
+                DataPacket<ChatPacket> dataPacket = new DataPacket<ChatPacket>()
+                {
+                    sender = this.username,
+                    type = "CHAT",
+                    data = new ChatPacket()
                     {
-                        Console.WriteLine("Logged in!");
-                        loggedIn = true;
+                        chatMessage = message
                     }
-                    else
-                        Console.WriteLine(packetData[1]);
-                    break;
-                case "chat":
-                    Console.WriteLine($"Chat received: '{packetData[1]}'");
+                };
+
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
+        private void handleData(DataPacket data)
+        {
+            switch (data.type)
+            {
+                case "LOGINRESPONSE":
+                    {
+                        DataPacket<LoginResponse> d = data.GetData<LoginResponse>();
+                        if (d.data.status == "OK")
+                        {
+                            this.loggedIn = true;
+                            OnLogin?.Invoke(this.loggedIn);
+                            Console.WriteLine("You are logged in!");
+                        }
+                        else if (d.data.status == ("ERROR"))
+                        {
+                            this.loggedIn = false;
+                            OnLogin?.Invoke(this.loggedIn);
+                            Console.WriteLine("Your username and/or password is not valid!");
+
+                        }
+                        break;
+                    }
+                case "CHAT":
+                    {
+                        DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
+                        OnChatReceived?.Invoke($"{d.sender}: {d.data.chatMessage}");
+                        break;
+                    }
+                default:
+                    Console.WriteLine("Type is not valid");
                     break;
             }
 
