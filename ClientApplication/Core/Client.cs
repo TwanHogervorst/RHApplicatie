@@ -15,7 +15,7 @@ namespace ClientApplication.Core
     public delegate void LoginCallback(bool status);
     public delegate void ChatCallback(string message);
 
-    class ServerClient
+    class Client
     {
         private TcpClient client;
         private NetworkStream stream;
@@ -26,7 +26,7 @@ namespace ClientApplication.Core
         public event LoginCallback OnLogin;
         public event ChatCallback OnChatReceived;
 
-        public ServerClient()
+        public Client()
         {
             this.client = new TcpClient();
             this.client.BeginConnect("localhost", 15243, new AsyncCallback(Connect), null);

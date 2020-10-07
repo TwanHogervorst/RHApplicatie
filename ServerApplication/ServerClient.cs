@@ -12,65 +12,57 @@ using System.Text.RegularExpressions;
 
 namespace ServerApplication
 {
-    class Client
+    class ServerClient
     {
         private TcpClient tcpClient;
         private NetworkStream stream;
-        private byte[] buffer = new byte[1024];
-        private string totalBuffer = "";
+        private byte[] buffer = new byte[4];
         private bool isConnected;
-        private Dictionary<string, string> clientList = new Dictionary<string, string>();
 
         public string UserName { get; set; }
 
-        public Client(TcpClient tcpClient)
+        public ServerClient(TcpClient tcpClient)
         {
-            this.clientList = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText("ClientList.txt"));
-
             isConnected = true;
             this.tcpClient = tcpClient;
 
             this.stream = this.tcpClient.GetStream();
-            stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(ReceiveData), null);
+            stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(ReceiveLengthInt), null);
+        }
+
+        private void ReceiveLengthInt(IAsyncResult ar)
+        {
+            int dataLength = BitConverter.ToInt32(Utility.ReverseIfBigEndian(this.buffer));
+
+            // create data buffer
+            this.buffer = new byte[dataLength];
+
+            this.stream.BeginRead(this.buffer, 0, this.buffer.Length, new AsyncCallback(ReceiveData), null);
         }
 
         private void ReceiveData(IAsyncResult ar)
         {
-            string result = null;
+            string data = System.Text.Encoding.ASCII.GetString(this.buffer);
 
-            // Get data length
-            byte[] dataLengthBytes = new byte[4];
-            this.stream.Read(dataLengthBytes, 0, 4);
-            int dataLength = BitConverter.ToInt32(Utility.ReverseIfBigEndian(dataLengthBytes));
+            DataPacket dataPacket = JsonConvert.DeserializeObject<DataPacket>(data);
+            handleData(dataPacket);
 
-            // create data buffer
-            byte[] dataBuffer = new byte[dataLength];
-
-            // read data and fill buffer
-            int bytesRead = 0;
-            while (bytesRead < dataLength)
-            {
-                bytesRead += this.stream.Read(dataBuffer, bytesRead, dataLength - bytesRead);
-            }
-
-            // get message as string
-            result = Encoding.ASCII.GetString(dataBuffer);
-
-            Console.WriteLine(result);
-
-            handleData(result);
+            this.buffer = new byte[4];
+            this.stream.BeginRead(this.buffer, 0, this.buffer.Length, new AsyncCallback(ReceiveLengthInt), null);
         }
 
-        private void handleData(string packetData)
+        private void handleData(DataPacket data)
         {
-            dynamic data = JsonConvert.DeserializeObject(packetData);
             switch (data.type)
             {
                 case "LOGIN":
+                    { 
                     Console.WriteLine("Received a login packet");
-                    if (this.clientList.ContainsKey(data.data.username))
+                    DataPacket<LoginPacket> d = data.GetData<LoginPacket>();
+
+                    if (Server.clientList.ContainsKey(d.data.username))
                     {
-                        if (this.clientList[data.data.username] == data.data.password)
+                        if (Server.clientList[d.data.username] == d.data.password)
                         {
                             SendData(new DataPacket<LoginResponse>()
                             {
@@ -106,45 +98,28 @@ namespace ServerApplication
                                 status = "ERROR"
                             }
                         }.ToJson());
-                    } 
+                    }
                     break;
+            }
                 case "CHAT":
-                    Console.WriteLine("Received a chat packet");
-                                       break;
+                    {
+                        Console.WriteLine("Received a chat packet");
+                        DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
+                        //TODO send message to doctor-application
+                        break;
+                    }
                 case "BIKEDATA":
-                    Console.WriteLine("Received a bikeData packet");
-                    break;
+                    {
+                        Console.WriteLine("Received a bikeData packet");
+                        DataPacket<BikeDataPacket> d = data.GetData<BikeDataPacket>();
+                        //TODO save bikedata
+                        break;
+                    }
                 default:
                     Console.WriteLine("Unkown packetType");
                     break;
             }
         }
-
-        //private void OnRead(IAsyncResult ar)
-        //{
-        //    try
-        //    {
-        //        int receivedBytes = stream.EndRead(ar);
-        //        string receivedText = ""; //TODO ??
-        //        totalBuffer += receivedText;
-        //    }
-        //    catch (IOException)
-        //    {
-        //        Program.Disconnect(this);
-        //        return;
-        //    }
-
-        //    while (totalBuffer.Contains("iets")) //TODO beslissen wat voor 'endkey'
-        //    {
-        //        string packet = totalBuffer.Length
-        //        totalBuffer = totalBuffer.Substring(totalBuffer.IndexOf("iets"));
-        //        string[] packetData = Regex.Split(packet, "nogiets");
-        //        handleData(packetData);
-        //    }
-
-
-        //}
-
 
         private void SendData(string message)
         {
@@ -159,19 +134,6 @@ namespace ServerApplication
                 // send the message
                 this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
             }
-        }
-
-
-
-
-
-
-
-
-
-        public void Write(string data)
-        {
-
         }
     }
 }

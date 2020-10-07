@@ -19,7 +19,7 @@ namespace ClientApplication
     public partial class MainForm : Form
     {
 
-        private ServerClient client;
+        private Client client;
         private IBikeTrainer _bike; // DONT USE THIS VARIABLE
         private IBikeTrainer bike
         {
@@ -42,7 +42,7 @@ namespace ClientApplication
         {
             InitializeComponent();
 
-            this.client = new ServerClient();
+            this.client = new Client();
             this.client.OnLogin += Client_OnLogin;
             this.client.OnChatReceived += Client_OnChatReceived;
 
