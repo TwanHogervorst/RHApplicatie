@@ -95,7 +95,7 @@ namespace ClientApplication.Core
             this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
         }
 
-        public void SendData(decimal speed, decimal heartbeat, decimal resistance, decimal power, decimal distanceTraveled)
+        public void SendData(decimal speed, decimal heartbeat, decimal elapsedTime, decimal resistance, decimal power, decimal distanceTraveled)
         {
             if (this.loggedIn)
             {
@@ -107,6 +107,7 @@ namespace ClientApplication.Core
                    {
                        speed = speed,
                        heartbeat = heartbeat,
+                       elapsedTime = elapsedTime,
                        resistance = resistance,
                        power = power,
                        distanceTraveled = distanceTraveled

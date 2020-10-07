@@ -110,9 +110,29 @@ namespace ServerApplication
                     }
                 case "BIKEDATA":
                     {
+                        string pathToClientData = "ClientData.txt";
+                        Dictionary<string, List<BikeDataPacket>> clientData_ = 
+                            JsonConvert.DeserializeObject<Dictionary<string,List<BikeDataPacket>>>
+                            (
+                            File.ReadAllText(pathToClientData)
+                            );
+
                         Console.WriteLine("Received a bikeData packet");
                         DataPacket<BikeDataPacket> d = data.GetData<BikeDataPacket>();
-                        //TODO save bikedata
+
+                        if (clientData_.ContainsKey(d.sender))
+                        {
+                            clientData_[d.sender].Add(d.data);
+                            
+                            string contentClientData = JsonConvert.SerializeObject(clientData_);
+                            File.WriteAllText(pathToClientData, contentClientData);
+                        }
+                        else
+                        {
+                            clientData_.Add(d.sender, new List<BikeDataPacket>() { d.data });
+                            string contentClientData = JsonConvert.SerializeObject(clientData_);
+                            File.WriteAllText(pathToClientData, contentClientData);
+                        }
                         break;
                     }
                 default:
@@ -127,6 +147,22 @@ namespace ServerApplication
             {
                 // create the sendBuffer based on the message
                 List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(message));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
+        public void SendData(DataPacket data)
+        {
+            //TODO Deze methode moet verder afgemaakt worden, en gecheckt worden
+            if (this.isConnected)
+            {
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(data)));
 
                 // append the message length (in bytes)
                 sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));

@@ -16,6 +16,7 @@ namespace ServerApplication
         private TcpListener listener;
         private ClientDatabase clients;
         public static Dictionary<string, string> clientList;
+        public static Dictionary<string, List<BikeDataPacket>> clientData;
 
         public Server()
         {
@@ -23,11 +24,16 @@ namespace ServerApplication
             clientList = new Dictionary<string, string>();
             clientList.Add("test", "test");
 
+            clientData = new Dictionary<string, List<BikeDataPacket>>();
+            string pathToClientData = "ClientData.txt";
+            string contentClientData = JsonConvert.SerializeObject(clientData);
+            File.WriteAllText(pathToClientData, contentClientData);
+
             this.clients = new ClientDatabase();
 
-            string path = "ClientList.txt";
-            string content = JsonConvert.SerializeObject(clientList);
-            File.WriteAllText(path, content);
+            string pathToClientList = "ClientList.txt";
+            string contentClientList = JsonConvert.SerializeObject(clientList);
+            File.WriteAllText(pathToClientList, contentClientList);
 
             this.listener = new TcpListener(IPAddress.Any, 15243);
             this.listener.Start();
@@ -54,7 +60,7 @@ namespace ServerApplication
         {
             foreach (var client in this.clients.GetClients().Where(c => c.UserName == user))
             {
-                client.Write(packet);
+                client.SendData(packet);
             }
         }
     }

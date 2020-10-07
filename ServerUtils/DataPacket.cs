@@ -49,9 +49,9 @@ namespace ServerUtils
 
     class BikeDataPacket : DAbstract
     {
-        //TODO bikeData
         public decimal speed;
         public decimal heartbeat;
+        public decimal elapsedTime;
         public decimal resistance;
         public decimal distanceTraveled;
         public decimal power;
