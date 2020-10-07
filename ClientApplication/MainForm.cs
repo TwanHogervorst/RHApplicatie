@@ -300,6 +300,7 @@ namespace ClientApplication
 
         private void buttonChatSend_Click(object sender, EventArgs e)
         {
+            //TODO
             //this.client.SendData(TextBoxChat.Text);
         }
 
