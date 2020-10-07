@@ -16,6 +16,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerApplication", "Server
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ServerUtils", "ServerUtils\ServerUtils.shproj", "{6F6A5BAD-79CD-4D38-AC2A-EECFC9CA0E8D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoctorApplication", "DoctorApplication\DoctorApplication.csproj", "{5FF30FFC-D346-4429-A4EA-C5D63B53EEAA}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		ServerUtils\ServerUtils.projitems*{14e0df78-9b3f-4ded-b2a6-2a344f71b085}*SharedItemsImports = 5
@@ -43,6 +45,10 @@ Global
 		{C50B0BB1-839D-4ACC-9E49-C50EF2050EB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C50B0BB1-839D-4ACC-9E49-C50EF2050EB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C50B0BB1-839D-4ACC-9E49-C50EF2050EB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FF30FFC-D346-4429-A4EA-C5D63B53EEAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FF30FFC-D346-4429-A4EA-C5D63B53EEAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FF30FFC-D346-4429-A4EA-C5D63B53EEAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FF30FFC-D346-4429-A4EA-C5D63B53EEAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

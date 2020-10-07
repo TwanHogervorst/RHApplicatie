@@ -29,7 +29,6 @@ namespace NESessionList
             if(client.Connect())
             {
                 List<DVRSessionItem> sessionList = client.GetSessionList();
-
                 for(int i = 0; i < sessionList.Count; i++)
                 {
                     Console.WriteLine($"{i+1} {sessionList[i].clientinfo.user}");
