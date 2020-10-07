@@ -29,12 +29,11 @@ namespace ClientApplication
             }
         }
 
-        public MainForm()
+        public MainForm(Client client)
         {
             InitializeComponent();
+            this.client = client;
 
-            this.client = new Client();
-            this.client.OnLogin += Client_OnLogin;
             this.client.OnChatReceived += Client_OnChatReceived;
 
             Utility.DisableAllChildControls(groupBoxSimulator);
@@ -304,13 +303,6 @@ namespace ClientApplication
             //this.client.SendData(TextBoxChat.Text);
         }
 
-        private void buttonLogin_Click(object sender, EventArgs e)
-        {
-            if (textBoxUserName.Text != null || textBoxPassword.Text != null)
-            {
-                client.SendLogin(textBoxUserName.Text, textBoxPassword.Text);
-            }
-        }
 
         private void labelCurrentSpeedText_Click(object sender, EventArgs e)
         {

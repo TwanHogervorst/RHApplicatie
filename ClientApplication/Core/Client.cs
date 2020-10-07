@@ -15,7 +15,7 @@ namespace ClientApplication.Core
     public delegate void LoginCallback(bool status);
     public delegate void ChatCallback(string message);
 
-    class Client
+    public class Client
     {
         private TcpClient client;
         private NetworkStream stream;

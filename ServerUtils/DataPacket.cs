@@ -26,7 +26,7 @@ namespace ServerUtils
             return new DataPacket<T> {
                 sender = this.sender,
                 type = this.type, 
-                data = this.data.Value<T>() 
+                data = this.data.ToObject<T>() 
             };
         }
     }
