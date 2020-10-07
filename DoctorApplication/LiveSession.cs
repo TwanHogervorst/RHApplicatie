@@ -34,8 +34,7 @@ namespace DoctorApplication
 
         private void speedGraph_Click(object sender, EventArgs e)
         {
-            speedGraph.ChartAreas[0].AxisX.MajorGrid.LineWidth = 0;
-            speedGraph.ChartAreas[0].AxisY.MajorGrid.LineWidth = 0;
+            
         }
     }
 }
