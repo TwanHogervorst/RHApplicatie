@@ -1,6 +1,6 @@
 ﻿namespace DoctorApplication
 {
-    partial class Form1
+    partial class HistoryForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,13 +28,34 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.SuspendLayout();
+            // 
+            // listView1
+            // 
+            this.listView1.Dock = System.Windows.Forms.DockStyle.Left;
+            this.listView1.HideSelection = false;
+            this.listView1.Location = new System.Drawing.Point(2, 2);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(121, 446);
+            this.listView1.TabIndex = 0;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            // 
+            // HistoryForm
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form1";
+            this.Controls.Add(this.listView1);
+            this.Name = "HistoryForm";
+            this.Padding = new System.Windows.Forms.Padding(2);
+            this.Text = "History";
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private System.Windows.Forms.ListView listView1;
     }
 }
-
