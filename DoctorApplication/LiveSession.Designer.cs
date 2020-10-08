@@ -28,21 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      
             this.Patient = new System.Windows.Forms.Label();
             this.textBoxSendChat = new System.Windows.Forms.TextBox();
             this.textBoxChat = new System.Windows.Forms.TextBox();
@@ -65,18 +51,8 @@
             this.trackBarResistance = new System.Windows.Forms.TrackBar();
             this.labelTime = new System.Windows.Forms.Label();
             this.labelTimeValue = new System.Windows.Forms.Label();
-            this.speedGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.heartbeatGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.resistanceGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.distanceGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.powerGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBoxCurrentData.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarResistance)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.speedGraph)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.heartbeatGraph)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.resistanceGraph)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.distanceGraph)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.powerGraph)).BeginInit();
             this.SuspendLayout();
             // 
             // Patient
@@ -208,11 +184,6 @@
             // 
             // groupBoxCurrentData
             // 
-            this.groupBoxCurrentData.Controls.Add(this.powerGraph);
-            this.groupBoxCurrentData.Controls.Add(this.distanceGraph);
-            this.groupBoxCurrentData.Controls.Add(this.resistanceGraph);
-            this.groupBoxCurrentData.Controls.Add(this.heartbeatGraph);
-            this.groupBoxCurrentData.Controls.Add(this.speedGraph);
             this.groupBoxCurrentData.Controls.Add(this.labelCurrentSpeed);
             this.groupBoxCurrentData.Controls.Add(this.labelCurrentPowerValue);
             this.groupBoxCurrentData.Controls.Add(this.labelCurrentSpeedValue);
@@ -289,123 +260,7 @@
             this.labelTimeValue.Size = new System.Drawing.Size(87, 13);
             this.labelTimeValue.TabIndex = 21;
             this.labelTimeValue.Text = "Waiting for value";
-            this.labelTimeValue.UseWaitCursor = true;
-            // 
-            // speedGraph
-            // 
-            this.speedGraph.BackColor = System.Drawing.Color.Transparent;
-            this.speedGraph.CausesValidation = false;
-            chartArea5.AxisX.MajorGrid.Enabled = false;
-            chartArea5.AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
-            chartArea5.Name = "ChartArea1";
-            this.speedGraph.ChartAreas.Add(chartArea5);
-            legend5.Enabled = false;
-            legend5.Name = "Legend1";
-            this.speedGraph.Legends.Add(legend5);
-            this.speedGraph.Location = new System.Drawing.Point(-20, 9);
-            this.speedGraph.Name = "speedGraph";
-            series5.ChartArea = "ChartArea1";
-            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            series5.Legend = "Legend1";
-            series5.Name = "Series1";
-            this.speedGraph.Series.Add(series5);
-            this.speedGraph.Size = new System.Drawing.Size(217, 104);
-            this.speedGraph.TabIndex = 14;
-            this.speedGraph.Text = "speedGraph";
-            this.speedGraph.Click += new System.EventHandler(this.speedGraph_Click);
-            // 
-            // heartbeatGraph
-            // 
-            this.heartbeatGraph.BackColor = System.Drawing.Color.Transparent;
-            this.heartbeatGraph.CausesValidation = false;
-            chartArea4.AxisX.MajorGrid.Enabled = false;
-            chartArea4.AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
-            chartArea4.Name = "ChartArea1";
-            this.heartbeatGraph.ChartAreas.Add(chartArea4);
-            legend4.Enabled = false;
-            legend4.Name = "Legend1";
-            this.heartbeatGraph.Legends.Add(legend4);
-            this.heartbeatGraph.Location = new System.Drawing.Point(-20, 110);
-            this.heartbeatGraph.Name = "heartbeatGraph";
-            series4.ChartArea = "ChartArea1";
-            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            series4.Legend = "Legend1";
-            series4.Name = "Series1";
-            this.heartbeatGraph.Series.Add(series4);
-            this.heartbeatGraph.Size = new System.Drawing.Size(217, 104);
-            this.heartbeatGraph.TabIndex = 15;
-            this.heartbeatGraph.Text = "chart1";
-            // 
-            // resistanceGraph
-            // 
-            this.resistanceGraph.BackColor = System.Drawing.Color.Transparent;
-            this.resistanceGraph.CausesValidation = false;
-            chartArea3.AxisX.MajorGrid.Enabled = false;
-            chartArea3.AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
-            chartArea3.Name = "ChartArea1";
-            this.resistanceGraph.ChartAreas.Add(chartArea3);
-            legend3.Enabled = false;
-            legend3.Name = "Legend1";
-            this.resistanceGraph.Legends.Add(legend3);
-            this.resistanceGraph.Location = new System.Drawing.Point(-20, 206);
-            this.resistanceGraph.Name = "resistanceGraph";
-            series3.ChartArea = "ChartArea1";
-            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            series3.Legend = "Legend1";
-            series3.Name = "Series1";
-            this.resistanceGraph.Series.Add(series3);
-            this.resistanceGraph.Size = new System.Drawing.Size(217, 104);
-            this.resistanceGraph.TabIndex = 16;
-            this.resistanceGraph.Text = "chart1";
-            // 
-            // distanceGraph
-            // 
-            this.distanceGraph.BackColor = System.Drawing.Color.Transparent;
-            this.distanceGraph.CausesValidation = false;
-            chartArea2.AxisX.MajorGrid.Enabled = false;
-            chartArea2.AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
-            chartArea2.Name = "ChartArea1";
-            this.distanceGraph.ChartAreas.Add(chartArea2);
-            legend2.Enabled = false;
-            legend2.Name = "Legend1";
-            this.distanceGraph.Legends.Add(legend2);
-            this.distanceGraph.Location = new System.Drawing.Point(-20, 305);
-            this.distanceGraph.Name = "distanceGraph";
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            series2.Legend = "Legend1";
-            series2.Name = "Series1";
-            this.distanceGraph.Series.Add(series2);
-            this.distanceGraph.Size = new System.Drawing.Size(217, 104);
-            this.distanceGraph.TabIndex = 17;
-            this.distanceGraph.Text = "chart1";
-            // 
-            // powerGraph
-            // 
-            this.powerGraph.BackColor = System.Drawing.Color.Transparent;
-            this.powerGraph.CausesValidation = false;
-            chartArea1.AxisX.MajorGrid.Enabled = false;
-            chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
-            chartArea1.Name = "ChartArea1";
-            this.powerGraph.ChartAreas.Add(chartArea1);
-            legend1.Enabled = false;
-            legend1.Name = "Legend1";
-            this.powerGraph.Legends.Add(legend1);
-            this.powerGraph.Location = new System.Drawing.Point(-20, 410);
-            this.powerGraph.Name = "powerGraph";
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.powerGraph.Series.Add(series1);
-            this.powerGraph.Size = new System.Drawing.Size(217, 104);
-            this.powerGraph.TabIndex = 18;
-            this.powerGraph.Text = "chart2";
+            this.labelTimeValue.UseWaitCursor = true;    
             // 
             // LiveSession
             // 
@@ -429,11 +284,6 @@
             this.groupBoxCurrentData.ResumeLayout(false);
             this.groupBoxCurrentData.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarResistance)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.speedGraph)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.heartbeatGraph)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.resistanceGraph)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.distanceGraph)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.powerGraph)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -463,10 +313,5 @@
         private System.Windows.Forms.TrackBar trackBarResistance;
         private System.Windows.Forms.Label labelTime;
         private System.Windows.Forms.Label labelTimeValue;
-        private System.Windows.Forms.DataVisualization.Charting.Chart speedGraph;
-        private System.Windows.Forms.DataVisualization.Charting.Chart powerGraph;
-        private System.Windows.Forms.DataVisualization.Charting.Chart distanceGraph;
-        private System.Windows.Forms.DataVisualization.Charting.Chart resistanceGraph;
-        private System.Windows.Forms.DataVisualization.Charting.Chart heartbeatGraph;
     }
 }
