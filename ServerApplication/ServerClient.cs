@@ -19,6 +19,7 @@ namespace ServerApplication
         private NetworkStream stream;
         private byte[] buffer = new byte[4];
         private bool isConnected;
+        private bool isClient;
 
         public string UserName { get; set; }
 
@@ -68,6 +69,8 @@ namespace ServerApplication
                         {
                             if (Server.clientList[d.data.username] == d.data.password)
                             {
+                                this.isClient = true;
+                                this.UserName = d.data.username;
                                 Server.tempList.RemoveClient(this);
                                 Server.clients.AddClient(this);
                                 SendData(new DataPacket<LoginResponse>()
@@ -99,6 +102,8 @@ namespace ServerApplication
                         {
                             if (Server.doctorList[d.data.username] == d.data.password)
                             {
+                                this.isClient = false;
+                                this.UserName = d.data.username;
                                 Server.tempList.RemoveClient(this);
                                 Server.doctors.AddClient(this);
                                 SendData(new DataPacket<LoginResponse>()
@@ -144,9 +149,16 @@ namespace ServerApplication
                 case "CHAT":
                     {
                         Console.WriteLine("Received a chat packet");
-                        SendData(data);
 
-                        //TODO send message to doctor-application
+                        DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
+                        if (Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver) != null)
+                        {
+                          SendDataToUser(Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver), d.ToJson());
+                        }
+                        else if (Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver) != null)
+                        {
+                            SendDataToUser(Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver), d.ToJson());
+                        }
                         break;
                     }
                 case "BIKEDATA":
@@ -181,9 +193,9 @@ namespace ServerApplication
                         Dictionary<string, bool> temp = new Dictionary<string, bool>();
                         foreach (string userName in Server.clientList.Keys)
                         {
-                            temp.Add(userName, Server.clients.GetClients().FirstOrDefault(client =>client.UserName == userName) != null);
+                            temp.Add(userName, Server.clients.GetClients().FirstOrDefault(client => client.UserName == userName) != null);
                         }
-                        
+
                         SendData(new DataPacket<ClientListPacket>()
                         {
                             sender = this.UserName,
@@ -192,9 +204,24 @@ namespace ServerApplication
                             {
                                 clientList = temp
                             }
-                            
+
                         }.ToJson()
                         );
+                        break;
+                    }
+                case "USERNAME":
+                    {
+                        DataPacket<UserNamePacket> d = data.GetData<UserNamePacket>();
+
+                        SendDataToUser(Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.clientUserName), new DataPacket<UserNamePacketResponse>()
+                        {
+                            sender = this.UserName,
+                            type = "USERNAME_RESPONSE",
+                            data = new UserNamePacketResponse()
+                            {
+                                doctorUserName = d.sender
+                            }
+                        }.ToJson());
                         break;
                     }
                 default:
@@ -215,6 +242,21 @@ namespace ServerApplication
 
                 // send the message
                 this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
+        public void SendDataToUser(ServerClient user, string data)
+        {
+            if (this.isConnected)
+            {
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(data));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                user.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
             }
         }
 

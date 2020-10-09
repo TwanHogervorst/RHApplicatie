@@ -92,6 +92,7 @@
             this.buttonSendChat.TabIndex = 3;
             this.buttonSendChat.Text = "Send";
             this.buttonSendChat.UseVisualStyleBackColor = true;
+            this.buttonSendChat.Click += new System.EventHandler(this.buttonSendChat_Click);
             // 
             // labelCurrentSpeed
             // 

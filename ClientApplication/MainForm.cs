@@ -44,7 +44,10 @@ namespace ClientApplication
 
         private void Client_OnChatReceived(string message)
         {
-            //add message to chatTextBox
+            this.Invoke((Action)delegate
+           {
+               textBoxChat.Text += message;
+           });
         }
 
         private void Client_OnLogin(bool status)
@@ -300,6 +303,7 @@ namespace ClientApplication
         private void buttonChatSend_Click(object sender, EventArgs e)
         {
             this.client.SendChatMessage(textBoxSendChat.Text);
+            textBoxSendChat.Text = "";
         }
 
 

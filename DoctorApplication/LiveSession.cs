@@ -23,9 +23,15 @@ namespace DoctorApplication
             Patient.Text += selected;
         }
 
-        private void Client_OnChatReceived(string message)
+        private void Client_OnChatReceived(string sender, string message)
         {
-            textBoxChat.Text += message;
+            this.Invoke((Action)delegate
+            {
+                if (sender == selectedUser)
+                {
+                    textBoxChat.Text += message;
+                }
+            });
         }
 
         private void labelCurrentDistance_Click(object sender, EventArgs e)
@@ -51,6 +57,12 @@ namespace DoctorApplication
         private void LiveSession_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void buttonSendChat_Click(object sender, EventArgs e)
+        {
+            this.client.SendChatMessage(textBoxSendChat.Text);
+            textBoxSendChat.Text = "";
         }
     }
 }

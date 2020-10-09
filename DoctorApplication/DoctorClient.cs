@@ -11,7 +11,7 @@ namespace DoctorApplication
 {
 
     public delegate void LoginCallback(bool status);
-    public delegate void ChatCallback(string message);
+    public delegate void ChatCallback(string sender, string message);
     public delegate void ClientListCallback(Dictionary<string, bool> clientList);
 
     public class DoctorClient
@@ -21,6 +21,7 @@ namespace DoctorApplication
         private byte[] buffer = new byte[4];
         private string username;
         private bool loggedIn = false;
+        private string clientUserName;
 
         public event LoginCallback OnLogin;
         public event ChatCallback OnChatReceived;
@@ -105,6 +106,7 @@ namespace DoctorApplication
                     type = "CHAT",
                     data = new ChatPacket()
                     {
+                        receiver = clientUserName,
                         chatMessage = message
                     }
                 };
@@ -141,7 +143,33 @@ namespace DoctorApplication
             }
         }
 
-        private void handleData(DataPacket data)
+        public void SendUserName(string userNameClient)
+        {
+            if (this.loggedIn)
+            {
+                this.clientUserName = userNameClient;
+                DataPacket<UserNamePacket> dataPacket = new DataPacket<UserNamePacket>()
+                {
+                    sender = this.username,
+                    type = "USERNAME",
+                    data = new UserNamePacket()
+                    {
+                        clientUserName = userNameClient
+                    }
+                };
+
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
+            private void handleData(DataPacket data)
         {
             switch (data.type)
             {
@@ -166,7 +194,8 @@ namespace DoctorApplication
                 case "CHAT":
                     {
                         DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
-                        OnChatReceived?.Invoke($"\n{d.sender}: {d.data.chatMessage}");
+
+                        OnChatReceived?.Invoke(d.sender, $"\n{d.sender}: {d.data.chatMessage}");
                         break;
                     }
                 case "RESPONSE_CLIENTLIST":

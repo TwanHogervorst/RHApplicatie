@@ -46,12 +46,23 @@ namespace ServerUtils
 
     class ChatPacket : DAbstract
     {
+        public string receiver;
         public string chatMessage;
     }
 
     class ClientListPacket : DAbstract
     {
         public Dictionary<string, bool> clientList;
+    }
+
+    class UserNamePacket : DAbstract
+    {
+        public string clientUserName;
+    }
+
+    class UserNamePacketResponse : DAbstract
+    {
+        public string doctorUserName;
     }
 
 

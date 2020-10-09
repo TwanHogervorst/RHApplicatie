@@ -22,6 +22,7 @@ namespace ClientApplication.Core
         private byte[] buffer = new byte[4];
         private string username;
         private bool loggedIn = false;
+        public string doctorUserName;
 
         public event LoginCallback OnLogin;
         public event ChatCallback OnChatReceived;
@@ -136,6 +137,7 @@ namespace ClientApplication.Core
                     type = "CHAT",
                     data = new ChatPacket()
                     {
+                        receiver = this.doctorUserName,
                         chatMessage = message
                     }
                 };
@@ -171,12 +173,19 @@ namespace ClientApplication.Core
                             Console.WriteLine("Your username and/or password is not valid!");
 
                         }
+                        
                         break;
                     }
                 case "CHAT":
                     {
                         DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
-                        OnChatReceived?.Invoke($"{d.sender}: {d.data.chatMessage}");
+                        OnChatReceived?.Invoke($"\n{d.sender}: {d.data.chatMessage}");
+                        break;
+                    }
+                case "USERNAME_RESPONSE":
+                    {
+                        DataPacket<UserNamePacketResponse> d = data.GetData<UserNamePacketResponse>();
+                        this.doctorUserName = d.data.doctorUserName;
                         break;
                     }
                 default:
