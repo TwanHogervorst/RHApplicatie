@@ -5,6 +5,7 @@ using ServerUtils;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
@@ -56,23 +57,29 @@ namespace ServerApplication
             switch (data.type)
             {
                 case "LOGIN":
-                    { 
-                    Console.WriteLine("Received a login packet");
+                    {
+                        Server.clientList = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText("ClientList.txt"));
+                        Server.doctorList = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText("DoctorList.txt"));
+
+                        Console.WriteLine("Received a login packet");
                     DataPacket<LoginPacket> d = data.GetData<LoginPacket>();
 
-                    if (Server.clientList.ContainsKey(d.data.username))
+                    if (Server.clientList.ContainsKey(d.data.username) && d.data.isClient == true)
                     {
                         if (Server.clientList[d.data.username] == d.data.password)
                         {
-                            SendData(new DataPacket<LoginResponse>()
-                            {
-                                sender = this.UserName,
-                                type = "LOGINRESPONSE",
-                                data = new LoginResponse()
+                                Server.tempList.RemoveClient(this);
+                                Server.clients.AddClient(this);
+                                SendData(new DataPacket<LoginResponse>()
                                 {
-                                    status = "OK"
-                                }
-                            }.ToJson());
+                                    sender = this.UserName,
+                                    type = "LOGINRESPONSE",
+                                    data = new LoginResponse()
+                                    {
+                                        isClient = true,
+                                        status = "OK"
+                                    }
+                                }.ToJson()); ;
                         }
                         else
                         {
@@ -82,11 +89,42 @@ namespace ServerApplication
                                 type = "LOGINRESPONSE",
                                 data = new LoginResponse()
                                 {
+                                    isClient = true,
                                     status = "ERROR"
                                 }
                             }.ToJson());
                         }
-                    }
+                    } else if (Server.doctorList.ContainsKey(d.data.username) && d.data.isClient == false)
+                        {
+                            if (Server.doctorList[d.data.username] == d.data.password)
+                            {
+                                Server.tempList.RemoveClient(this);
+                                Server.doctors.AddClient(this);
+                                SendData(new DataPacket<LoginResponse>()
+                                {
+                                    sender = this.UserName,
+                                    type = "LOGINRESPONSE",
+                                    data = new LoginResponse()
+                                    {
+                                        isClient = false,
+                                        status = "OK"
+                                    }
+                                }.ToJson());
+                            }
+                            else
+                            {
+                                SendData(new DataPacket<LoginResponse>()
+                                {
+                                    sender = this.UserName,
+                                    type = "LOGINRESPONSE",
+                                    data = new LoginResponse()
+                                    {
+                                        isClient = false,
+                                        status = "ERROR"
+                                    }
+                                }.ToJson());
+                            }
+                        }
                     else
                     {
                         SendData(new DataPacket<LoginResponse>()
@@ -95,6 +133,7 @@ namespace ServerApplication
                             type = "LOGINRESPONSE",
                             data = new LoginResponse()
                             {
+                                isClient = false,
                                 status = "ERROR"
                             }
                         }.ToJson());

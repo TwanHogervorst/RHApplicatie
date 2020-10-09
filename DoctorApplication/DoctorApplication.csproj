@@ -5,6 +5,10 @@
 		<UseWindowsForms>true</UseWindowsForms>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\RHApplicatieLib\RHApplicatieLib.csproj" />
+	</ItemGroup>
+	<Import Project="..\ServerUtils\ServerUtils.projitems" Label="Shared" />
 </Project>
 
 

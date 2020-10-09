@@ -1,5 +1,4 @@
-using Newtonsoft.Json;
-using RHApplicationLib.Abstract;
+﻿using Newtonsoft.Json;
 using RHApplicationLib.Core;
 using ServerUtils;
 using System;
@@ -7,15 +6,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
-using System.Text.RegularExpressions;
 
-namespace ClientApplication.Core
+namespace DoctorApplication
 {
 
     public delegate void LoginCallback(bool status);
     public delegate void ChatCallback(string message);
 
-    public class Client
+    public class DoctorClient
     {
         private TcpClient client;
         private NetworkStream stream;
@@ -26,11 +24,10 @@ namespace ClientApplication.Core
         public event LoginCallback OnLogin;
         public event ChatCallback OnChatReceived;
 
-        public Client()
+        public DoctorClient()
         {
             this.client = new TcpClient();
             this.client.BeginConnect("localhost", 15243, new AsyncCallback(Connect), null);
-
         }
 
         public void Connect(IAsyncResult ar)
@@ -53,7 +50,7 @@ namespace ClientApplication.Core
                 type = "LOGIN",
                 data = new LoginPacket()
                 {
-                    isClient = true,
+                    isClient = false,
                     username = username,
                     password = password
 
@@ -96,36 +93,6 @@ namespace ClientApplication.Core
             this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
         }
 
-        public void SendData(decimal speed, decimal heartbeat, decimal elapsedTime, decimal resistance, decimal power, decimal distanceTraveled)
-        {
-            if (this.loggedIn)
-            {
-                DataPacket<BikeDataPacket> dataPacket = new DataPacket<BikeDataPacket>()
-                {
-                   sender = this.username,
-                   type = "BIKEDATA",
-                   data = new BikeDataPacket()
-                   {
-                       speed = speed,
-                       heartbeat = heartbeat,
-                       elapsedTime = elapsedTime,
-                       resistance = resistance,
-                       power = power,
-                       distanceTraveled = distanceTraveled
-                   }
-                };
-
-                // create the sendBuffer based on the message
-                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
-
-                // append the message length (in bytes)
-                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
-
-                // send the message
-                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
-            }
-        }
-
         public void SendChatMessage(string message)
         {
             if (this.loggedIn)
@@ -158,7 +125,7 @@ namespace ClientApplication.Core
                 case "LOGINRESPONSE":
                     {
                         DataPacket<LoginResponse> d = data.GetData<LoginResponse>();
-                        if (d.data.status == "OK" && d.data.isClient)
+                        if (d.data.status == "OK" && !d.data.isClient)
                         {
                             this.loggedIn = true;
                             OnLogin?.Invoke(this.loggedIn);

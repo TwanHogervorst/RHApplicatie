@@ -33,12 +33,14 @@ namespace ServerUtils
 
     class LoginPacket : DAbstract
     {
+        public bool isClient;
         public string username;
         public string password;
     }
 
     class LoginResponse : DAbstract
     {
+        public bool isClient;
         public string status;
     }
 
@@ -46,6 +48,23 @@ namespace ServerUtils
     {
         public string chatMessage;
     }
+
+    class ChatDoctorPacket : DAbstract
+    {
+
+    }
+
+    class ResistancePacket : DAbstract
+    {
+
+    }
+
+    class RequestClientDataPacket : DAbstract
+    {
+
+    }
+
+    //Eventueel nog responsePackets
 
     class BikeDataPacket : DAbstract
     {

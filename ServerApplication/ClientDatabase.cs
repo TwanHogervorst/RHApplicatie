@@ -26,6 +26,11 @@ namespace ServerApplication
             this.clients.Add(new ServerClient(client));
         }
 
+        public void AddClient(ServerClient client)
+        {
+            this.clients.Add(client);
+        }
+
         public void RemoveClient(ServerClient client)
         {
             this.clients.Remove(client);

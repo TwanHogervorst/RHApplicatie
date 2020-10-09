@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace DoctorApplication
+namespace DoctorApplication_
 {
     static class Program
     {
@@ -14,7 +14,6 @@ namespace DoctorApplication
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new LoginForm());
-            
         }
     }
 }

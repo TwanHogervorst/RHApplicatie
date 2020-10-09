@@ -1,14 +1,12 @@
 ﻿using System.Windows.Forms;
 
-namespace DoctorApplication
+namespace DoctorApplication_
 {
     public partial class HomePageForm : Form
     {
-        private DoctorClient client;
 
-        public HomePageForm(DoctorClient client)
+        public HomePageForm()
         {
-            this.client = client;
             InitializeComponent();
         }
 
