@@ -62,12 +62,12 @@ namespace ServerApplication
                         Server.doctorList = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText("DoctorList.txt"));
 
                         Console.WriteLine("Received a login packet");
-                    DataPacket<LoginPacket> d = data.GetData<LoginPacket>();
+                        DataPacket<LoginPacket> d = data.GetData<LoginPacket>();
 
-                    if (Server.clientList.ContainsKey(d.data.username) && d.data.isClient == true)
-                    {
-                        if (Server.clientList[d.data.username] == d.data.password)
+                        if (Server.clientList.ContainsKey(d.data.username) && d.data.isClient == true)
                         {
+                            if (Server.clientList[d.data.username] == d.data.password)
+                            {
                                 Server.tempList.RemoveClient(this);
                                 Server.clients.AddClient(this);
                                 SendData(new DataPacket<LoginResponse>()
@@ -80,21 +80,22 @@ namespace ServerApplication
                                         status = "OK"
                                     }
                                 }.ToJson()); ;
-                        }
-                        else
-                        {
-                            SendData(new DataPacket<LoginResponse>()
+                            }
+                            else
                             {
-                                sender = this.UserName,
-                                type = "LOGINRESPONSE",
-                                data = new LoginResponse()
+                                SendData(new DataPacket<LoginResponse>()
                                 {
-                                    isClient = true,
-                                    status = "ERROR"
-                                }
-                            }.ToJson());
+                                    sender = this.UserName,
+                                    type = "LOGINRESPONSE",
+                                    data = new LoginResponse()
+                                    {
+                                        isClient = true,
+                                        status = "ERROR"
+                                    }
+                                }.ToJson());
+                            }
                         }
-                    } else if (Server.doctorList.ContainsKey(d.data.username) && d.data.isClient == false)
+                        else if (Server.doctorList.ContainsKey(d.data.username) && d.data.isClient == false)
                         {
                             if (Server.doctorList[d.data.username] == d.data.password)
                             {
@@ -125,33 +126,34 @@ namespace ServerApplication
                                 }.ToJson());
                             }
                         }
-                    else
-                    {
-                        SendData(new DataPacket<LoginResponse>()
+                        else
                         {
-                            sender = this.UserName,
-                            type = "LOGINRESPONSE",
-                            data = new LoginResponse()
+                            SendData(new DataPacket<LoginResponse>()
                             {
-                                isClient = false,
-                                status = "ERROR"
-                            }
-                        }.ToJson());
+                                sender = this.UserName,
+                                type = "LOGINRESPONSE",
+                                data = new LoginResponse()
+                                {
+                                    isClient = false,
+                                    status = "ERROR"
+                                }
+                            }.ToJson());
+                        }
+                        break;
                     }
-                    break;
-            }
                 case "CHAT":
                     {
                         Console.WriteLine("Received a chat packet");
-                        DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
+                        SendData(data);
+
                         //TODO send message to doctor-application
                         break;
                     }
                 case "BIKEDATA":
                     {
                         string pathToClientData = "ClientData.txt";
-                        Dictionary<string, List<BikeDataPacket>> clientData_ = 
-                            JsonConvert.DeserializeObject<Dictionary<string,List<BikeDataPacket>>>
+                        Dictionary<string, List<BikeDataPacket>> clientData_ =
+                            JsonConvert.DeserializeObject<Dictionary<string, List<BikeDataPacket>>>
                             (
                             File.ReadAllText(pathToClientData)
                             );
@@ -162,7 +164,7 @@ namespace ServerApplication
                         if (clientData_.ContainsKey(d.sender))
                         {
                             clientData_[d.sender].Add(d.data);
-                            
+
                             string contentClientData = JsonConvert.SerializeObject(clientData_);
                             File.WriteAllText(pathToClientData, contentClientData);
                         }
@@ -172,6 +174,27 @@ namespace ServerApplication
                             string contentClientData = JsonConvert.SerializeObject(clientData_);
                             File.WriteAllText(pathToClientData, contentClientData);
                         }
+                        break;
+                    }
+                case "REQUEST_CLIENTLIST":
+                    {
+                        Dictionary<string, bool> temp = new Dictionary<string, bool>();
+                        foreach (string userName in Server.clientList.Keys)
+                        {
+                            temp.Add(userName, Server.clients.GetClients().FirstOrDefault(client =>client.UserName == userName) != null);
+                        }
+                        
+                        SendData(new DataPacket<ClientListPacket>()
+                        {
+                            sender = this.UserName,
+                            type = "RESPONSE_CLIENTLIST",
+                            data = new ClientListPacket()
+                            {
+                                clientList = temp
+                            }
+                            
+                        }.ToJson()
+                        );
                         break;
                     }
                 default:
@@ -210,5 +233,10 @@ namespace ServerApplication
                 this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
             }
         }
+
+        //public void SendChatToDoctor(DataPacket packet)
+        //{
+
+        //}
     }
 }

@@ -13,10 +13,19 @@ namespace DoctorApplication
     public partial class LiveSession : Form
     {
         private string selectedUser;
-        public LiveSession(String selected)
+        private DoctorClient client;
+        public LiveSession(DoctorClient client, String selected)
         {
             InitializeComponent();
+            this.client = client;
+            this.client.OnChatReceived += Client_OnChatReceived; ;
             this.selectedUser = selected;
+            Patient.Text += selected;
+        }
+
+        private void Client_OnChatReceived(string message)
+        {
+            textBoxChat.Text += message;
         }
 
         private void labelCurrentDistance_Click(object sender, EventArgs e)
@@ -37,6 +46,11 @@ namespace DoctorApplication
         private void speedGraph_Click(object sender, EventArgs e)
         {
             
+        }
+
+        private void LiveSession_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

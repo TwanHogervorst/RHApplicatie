@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace DoctorApplication
 {
@@ -9,12 +11,29 @@ namespace DoctorApplication
         public HomePageForm(DoctorClient client)
         {
             this.client = client;
+            this.client.OnClientListReceived += Client_OnClientListReceived;
+
             InitializeComponent();
+
+            this.client.RequestClientList();
+        }
+
+        private void Client_OnClientListReceived(Dictionary<string, bool> clientList)
+        {
+            this.Invoke((Action)delegate
+            {
+                PatientListView.Items.Clear();
+
+                foreach (KeyValuePair<string, bool> client in clientList)
+                {
+                    PatientListView.Items.Add(client.Key);
+                }
+            });
         }
 
         private void LiveSessionButton_Click(object sender, System.EventArgs e)
         {
-            LiveSession liveSession = new LiveSession(selectedUser);
+            LiveSession liveSession = new LiveSession(this.client, selectedUser);
             liveSession.Show();
         }
 
@@ -29,8 +48,7 @@ namespace DoctorApplication
         private void PatientListView_SelectedIndexChanged(object sender, System.EventArgs e)
         {
             ListView listview = (ListView)sender;
-            selectedUser = listview.SelectedItems[0].ToString();
-
+            selectedUser = listview.SelectedItems[0].Text;
         }
     }
 }

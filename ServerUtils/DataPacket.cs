@@ -18,7 +18,7 @@ namespace ServerUtils
     {
         public string sender;
         public string type;
-        [JsonProperty]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         private JObject data;
 
         public DataPacket<T> GetData<T>() where T : DAbstract
@@ -48,6 +48,12 @@ namespace ServerUtils
     {
         public string chatMessage;
     }
+
+    class ClientListPacket : DAbstract
+    {
+        public Dictionary<string, bool> clientList;
+    }
+
 
     class ChatDoctorPacket : DAbstract
     {

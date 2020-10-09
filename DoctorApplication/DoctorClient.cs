@@ -12,6 +12,7 @@ namespace DoctorApplication
 
     public delegate void LoginCallback(bool status);
     public delegate void ChatCallback(string message);
+    public delegate void ClientListCallback(Dictionary<string, bool> clientList);
 
     public class DoctorClient
     {
@@ -23,6 +24,7 @@ namespace DoctorApplication
 
         public event LoginCallback OnLogin;
         public event ChatCallback OnChatReceived;
+        public event ClientListCallback OnClientListReceived;
 
         public DoctorClient()
         {
@@ -118,6 +120,27 @@ namespace DoctorApplication
             }
         }
 
+        public void RequestClientList()
+        {
+            if (this.loggedIn)
+            {
+                DataPacket dataPacket = new DataPacket()
+                {
+                    sender = this.username,
+                    type = "REQUEST_CLIENTLIST"
+                };
+
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
         private void handleData(DataPacket data)
         {
             switch (data.type)
@@ -143,7 +166,13 @@ namespace DoctorApplication
                 case "CHAT":
                     {
                         DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
-                        OnChatReceived?.Invoke($"{d.sender}: {d.data.chatMessage}");
+                        OnChatReceived?.Invoke($"\n{d.sender}: {d.data.chatMessage}");
+                        break;
+                    }
+                case "RESPONSE_CLIENTLIST":
+                    {
+                        DataPacket<ClientListPacket> d = data.GetData<ClientListPacket>();
+                        OnClientListReceived?.Invoke(d.data.clientList);
                         break;
                     }
                 default:
