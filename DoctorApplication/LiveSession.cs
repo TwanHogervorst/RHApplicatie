@@ -30,6 +30,8 @@ namespace DoctorApplication
                 if (sender == selectedUser)
                 {
                     textBoxChat.Text += message;
+                    textBoxChat.SelectionStart = textBoxChat.Text.Length;
+                    textBoxChat.ScrollToCaret();
                 }
             });
         }
@@ -61,8 +63,20 @@ namespace DoctorApplication
 
         private void buttonSendChat_Click(object sender, EventArgs e)
         {
+            this.Invoke((Action)delegate
+            {
+                textBoxChat.Text += $"{this.client.username}: {textBoxSendChat.Text}\r\n";
+                textBoxChat.SelectionStart = textBoxChat.Text.Length;
+                textBoxChat.ScrollToCaret();
+            });
+
             this.client.SendChatMessage(textBoxSendChat.Text);
             textBoxSendChat.Text = "";
+        }
+
+        private void LiveSession_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.client.OnCloseLiveSession();
         }
     }
 }

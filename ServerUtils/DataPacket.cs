@@ -65,12 +65,6 @@ namespace ServerUtils
         public string doctorUserName;
     }
 
-
-    class ChatDoctorPacket : DAbstract
-    {
-
-    }
-
     class ResistancePacket : DAbstract
     {
 

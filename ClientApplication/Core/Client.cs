@@ -20,7 +20,7 @@ namespace ClientApplication.Core
         private TcpClient client;
         private NetworkStream stream;
         private byte[] buffer = new byte[4];
-        private string username;
+        public string username;
         private bool loggedIn = false;
         public string doctorUserName;
 
@@ -31,7 +31,6 @@ namespace ClientApplication.Core
         {
             this.client = new TcpClient();
             this.client.BeginConnect("localhost", 15243, new AsyncCallback(Connect), null);
-
         }
 
         public void Connect(IAsyncResult ar)
@@ -179,13 +178,18 @@ namespace ClientApplication.Core
                 case "CHAT":
                     {
                         DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
-                        OnChatReceived?.Invoke($"\n{d.sender}: {d.data.chatMessage}");
+                        OnChatReceived?.Invoke($"{d.sender}: {d.data.chatMessage}\r\n");
                         break;
                     }
                 case "USERNAME_RESPONSE":
                     {
                         DataPacket<UserNamePacketResponse> d = data.GetData<UserNamePacketResponse>();
                         this.doctorUserName = d.data.doctorUserName;
+                        break;
+                    }
+                case "DISCONNECT_LIVESESSION":
+                    {
+                        this.doctorUserName = null;
                         break;
                     }
                 default:

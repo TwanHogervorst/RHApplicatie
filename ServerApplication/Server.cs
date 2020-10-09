@@ -26,6 +26,8 @@ namespace ServerApplication
             Console.WriteLine("Hello Server!");
             clientList = new Dictionary<string, string>();
             clientList.Add("test", "test");
+            clientList.Add("test2", "test2");
+            clientList.Add("test3", "test3");
 
             doctorList = new Dictionary<string, string>();
             doctorList.Add("test1", "test1");

@@ -213,15 +213,27 @@ namespace ServerApplication
                     {
                         DataPacket<UserNamePacket> d = data.GetData<UserNamePacket>();
 
-                        SendDataToUser(Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.clientUserName), new DataPacket<UserNamePacketResponse>()
+                        if (Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.clientUserName) != null)
                         {
-                            sender = this.UserName,
-                            type = "USERNAME_RESPONSE",
-                            data = new UserNamePacketResponse()
+                            SendDataToUser(Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.clientUserName), new DataPacket<UserNamePacketResponse>()
                             {
-                                doctorUserName = d.sender
-                            }
-                        }.ToJson());
+                                sender = this.UserName,
+                                type = "USERNAME_RESPONSE",
+                                data = new UserNamePacketResponse()
+                                {
+                                    doctorUserName = d.sender
+                                }
+                            }.ToJson());
+                        }
+                            break;
+                    }
+                case "DISCONNECT_LIVESESSION":
+                    {
+                        DataPacket<UserNamePacket> d = data.GetData<UserNamePacket>();
+
+                        if (Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.clientUserName) != null) {
+                            SendDataToUser(Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.clientUserName), d.ToJson());
+                        }
                         break;
                     }
                 default:

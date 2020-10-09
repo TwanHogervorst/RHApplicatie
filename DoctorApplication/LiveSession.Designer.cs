@@ -80,6 +80,7 @@
             this.textBoxChat.Multiline = true;
             this.textBoxChat.Name = "textBoxChat";
             this.textBoxChat.ReadOnly = true;
+            this.textBoxChat.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxChat.Size = new System.Drawing.Size(315, 730);
             this.textBoxChat.TabIndex = 2;
             // 
@@ -305,6 +306,8 @@
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "LiveSession";
             this.Text = "LiveSession";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LiveSession_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.LiveSession_FormClosed);
             this.Load += new System.EventHandler(this.LiveSession_Load);
             this.groupBoxCurrentData.ResumeLayout(false);
             this.groupBoxCurrentData.PerformLayout();

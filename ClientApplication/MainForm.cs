@@ -47,6 +47,8 @@ namespace ClientApplication
             this.Invoke((Action)delegate
            {
                textBoxChat.Text += message;
+               textBoxChat.SelectionStart = textBoxChat.Text.Length;
+               textBoxChat.ScrollToCaret();
            });
         }
 
@@ -302,6 +304,13 @@ namespace ClientApplication
 
         private void buttonChatSend_Click(object sender, EventArgs e)
         {
+            this.Invoke((Action)delegate
+            {
+                textBoxChat.Text += $"{this.client.username}: {textBoxSendChat.Text}\r\n";
+                textBoxChat.SelectionStart = textBoxChat.Text.Length;
+                textBoxChat.ScrollToCaret();
+            });
+
             this.client.SendChatMessage(textBoxSendChat.Text);
             textBoxSendChat.Text = "";
         }

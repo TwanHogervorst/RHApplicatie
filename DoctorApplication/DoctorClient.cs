@@ -19,7 +19,7 @@ namespace DoctorApplication
         private TcpClient client;
         private NetworkStream stream;
         private byte[] buffer = new byte[4];
-        private string username;
+        public string username;
         private bool loggedIn = false;
         private string clientUserName;
 
@@ -169,6 +169,35 @@ namespace DoctorApplication
             }
         }
 
+        public void OnCloseLiveSession()
+        {
+            if (this.loggedIn)
+            {
+                DataPacket<UserNamePacket> dataPacket = new DataPacket<UserNamePacket>()
+                {
+                    sender = this.username,
+                    type = "DISCONNECT_LIVESESSION",
+                    data = new UserNamePacket()
+                    {
+                        clientUserName = this.clientUserName
+                    }
+                };
+
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+
+                this.clientUserName = null;
+
+                
+            }
+        }
+
             private void handleData(DataPacket data)
         {
             switch (data.type)
@@ -195,7 +224,7 @@ namespace DoctorApplication
                     {
                         DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
 
-                        OnChatReceived?.Invoke(d.sender, $"\n{d.sender}: {d.data.chatMessage}");
+                        OnChatReceived?.Invoke(d.sender, $"{d.sender}: {d.data.chatMessage}\r\n");
                         break;
                     }
                 case "RESPONSE_CLIENTLIST":

@@ -49,7 +49,9 @@ namespace DoctorApplication
         private void PatientListView_SelectedIndexChanged(object sender, System.EventArgs e)
         {
             ListView listview = (ListView)sender;
-            selectedUser = listview.SelectedItems[0].Text;
+            if (listview.SelectedItems.Count > 0) {
+                selectedUser = listview.SelectedItems[0].Text;
+            }
         }
     }
 }
