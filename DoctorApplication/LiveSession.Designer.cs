@@ -256,6 +256,7 @@
             this.textBoxResistance.Name = "textBoxResistance";
             this.textBoxResistance.Size = new System.Drawing.Size(132, 27);
             this.textBoxResistance.TabIndex = 18;
+            this.textBoxResistance.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxResistance_KeyPress);
             // 
             // trackBarResistance
             // 
@@ -264,6 +265,7 @@
             this.trackBarResistance.Name = "trackBarResistance";
             this.trackBarResistance.Size = new System.Drawing.Size(139, 56);
             this.trackBarResistance.TabIndex = 19;
+            this.trackBarResistance.ValueChanged += new System.EventHandler(this.trackBarResistance_Changed);
             // 
             // labelTime
             // 

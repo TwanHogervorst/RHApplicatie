@@ -14,6 +14,7 @@ namespace ClientApplication.Core
 
     public delegate void LoginCallback(bool status);
     public delegate void ChatCallback(string message);
+    public delegate void ResistanceCallback(int resistance);
 
     public class Client
     {
@@ -26,6 +27,7 @@ namespace ClientApplication.Core
 
         public event LoginCallback OnLogin;
         public event ChatCallback OnChatReceived;
+        public event ResistanceCallback OnResistanceReceived;
 
         public Client()
         {
@@ -190,6 +192,13 @@ namespace ClientApplication.Core
                 case "DISCONNECT_LIVESESSION":
                     {
                         this.doctorUserName = null;
+                        break;
+                    }
+                case "RESISTANCE":
+                    {
+                        DataPacket<ResistancePacket> d = data.GetData<ResistancePacket>();
+                        //TODO set Resistance of the bike
+                        OnResistanceReceived?.Invoke(d.data.resistance);
                         break;
                     }
                 default:

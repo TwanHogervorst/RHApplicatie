@@ -248,14 +248,25 @@ namespace ServerApplication
                                 }
                             }.ToJson());
                         }
-                            break;
+                        break;
                     }
                 case "DISCONNECT_LIVESESSION":
                     {
                         DataPacket<UserNamePacket> d = data.GetData<UserNamePacket>();
 
-                        if (Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.clientUserName) != null) {
+                        if (Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.clientUserName) != null)
+                        {
                             SendDataToUser(Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.clientUserName), d.ToJson());
+                        }
+                        break;
+                    }
+                case "RESISTANCE":
+                    {
+                        DataPacket<ResistancePacket> d = data.GetData<ResistancePacket>();
+                       
+                        if (Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver) != null)
+                        {
+                            SendDataToUser(Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver), d.ToJson());
                         }
                         break;
                     }

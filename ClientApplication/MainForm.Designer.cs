@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.textBoxSpeed = new System.Windows.Forms.TextBox();
             this.textBoxHeartbeat = new System.Windows.Forms.TextBox();
             this.labelSpeed = new System.Windows.Forms.Label();
@@ -40,9 +41,6 @@
             this.labelCurrentHeartbeatValue = new System.Windows.Forms.Label();
             this.labelCurrentResistanceText = new System.Windows.Forms.Label();
             this.labelCurrentResistanceValue = new System.Windows.Forms.Label();
-            this.labelResistance = new System.Windows.Forms.Label();
-            this.textBoxResistance = new System.Windows.Forms.TextBox();
-            this.trackBarResistance = new System.Windows.Forms.TrackBar();
             this.labelCurrentElapsedTimeText = new System.Windows.Forms.Label();
             this.labelCurrentElapsedTimeValue = new System.Windows.Forms.Label();
             this.labelDistanceTraveledText = new System.Windows.Forms.Label();
@@ -61,9 +59,9 @@
             this.textBoxChat = new System.Windows.Forms.TextBox();
             this.textBoxSendChat = new System.Windows.Forms.TextBox();
             this.buttonChatSend = new System.Windows.Forms.Button();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarHeartbeat)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarResistance)).BeginInit();
             this.groupBoxSimulator.SuspendLayout();
             this.groupBoxBikeSettings.SuspendLayout();
             this.groupBoxBikeData.SuspendLayout();
@@ -133,7 +131,6 @@
             this.labelCurrentSpeedText.Size = new System.Drawing.Size(110, 20);
             this.labelCurrentSpeedText.TabIndex = 8;
             this.labelCurrentSpeedText.Text = "Current Speed: ";
-            this.labelCurrentSpeedText.Click += new System.EventHandler(this.labelCurrentSpeedText_Click);
             // 
             // labelCurrentSpeedValue
             // 
@@ -182,34 +179,6 @@
             this.labelCurrentResistanceValue.Size = new System.Drawing.Size(127, 20);
             this.labelCurrentResistanceValue.TabIndex = 13;
             this.labelCurrentResistanceValue.Text = "waiting for value";
-            // 
-            // labelResistance
-            // 
-            this.labelResistance.AutoSize = true;
-            this.labelResistance.Location = new System.Drawing.Point(7, 119);
-            this.labelResistance.Name = "labelResistance";
-            this.labelResistance.Size = new System.Drawing.Size(104, 20);
-            this.labelResistance.TabIndex = 14;
-            this.labelResistance.Text = "Resistance (%)";
-            // 
-            // textBoxResistance
-            // 
-            this.textBoxResistance.Location = new System.Drawing.Point(102, 115);
-            this.textBoxResistance.Name = "textBoxResistance";
-            this.textBoxResistance.Size = new System.Drawing.Size(147, 27);
-            this.textBoxResistance.TabIndex = 15;
-            this.textBoxResistance.Text = "0.0";
-            this.textBoxResistance.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxResistance_KeyPress);
-            // 
-            // trackBarResistance
-            // 
-            this.trackBarResistance.Location = new System.Drawing.Point(267, 115);
-            this.trackBarResistance.Maximum = 200;
-            this.trackBarResistance.Name = "trackBarResistance";
-            this.trackBarResistance.Size = new System.Drawing.Size(147, 56);
-            this.trackBarResistance.TabIndex = 16;
-            this.trackBarResistance.Value = 1;
-            this.trackBarResistance.ValueChanged += new System.EventHandler(this.trackBarResistance_Changed);
             // 
             // labelCurrentElapsedTimeText
             // 
@@ -292,9 +261,6 @@
             this.groupBoxBikeSettings.Controls.Add(this.radioButtonSimulator);
             this.groupBoxBikeSettings.Controls.Add(this.radioButtonBike);
             this.groupBoxBikeSettings.Controls.Add(this.labelUseText);
-            this.groupBoxBikeSettings.Controls.Add(this.textBoxResistance);
-            this.groupBoxBikeSettings.Controls.Add(this.labelResistance);
-            this.groupBoxBikeSettings.Controls.Add(this.trackBarResistance);
             this.groupBoxBikeSettings.Location = new System.Drawing.Point(14, 188);
             this.groupBoxBikeSettings.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBoxBikeSettings.Name = "groupBoxBikeSettings";
@@ -421,6 +387,12 @@
             this.buttonChatSend.UseVisualStyleBackColor = true;
             this.buttonChatSend.Click += new System.EventHandler(this.buttonChatSend_Click);
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -440,7 +412,6 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarHeartbeat)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarResistance)).EndInit();
             this.groupBoxSimulator.ResumeLayout(false);
             this.groupBoxSimulator.PerformLayout();
             this.groupBoxBikeSettings.ResumeLayout(false);
@@ -466,9 +437,6 @@
         private System.Windows.Forms.Label labelCurrentHeartbeatValue;
         private System.Windows.Forms.Label labelCurrentResistanceText;
         private System.Windows.Forms.Label labelCurrentResistanceValue;
-        private System.Windows.Forms.Label labelResistance;
-        private System.Windows.Forms.TextBox textBoxResistance;
-        private System.Windows.Forms.TrackBar trackBarResistance;
         private System.Windows.Forms.Label labelCurrentElapsedTimeText;
         private System.Windows.Forms.Label labelCurrentElapsedTimeValue;
         private System.Windows.Forms.Label labelDistanceTraveledText;
@@ -487,6 +455,7 @@
         private System.Windows.Forms.TextBox textBoxChat;
         private System.Windows.Forms.TextBox textBoxSendChat;
         private System.Windows.Forms.Button buttonChatSend;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
     }
 }
 

@@ -1,8 +1,10 @@
-﻿using System;
+﻿using RHApplicationLib.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Drawing.Text;
 using System.Linq;
 using System.Text;
@@ -91,6 +93,44 @@ namespace DoctorApplication
         {
             this.client.OnCloseLiveSession();
             this.client.OnChatReceived -= this.Client_OnChatReceived;
+        }
+
+        private void textBoxResistance_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                int resistance = trackBarResistance.Value;
+
+                if (!string.IsNullOrEmpty(textBoxResistance.Text))
+                {
+                    try
+                    {
+                        resistance = (int)Utility.Bound(
+                            (decimal)(double.Parse(textBoxResistance.Text.Replace(',', '.'), CultureInfo.InvariantCulture) * 2),
+                            trackBarResistance.Minimum,
+                            trackBarResistance.Maximum);
+                    }
+                    catch
+                    {
+                        resistance = trackBarResistance.Value;
+                    }
+                }
+
+                textBoxResistance.Text = (resistance / 2.0).ToString("0.0");
+                trackBarResistance.Value = resistance;
+
+                labelCurrentResistanceValue.Text = double.Parse(textBoxResistance.Text) / 2 + " %";
+
+                this.client.SendResistance(resistance);
+            }
+        }
+
+        private void trackBarResistance_Changed(object sender, EventArgs e)
+        {
+            textBoxResistance.Text = (trackBarResistance.Value / 2.0).ToString("0.0");
+            labelCurrentResistanceValue.Text = $"{trackBarResistance.Value / 2.0:0.0} %";
+
+            this.client.SendResistance(trackBarResistance.Value);
         }
     }
 }
