@@ -77,13 +77,13 @@ namespace ServerUtils
 
     //Eventueel nog responsePackets
 
-    class BikeDataPacket : DAbstract
+    public class BikeDataPacket : DAbstract
     {
-        public decimal speed;
-        public decimal heartbeat;
-        public decimal elapsedTime;
-        public decimal resistance;
-        public decimal distanceTraveled;
-        public decimal power;
+        public string receiver;
+        public double speed;
+        public int heartbeat;
+        public double elapsedTime;
+        public int distanceTraveled;
+        public int power;
     }
 }

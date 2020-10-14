@@ -20,6 +20,7 @@ namespace ServerApplication
         private byte[] buffer = new byte[4];
         private bool isConnected;
         private bool isClient;
+        private static object bikeDataLock = new object();
 
         public string UserName { get; set; }
 
@@ -173,28 +174,40 @@ namespace ServerApplication
                     }
                 case "BIKEDATA":
                     {
-                        string pathToClientData = "ClientData.txt";
-                        Dictionary<string, List<BikeDataPacket>> clientData_ =
-                            JsonConvert.DeserializeObject<Dictionary<string, List<BikeDataPacket>>>
-                            (
-                            File.ReadAllText(pathToClientData)
-                            );
-
-                        Console.WriteLine("Received a bikeData packet");
                         DataPacket<BikeDataPacket> d = data.GetData<BikeDataPacket>();
-
-                        if (clientData_.ContainsKey(d.sender))
+                        lock (bikeDataLock)
                         {
-                            clientData_[d.sender].Add(d.data);
+                            string pathToClientData = "ClientData.txt";
+                            Dictionary<string, List<BikeDataPacket>> clientData_ =
+                                JsonConvert.DeserializeObject<Dictionary<string, List<BikeDataPacket>>>
+                                (
+                                File.ReadAllText(pathToClientData)
+                                );
 
-                            string contentClientData = JsonConvert.SerializeObject(clientData_);
-                            File.WriteAllText(pathToClientData, contentClientData);
+                            Console.WriteLine("Received a bikeData packet");
+                           
+
+                            if (clientData_.ContainsKey(d.sender))
+                            {
+                                clientData_[d.sender].Add(d.data);
+
+                                string contentClientData = JsonConvert.SerializeObject(clientData_);
+                                File.WriteAllText(pathToClientData, contentClientData);
+                            }
+                            else
+                            {
+                                clientData_.Add(d.sender, new List<BikeDataPacket>() { d.data });
+                                string contentClientData = JsonConvert.SerializeObject(clientData_);
+                                File.WriteAllText(pathToClientData, contentClientData);
+                            }
                         }
-                        else
+                    
+                        if (d.data.receiver != null)
                         {
-                            clientData_.Add(d.sender, new List<BikeDataPacket>() { d.data });
-                            string contentClientData = JsonConvert.SerializeObject(clientData_);
-                            File.WriteAllText(pathToClientData, contentClientData);
+                            if (Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver) != null)
+                            {
+                                SendDataToUser(Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver), d.ToJson());
+                            }
                         }
                         break;
                     }

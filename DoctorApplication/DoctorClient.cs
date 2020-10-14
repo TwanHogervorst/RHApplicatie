@@ -13,6 +13,7 @@ namespace DoctorApplication
     public delegate void LoginCallback(bool status);
     public delegate void ChatCallback(string sender, string message);
     public delegate void ClientListCallback(Dictionary<string, bool> clientList);
+    public delegate void BikeDataCallback(BikeDataPacket bikeDataPacket);
 
     public class DoctorClient
     {
@@ -26,6 +27,7 @@ namespace DoctorApplication
         public event LoginCallback OnLogin;
         public event ChatCallback OnChatReceived;
         public event ClientListCallback OnClientListReceived;
+        public event BikeDataCallback OnBikeDataReceived;
 
         public DoctorClient()
         {
@@ -257,6 +259,12 @@ namespace DoctorApplication
                     {
                         DataPacket<ClientListPacket> d = data.GetData<ClientListPacket>();
                         OnClientListReceived?.Invoke(d.data.clientList);
+                        break;
+                    }
+                case "BIKEDATA":
+                    {
+                        DataPacket<BikeDataPacket> d = data.GetData<BikeDataPacket>();
+                        OnBikeDataReceived?.Invoke(d.data);
                         break;
                     }
                 default:

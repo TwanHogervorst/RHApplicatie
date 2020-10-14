@@ -96,20 +96,20 @@ namespace ClientApplication.Core
             this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
         }
 
-        public void SendData(decimal speed, decimal heartbeat, decimal elapsedTime, decimal resistance, decimal power, decimal distanceTraveled)
+        public void SendData(double speed, int heartbeat, double elapsedTime, int power, int distanceTraveled)
         {
             if (this.loggedIn)
             {
                 DataPacket<BikeDataPacket> dataPacket = new DataPacket<BikeDataPacket>()
                 {
-                   sender = this.username,
-                   type = "BIKEDATA",
-                   data = new BikeDataPacket()
-                   {
+                    sender = this.username,
+                    type = "BIKEDATA",
+                    data = new BikeDataPacket()
+                    {
+                       receiver = this.doctorUserName,
                        speed = speed,
                        heartbeat = heartbeat,
                        elapsedTime = elapsedTime,
-                       resistance = resistance,
                        power = power,
                        distanceTraveled = distanceTraveled
                    }
