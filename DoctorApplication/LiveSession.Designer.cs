@@ -256,6 +256,7 @@
             this.textBoxResistance.Name = "textBoxResistance";
             this.textBoxResistance.Size = new System.Drawing.Size(132, 27);
             this.textBoxResistance.TabIndex = 18;
+            this.textBoxResistance.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxResistance_KeyPress);
             // 
             // trackBarResistance
             // 
@@ -264,6 +265,7 @@
             this.trackBarResistance.Name = "trackBarResistance";
             this.trackBarResistance.Size = new System.Drawing.Size(139, 56);
             this.trackBarResistance.TabIndex = 19;
+            this.trackBarResistance.ValueChanged += new System.EventHandler(this.trackBarResistance_Changed);
             // 
             // labelTime
             // 
@@ -307,7 +309,6 @@
             this.Name = "LiveSession";
             this.Text = "LiveSession";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LiveSession_FormClosing);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.LiveSession_FormClosed);
             this.Load += new System.EventHandler(this.LiveSession_Load);
             this.groupBoxCurrentData.ResumeLayout(false);
             this.groupBoxCurrentData.PerformLayout();

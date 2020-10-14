@@ -67,7 +67,8 @@ namespace ServerUtils
 
     class ResistancePacket : DAbstract
     {
-
+        public string receiver;
+        public int resistance;
     }
 
     class RequestClientDataPacket : DAbstract

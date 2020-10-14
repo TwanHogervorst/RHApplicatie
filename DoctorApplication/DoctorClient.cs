@@ -122,6 +122,32 @@ namespace DoctorApplication
             }
         }
 
+        public void SendResistance(int resistance)
+        {
+            if (this.loggedIn)
+            {
+                DataPacket<ResistancePacket> dataPacket = new DataPacket<ResistancePacket>()
+                {
+                    sender = this.username,
+                    type = "RESISTANCE",
+                    data = new ResistancePacket()
+                    {
+                        receiver = clientUserName,
+                        resistance = resistance
+                    }
+                };
+
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
         public void RequestClientList()
         {
             if (this.loggedIn)

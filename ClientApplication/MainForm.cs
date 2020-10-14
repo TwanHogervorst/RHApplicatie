@@ -35,11 +35,18 @@ namespace ClientApplication
             this.client = client;
 
             this.client.OnChatReceived += Client_OnChatReceived;
+            this.client.OnResistanceReceived += Client_OnResistanceReceived;
 
             Utility.DisableAllChildControls(groupBoxSimulator);
+        }
 
-            this.textBoxResistance.Enabled = false;
-            this.trackBarResistance.Enabled = false;
+        private void Client_OnResistanceReceived(int resistance)
+        {
+            this.Invoke((Action)delegate
+            {
+                labelCurrentResistanceValue.Text = $"{resistance / 2.0:0.0} %";
+                this.bike.SetResistance(resistance);
+            });
         }
 
         private void Client_OnChatReceived(string message)
@@ -73,14 +80,6 @@ namespace ClientApplication
         private void trackBarHeartbeat_Changed(object sender, EventArgs e)
         {
             textBoxHeartbeat.Text = trackBarHeartbeat.Value.ToString();
-        }
-
-        private void trackBarResistance_Changed(object sender, EventArgs e)
-        {
-            textBoxResistance.Text = (trackBarResistance.Value / 2.0).ToString("0.0");
-            labelCurrentResistanceValue.Text = $"{trackBarResistance.Value / 2.0:0.0} %";
-
-            this.bike.SetResistance(trackBarResistance.Value);
         }
 
         #endregion
@@ -134,35 +133,6 @@ namespace ClientApplication
                 textBoxHeartbeat.Text = heartbeat.ToString();
                 trackBarHeartbeat.Value = heartbeat;
 
-            }
-        }
-
-        private void textBoxResistance_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)Keys.Enter)
-            {
-                int resistance = trackBarResistance.Value;
-
-                if (!string.IsNullOrEmpty(textBoxResistance.Text))
-                {
-                    try
-                    {
-                        resistance = (int)Utility.Bound(
-                            (decimal)(double.Parse(textBoxResistance.Text.Replace(',', '.'), CultureInfo.InvariantCulture) * 2),
-                            trackBarResistance.Minimum,
-                            trackBarResistance.Maximum);
-                    }
-                    catch
-                    {
-                        resistance = trackBarResistance.Value;
-                    }
-                }
-
-                textBoxResistance.Text = (resistance / 2.0).ToString("0.0");
-                trackBarResistance.Value = resistance;
-
-                this.bike.SetResistance(resistance);
-                labelCurrentResistanceValue.Text = double.Parse(textBoxResistance.Text) / 2 + " %";
             }
         }
 
@@ -238,11 +208,7 @@ namespace ClientApplication
         {
             if (args.ConnectionState == BikeConnectionState.Connected)
             {
-                this.textBoxResistance.Enabled = true;
-                this.trackBarResistance.Enabled = true;
-                this.trackBarResistance.Value = 0;
-
-                labelCurrentResistanceValue.Text = $"{trackBarResistance.Value / 2.0:0.0} %";
+                //labelCurrentResistanceValue.Text = $"{trackBarResistance.Value / 2.0:0.0} %";
 
                 if (sender is EspBikeTrainer) this.buttonConnect.Text = "Connected";
             }
@@ -253,9 +219,6 @@ namespace ClientApplication
             if (args.ConnectionState == BikeConnectionState.Error || args.ConnectionState == BikeConnectionState.Disconnected)
             {
                 this.bike = null;
-
-                this.textBoxResistance.Enabled = false;
-                this.trackBarResistance.Enabled = false;
 
                 // reset values for data labels
                 foreach (Control control in this.groupBoxBikeData.Controls)
@@ -316,9 +279,5 @@ namespace ClientApplication
         }
 
 
-        private void labelCurrentSpeedText_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
