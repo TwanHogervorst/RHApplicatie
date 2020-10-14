@@ -53,5 +53,14 @@ namespace DoctorApplication
                 selectedUser = listview.SelectedItems[0].Text;
             }
         }
+
+        private void BroadcastSendButton_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(BroadcastTextBox.Text))
+            {
+                this.client.BroadCast(BroadcastTextBox.Text);
+                BroadcastTextBox.Clear();
+            }
+        }
     }
 }

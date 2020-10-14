@@ -151,13 +151,23 @@ namespace ServerApplication
                         Console.WriteLine("Received a chat packet");
 
                         DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
-                        if (Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver) != null)
+                        if (d.data.receiver == "All") 
                         {
-                          SendDataToUser(Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver), d.ToJson());
+                            foreach (ServerClient client in Server.clients.GetClients())
+                            {
+                                SendDataToUser(client, d.ToJson());
+                            }
                         }
-                        else if (Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver) != null)
+                        else
                         {
-                            SendDataToUser(Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver), d.ToJson());
+                            if (Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver) != null)
+                            {
+                                SendDataToUser(Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver), d.ToJson());
+                            }
+                            else if (Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver) != null)
+                            {
+                                SendDataToUser(Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver), d.ToJson());
+                            }
                         }
                         break;
                     }

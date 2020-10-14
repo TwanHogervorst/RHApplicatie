@@ -53,10 +53,11 @@
             // 
             this.PatientListView.Dock = System.Windows.Forms.DockStyle.Left;
             this.PatientListView.HideSelection = false;
-            this.PatientListView.Location = new System.Drawing.Point(4, 4);
+            this.PatientListView.Location = new System.Drawing.Point(5, 5);
+            this.PatientListView.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.PatientListView.MultiSelect = false;
             this.PatientListView.Name = "PatientListView";
-            this.PatientListView.Size = new System.Drawing.Size(160, 460);
+            this.PatientListView.Size = new System.Drawing.Size(186, 530);
             this.PatientListView.TabIndex = 0;
             this.PatientListView.UseCompatibleStateImageBehavior = false;
             this.PatientListView.SelectedIndexChanged += new System.EventHandler(this.PatientListView_SelectedIndexChanged);
@@ -65,7 +66,8 @@
             // 
             this.BroadcastContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.BroadcastContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            this.BroadcastContainer.Location = new System.Drawing.Point(3, 0);
+            this.BroadcastContainer.Location = new System.Drawing.Point(4, 0);
+            this.BroadcastContainer.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.BroadcastContainer.Name = "BroadcastContainer";
             // 
             // BroadcastContainer.Panel1
@@ -75,46 +77,53 @@
             // BroadcastContainer.Panel2
             // 
             this.BroadcastContainer.Panel2.Controls.Add(this.BroadcastSendButton);
-            this.BroadcastContainer.Size = new System.Drawing.Size(481, 46);
-            this.BroadcastContainer.SplitterDistance = 378;
+            this.BroadcastContainer.Size = new System.Drawing.Size(561, 53);
+            this.BroadcastContainer.SplitterDistance = 455;
+            this.BroadcastContainer.SplitterWidth = 5;
             this.BroadcastContainer.TabIndex = 1;
             // 
             // BroadcastTextBox
             // 
             this.BroadcastTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.BroadcastTextBox.Location = new System.Drawing.Point(0, 0);
+            this.BroadcastTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.BroadcastTextBox.Multiline = true;
             this.BroadcastTextBox.Name = "BroadcastTextBox";
-            this.BroadcastTextBox.Size = new System.Drawing.Size(378, 46);
+            this.BroadcastTextBox.Size = new System.Drawing.Size(455, 53);
             this.BroadcastTextBox.TabIndex = 0;
             // 
             // BroadcastSendButton
             // 
             this.BroadcastSendButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.BroadcastSendButton.Location = new System.Drawing.Point(0, 0);
+            this.BroadcastSendButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.BroadcastSendButton.Name = "BroadcastSendButton";
-            this.BroadcastSendButton.Size = new System.Drawing.Size(99, 46);
+            this.BroadcastSendButton.Size = new System.Drawing.Size(101, 53);
             this.BroadcastSendButton.TabIndex = 0;
             this.BroadcastSendButton.Text = "Send Broadcast";
             this.BroadcastSendButton.UseVisualStyleBackColor = true;
+            this.BroadcastSendButton.Click += new System.EventHandler(this.BroadcastSendButton_Click);
             // 
             // BoradcastPanel
             // 
             this.BoradcastPanel.Controls.Add(this.BroadcastContainer);
             this.BoradcastPanel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.BoradcastPanel.Location = new System.Drawing.Point(164, 4);
+            this.BoradcastPanel.Location = new System.Drawing.Point(191, 5);
+            this.BoradcastPanel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.BoradcastPanel.Name = "BoradcastPanel";
-            this.BoradcastPanel.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.BoradcastPanel.Size = new System.Drawing.Size(484, 46);
+            this.BoradcastPanel.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
+            this.BoradcastPanel.Size = new System.Drawing.Size(565, 53);
             this.BoradcastPanel.TabIndex = 2;
             // 
             // PatientInformationGroupBox
             // 
             this.PatientInformationGroupBox.Controls.Add(this.PatientButtonContainer);
             this.PatientInformationGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.PatientInformationGroupBox.Location = new System.Drawing.Point(164, 50);
+            this.PatientInformationGroupBox.Location = new System.Drawing.Point(191, 58);
+            this.PatientInformationGroupBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.PatientInformationGroupBox.Name = "PatientInformationGroupBox";
-            this.PatientInformationGroupBox.Size = new System.Drawing.Size(484, 414);
+            this.PatientInformationGroupBox.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.PatientInformationGroupBox.Size = new System.Drawing.Size(565, 477);
             this.PatientInformationGroupBox.TabIndex = 3;
             this.PatientInformationGroupBox.TabStop = false;
             this.PatientInformationGroupBox.Text = "Patient Information";
@@ -122,7 +131,8 @@
             // PatientButtonContainer
             // 
             this.PatientButtonContainer.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.PatientButtonContainer.Location = new System.Drawing.Point(3, 367);
+            this.PatientButtonContainer.Location = new System.Drawing.Point(4, 423);
+            this.PatientButtonContainer.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.PatientButtonContainer.Name = "PatientButtonContainer";
             // 
             // PatientButtonContainer.Panel1
@@ -132,16 +142,18 @@
             // PatientButtonContainer.Panel2
             // 
             this.PatientButtonContainer.Panel2.Controls.Add(this.HistoryButton);
-            this.PatientButtonContainer.Size = new System.Drawing.Size(478, 44);
-            this.PatientButtonContainer.SplitterDistance = 227;
+            this.PatientButtonContainer.Size = new System.Drawing.Size(557, 51);
+            this.PatientButtonContainer.SplitterDistance = 264;
+            this.PatientButtonContainer.SplitterWidth = 5;
             this.PatientButtonContainer.TabIndex = 0;
             // 
             // LiveSessionButton
             // 
             this.LiveSessionButton.Dock = System.Windows.Forms.DockStyle.Left;
             this.LiveSessionButton.Location = new System.Drawing.Point(0, 0);
+            this.LiveSessionButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.LiveSessionButton.Name = "LiveSessionButton";
-            this.LiveSessionButton.Size = new System.Drawing.Size(75, 44);
+            this.LiveSessionButton.Size = new System.Drawing.Size(88, 51);
             this.LiveSessionButton.TabIndex = 0;
             this.LiveSessionButton.Text = "Live Session";
             this.LiveSessionButton.UseVisualStyleBackColor = true;
@@ -150,9 +162,10 @@
             // HistoryButton
             // 
             this.HistoryButton.Dock = System.Windows.Forms.DockStyle.Right;
-            this.HistoryButton.Location = new System.Drawing.Point(172, 0);
+            this.HistoryButton.Location = new System.Drawing.Point(200, 0);
+            this.HistoryButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.HistoryButton.Name = "HistoryButton";
-            this.HistoryButton.Size = new System.Drawing.Size(75, 44);
+            this.HistoryButton.Size = new System.Drawing.Size(88, 51);
             this.HistoryButton.TabIndex = 0;
             this.HistoryButton.Text = "History";
             this.HistoryButton.UseVisualStyleBackColor = true;
@@ -160,14 +173,15 @@
             // 
             // HomePageForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(652, 468);
+            this.ClientSize = new System.Drawing.Size(761, 540);
             this.Controls.Add(this.PatientInformationGroupBox);
             this.Controls.Add(this.BoradcastPanel);
             this.Controls.Add(this.PatientListView);
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "HomePageForm";
-            this.Padding = new System.Windows.Forms.Padding(4);
+            this.Padding = new System.Windows.Forms.Padding(5);
             this.Text = "HomePage";
             this.BroadcastContainer.Panel1.ResumeLayout(false);
             this.BroadcastContainer.Panel1.PerformLayout();

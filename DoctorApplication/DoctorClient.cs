@@ -122,6 +122,32 @@ namespace DoctorApplication
             }
         }
 
+        public void BroadCast(string message)
+        {
+            if (this.loggedIn)
+            {
+                DataPacket<ChatPacket> dataPacket = new DataPacket<ChatPacket>()
+                {
+                    sender = this.username,
+                    type = "CHAT",
+                    data = new ChatPacket()
+                    {
+                        receiver = "All",
+                        chatMessage = message
+                    }
+                };
+
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
         public void RequestClientList()
         {
             if (this.loggedIn)
