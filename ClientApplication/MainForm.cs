@@ -1,50 +1,105 @@
 ﻿using ClientApplication.Core;
-using ClientApplication.Exception;
+using ClientApplication.Data;
 using ClientApplication.Interface;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using RHApplicationLib.Core;
+using System;
+using System.Globalization;
+using System.Windows.Forms;
 
 namespace ClientApplication
 {
     public partial class MainForm : Form
     {
-
+        private BikeDataViewModel bikeDataViewModel;
+        private Client client;
         private IBikeTrainer _bike; // DONT USE THIS VARIABLE
+        private Timer dataSendTimer;
         private IBikeTrainer bike
         {
             get => this._bike;
             set
             {
                 this._bike?.StopReceiving();
+                this.dataSendTimer.Stop();
                 this._bike = value;
 
                 if (this._bike != null)
                 {
-                    this._bike.BikeDataReceived += Bike_BikeDataReceived;
+                    this.bikeDataViewModel = new BikeDataViewModel(this._bike);
+                    this.bikeDataViewModel.OnBikeDataChanged += BikeDataViewModel_OnBikeDataChanged;
                     this._bike.BikeConnectionChanged += Bike_BikeConnectionChanged;
                     this._bike.StartReceiving();
+                    this.dataSendTimer.Start();
                 }
             }
         }
 
-        public MainForm()
+        private void BikeDataViewModel_OnBikeDataChanged(BikeDataViewModel sender, BikeDataType type)
+        {
+            this.Invoke((MethodInvoker)delegate () {
+                switch (type)
+                {
+                    case BikeDataType.HeartBeat:
+                        labelCurrentHeartbeatValue.Text = sender.HeartBeat.ToString() + " BPM";
+                    break;
+                    case BikeDataType.GeneralFEData:
+                        labelCurrentElapsedTimeValue.Text = sender.ElapsedTime.ToString("0.00") + " s";
+                        labelCurrentDistanceTraveledValue.Text = sender.DistanceTraveled.ToString() + " m";
+                        labelCurrentSpeedValue.Text = sender.Speed.ToString("0.00") + " m/s";
+                        break;
+                    case BikeDataType.SpecificBikeData:
+                        labelCurrentPowerValue.Text = sender.Power.ToString() + " W";
+                        break;
+                }
+            });
+        }
+
+        public MainForm(Client client)
         {
             InitializeComponent();
+            dataSendTimer = new Timer();
+            dataSendTimer.Interval = 500;
+            dataSendTimer.Tick += DataSendTimer_Tick;
+            this.client = client;
+            this.client.OnChatReceived += Client_OnChatReceived;
+            this.client.OnResistanceReceived += Client_OnResistanceReceived;
 
             Utility.DisableAllChildControls(groupBoxSimulator);
+        }
 
-            this.textBoxResistance.Enabled = false;
-            this.trackBarResistance.Enabled = false;
+        private void Client_OnResistanceReceived(int resistance)
+        {
+            this.Invoke((Action)delegate
+            {
+                labelCurrentResistanceValue.Text = $"{resistance / 2.0:0.0} %";
+                this.bike.SetResistance(resistance);
+            });
+        }
+
+        private void DataSendTimer_Tick(object sender, EventArgs e)
+        {
+            this.client.SendData(bikeDataViewModel.Speed, bikeDataViewModel.HeartBeat, bikeDataViewModel.ElapsedTime, bikeDataViewModel.Power, bikeDataViewModel.DistanceTraveled);
+        }
+
+        private void Client_OnChatReceived(string message)
+        {
+            this.Invoke((Action)delegate
+           {
+               textBoxChat.Text += message;
+               textBoxChat.SelectionStart = textBoxChat.Text.Length;
+               textBoxChat.ScrollToCaret();
+           });
+        }
+
+        private void Client_OnLogin(bool status)
+        {
+            if (status)
+            {
+                //turn all groups on, and give dialog that you are succesfully logged in
+            }else
+            {
+                //give dialog that logged in was unsuccesfull
+            }
         }
 
         #region Trackbar Events
@@ -57,14 +112,6 @@ namespace ClientApplication
         private void trackBarHeartbeat_Changed(object sender, EventArgs e)
         {
             textBoxHeartbeat.Text = trackBarHeartbeat.Value.ToString();
-        }
-
-        private void trackBarResistance_Changed(object sender, EventArgs e)
-        {
-            textBoxResistance.Text = (trackBarResistance.Value / 2.0).ToString("0.0");
-            labelCurrentResistanceValue.Text = $"{trackBarResistance.Value / 2.0:0.0} %";
-
-            this.bike.SetResistance(trackBarResistance.Value);
         }
 
         #endregion
@@ -83,7 +130,7 @@ namespace ClientApplication
                     {
                         speedValue = (int)Utility.Bound(
                             (decimal)(double.Parse(textBoxSpeed.Text.Replace(',', '.'), CultureInfo.InvariantCulture) * 100),
-                            trackBarSpeed.Minimum, 
+                            trackBarSpeed.Minimum,
                             trackBarSpeed.Maximum);
                     }
                     catch
@@ -118,35 +165,6 @@ namespace ClientApplication
                 textBoxHeartbeat.Text = heartbeat.ToString();
                 trackBarHeartbeat.Value = heartbeat;
 
-            }
-        }
-
-        private void textBoxResistance_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)Keys.Enter)
-            {
-                int resistance = trackBarResistance.Value;
-
-                if (!string.IsNullOrEmpty(textBoxResistance.Text))
-                {
-                    try
-                    {
-                        resistance = (int)Utility.Bound(
-                            (decimal)(double.Parse(textBoxResistance.Text.Replace(',', '.'), CultureInfo.InvariantCulture) * 2),
-                            trackBarResistance.Minimum,
-                            trackBarResistance.Maximum);
-                    }
-                    catch
-                    {
-                        resistance = trackBarResistance.Value;
-                    }
-                }
-
-                textBoxResistance.Text = (resistance / 2.0).ToString("0.0");
-                trackBarResistance.Value = resistance;
-
-                this.bike.SetResistance(resistance);
-                labelCurrentResistanceValue.Text = double.Parse(textBoxResistance.Text) / 2 + " %";
             }
         }
 
@@ -222,11 +240,7 @@ namespace ClientApplication
         {
             if (args.ConnectionState == BikeConnectionState.Connected)
             {
-                this.textBoxResistance.Enabled = true;
-                this.trackBarResistance.Enabled = true;
-                this.trackBarResistance.Value = 0;
-
-                labelCurrentResistanceValue.Text = $"{trackBarResistance.Value / 2.0:0.0} %";
+                //labelCurrentResistanceValue.Text = $"{trackBarResistance.Value / 2.0:0.0} %";
 
                 if (sender is EspBikeTrainer) this.buttonConnect.Text = "Connected";
             }
@@ -238,11 +252,8 @@ namespace ClientApplication
             {
                 this.bike = null;
 
-                this.textBoxResistance.Enabled = false;
-                this.trackBarResistance.Enabled = false;
-
                 // reset values for data labels
-                foreach(Control control in this.groupBoxBikeData.Controls)
+                foreach (Control control in this.groupBoxBikeData.Controls)
                 {
                     if (control is Label && control.Name.EndsWith("Value")) control.Text = "waiting for value";
                 }
@@ -257,34 +268,21 @@ namespace ClientApplication
             }
         }
 
-        private void Bike_BikeDataReceived(object sender, BikeDataReceivedEventArgs args)
+        #endregion
+
+        private void buttonChatSend_Click(object sender, EventArgs e)
         {
-            switch (args.Type)
+            this.Invoke((Action)delegate
             {
-                case BikeDataType.HeartBeat:
-                    labelCurrentHeartbeatValue.Invoke((MethodInvoker)delegate () 
-                    { 
-                        labelCurrentHeartbeatValue.Text = args.Data.HeartBeat.ToString() + " BPM"; 
-                    });
-                    break;
-                case BikeDataType.GeneralFEData:
-                    this.Invoke((MethodInvoker)delegate ()
-                    {
-                        labelCurrentElapsedTimeValue.Text = (((double)args.Data.ElapsedTime / 4)).ToString("0.00") + " s";
-                        labelCurrentDistanceTraveledValue.Text = args.Data.DistanceTraveled.ToString() + " m";
-                        labelCurrentSpeedValue.Text = ((double)(args.Data.Speed) / 1000).ToString("0.00") + " m/s";
-                    });
-                    break;
-                case BikeDataType.SpecificBikeData:
-                    this.Invoke((MethodInvoker)delegate ()
-                    {
-                        labelCurrentPowerValue.Text = args.Data.Power.ToString() + " W";
-                    });
-                    break;
-            }
+                textBoxChat.Text += $"{this.client.username}: {textBoxSendChat.Text}\r\n";
+                textBoxChat.SelectionStart = textBoxChat.Text.Length;
+                textBoxChat.ScrollToCaret();
+            });
+
+            this.client.SendChatMessage(textBoxSendChat.Text);
+            textBoxSendChat.Text = "";
         }
 
-        #endregion
-        
+
     }
 }

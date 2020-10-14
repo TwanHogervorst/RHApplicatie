@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ClientApplication.Exception
+﻿namespace ClientApplication.Exception
 {
     public class BLEException : System.Exception
     {
         public int ErrorCode { get; private set; }
-        
+
         public BLEException(int errorCode)
-            :base("BLE Error: " + errorCode)
+            : base("BLE Error: " + errorCode)
         {
             this.ErrorCode = errorCode;
         }

@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace RHApplicationLib.Core
 {
     public static class Utility
     {
-        
+
         public static IEnumerable<byte> ReverseIfBigEndian(IEnumerable<byte> byteEnumerable) => !BitConverter.IsLittleEndian ? byteEnumerable.Reverse() : byteEnumerable;
 
         public static byte[] ReverseIfBigEndian(byte[] byteArray) => Utility.ReverseIfBigEndian((IEnumerable<byte>)byteArray).ToArray();
 
         public static List<byte> ReverseIfBigEndian(List<byte> byteList) => Utility.ReverseIfBigEndian((IEnumerable<byte>)byteList).ToList();
+
+        public static IEnumerable<byte> ReverseIfLittleEndian(IEnumerable<byte> byteEnumerable) => BitConverter.IsLittleEndian ? byteEnumerable.Reverse() : byteEnumerable;
+
+        public static byte[] ReverseIfLittleEndian(byte[] byteArray) => Utility.ReverseIfLittleEndian((IEnumerable<byte>)byteArray).ToArray();
+
+        public static List<byte> ReverseIfLittleEndian(List<byte> byteList) => Utility.ReverseIfLittleEndian((IEnumerable<byte>)byteList).ToList();
 
         public static void EnableAllChildControls(GroupBox groupBox)
         {

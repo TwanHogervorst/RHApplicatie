@@ -1,8 +1,4 @@
-﻿using ClientApplication.Interface;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using RHApplicationLib.Abstract;
+﻿using RHApplicationLib.Abstract;
 
 namespace ClientApplication.Data
 {
