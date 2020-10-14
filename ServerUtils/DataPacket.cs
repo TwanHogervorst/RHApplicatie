@@ -79,11 +79,10 @@ namespace ServerUtils
 
     class BikeDataPacket : DAbstract
     {
-        public decimal speed;
-        public decimal heartbeat;
-        public decimal elapsedTime;
-        public decimal resistance;
-        public decimal distanceTraveled;
-        public decimal power;
+        public double speed;
+        public int heartbeat;
+        public double elapsedTime;
+        public int distanceTraveled;
+        public int power;
     }
 }

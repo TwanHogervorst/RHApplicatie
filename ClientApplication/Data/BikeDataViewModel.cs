@@ -35,6 +35,11 @@ namespace ClientApplication.Data
                     Power = args.Data.Power;
                     break;
             }
+            this.OnBikeDataChanged?.Invoke(this, args.Type);
         }
+        public event BikeDataChanged OnBikeDataChanged;
     }
+    public delegate void BikeDataChanged(BikeDataViewModel sender, BikeDataType type);
+
+
 }

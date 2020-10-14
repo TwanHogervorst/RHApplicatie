@@ -1,4 +1,5 @@
 ﻿using ClientApplication.Core;
+using ClientApplication.Data;
 using ClientApplication.Interface;
 using RHApplicationLib.Core;
 using System;
@@ -9,37 +10,68 @@ namespace ClientApplication
 {
     public partial class MainForm : Form
     {
-
+        private BikeDataViewModel bikeDataViewModel;
         private Client client;
         private IBikeTrainer _bike; // DONT USE THIS VARIABLE
+        private Timer dataSendTimer;
         private IBikeTrainer bike
         {
             get => this._bike;
             set
             {
                 this._bike?.StopReceiving();
+                this.dataSendTimer.Stop();
                 this._bike = value;
 
                 if (this._bike != null)
                 {
-                    this._bike.BikeDataReceived += Bike_BikeDataReceived;
+                    this.bikeDataViewModel = new BikeDataViewModel(this._bike);
+                    this.bikeDataViewModel.OnBikeDataChanged += BikeDataViewModel_OnBikeDataChanged;
                     this._bike.BikeConnectionChanged += Bike_BikeConnectionChanged;
                     this._bike.StartReceiving();
+                    this.dataSendTimer.Start();
                 }
             }
+        }
+
+        private void BikeDataViewModel_OnBikeDataChanged(BikeDataViewModel sender, BikeDataType type)
+        {
+            this.Invoke((MethodInvoker)delegate () {
+                switch (type)
+                {
+                    case BikeDataType.HeartBeat:
+                        labelCurrentHeartbeatValue.Text = sender.HeartBeat.ToString() + " BPM";
+                    break;
+                    case BikeDataType.GeneralFEData:
+                        labelCurrentElapsedTimeValue.Text = sender.ElapsedTime.ToString("0.00") + " s";
+                        labelCurrentDistanceTraveledValue.Text = sender.DistanceTraveled.ToString() + " m";
+                        labelCurrentSpeedValue.Text = sender.Speed.ToString("0.00") + " m/s";
+                        break;
+                    case BikeDataType.SpecificBikeData:
+                        labelCurrentPowerValue.Text = sender.Power.ToString() + " W";
+                        break;
+                }
+            });
         }
 
         public MainForm(Client client)
         {
             InitializeComponent();
+            dataSendTimer = new Timer();
+            dataSendTimer.Interval = 500;
+            dataSendTimer.Tick += DataSendTimer_Tick;
             this.client = client;
-
             this.client.OnChatReceived += Client_OnChatReceived;
 
             Utility.DisableAllChildControls(groupBoxSimulator);
 
             this.textBoxResistance.Enabled = false;
             this.trackBarResistance.Enabled = false;
+        }
+
+        private void DataSendTimer_Tick(object sender, EventArgs e)
+        {
+            this.client.SendData(bikeDataViewModel.Speed, bikeDataViewModel.HeartBeat, bikeDataViewModel.ElapsedTime, bikeDataViewModel.Power, bikeDataViewModel.DistanceTraveled);
         }
 
         private void Client_OnChatReceived(string message)
@@ -270,33 +302,6 @@ namespace ClientApplication
                     this.buttonConnect.Text = "Connect";
                     this.buttonConnect.Enabled = true;
                 }
-            }
-        }
-
-        private void Bike_BikeDataReceived(object sender, BikeDataReceivedEventArgs args)
-        {
-            switch (args.Type)
-            {
-                case BikeDataType.HeartBeat:
-                    labelCurrentHeartbeatValue.Invoke((MethodInvoker)delegate ()
-                    {
-                        labelCurrentHeartbeatValue.Text = args.Data.HeartBeat.ToString() + " BPM";
-                    });
-                    break;
-                case BikeDataType.GeneralFEData:
-                    this.Invoke((MethodInvoker)delegate ()
-                    {
-                        labelCurrentElapsedTimeValue.Text = (((double)args.Data.ElapsedTime / 4)).ToString("0.00") + " s";
-                        labelCurrentDistanceTraveledValue.Text = args.Data.DistanceTraveled.ToString() + " m";
-                        labelCurrentSpeedValue.Text = ((double)(args.Data.Speed) / 1000).ToString("0.00") + " m/s";
-                    });
-                    break;
-                case BikeDataType.SpecificBikeData:
-                    this.Invoke((MethodInvoker)delegate ()
-                    {
-                        labelCurrentPowerValue.Text = args.Data.Power.ToString() + " W";
-                    });
-                    break;
             }
         }
 

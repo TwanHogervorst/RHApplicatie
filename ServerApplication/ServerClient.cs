@@ -20,7 +20,7 @@ namespace ServerApplication
         private byte[] buffer = new byte[4];
         private bool isConnected;
         private bool isClient;
-        private static object bikeDataLock;
+        private static object bikeDataLock = new object();
 
         public string UserName { get; set; }
 
