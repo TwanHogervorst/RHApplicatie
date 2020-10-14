@@ -307,7 +307,6 @@
             this.Name = "LiveSession";
             this.Text = "LiveSession";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LiveSession_FormClosing);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.LiveSession_FormClosed);
             this.Load += new System.EventHandler(this.LiveSession_Load);
             this.groupBoxCurrentData.ResumeLayout(false);
             this.groupBoxCurrentData.PerformLayout();

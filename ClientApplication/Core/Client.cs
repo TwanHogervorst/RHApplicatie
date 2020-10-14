@@ -102,10 +102,11 @@ namespace ClientApplication.Core
             {
                 DataPacket<BikeDataPacket> dataPacket = new DataPacket<BikeDataPacket>()
                 {
-                   sender = this.username,
-                   type = "BIKEDATA",
-                   data = new BikeDataPacket()
-                   {
+                    sender = this.username,
+                    type = "BIKEDATA",
+                    data = new BikeDataPacket()
+                    {
+                       receiver = this.doctorUserName,
                        speed = speed,
                        heartbeat = heartbeat,
                        elapsedTime = elapsedTime,

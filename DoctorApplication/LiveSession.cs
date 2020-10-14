@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,8 +20,20 @@ namespace DoctorApplication
             InitializeComponent();
             this.client = client;
             this.client.OnChatReceived += Client_OnChatReceived; ;
+            this.client.OnBikeDataReceived += Client_OnBikeDataReceived;
             this.selectedUser = selected;
             Patient.Text += selected;
+        }
+
+        private void Client_OnBikeDataReceived(ServerUtils.BikeDataPacket bikeDataPacket)
+        {
+            this.Invoke((Action)delegate
+            {
+                this.labelCurrentSpeedValue.Text = bikeDataPacket.speed.ToString("0.00") + " m/s";
+                this.labelCurrentDistanceValue.Text = bikeDataPacket.distanceTraveled.ToString() + " m";
+                this.labelCurrentHearthbeatValue.Text = bikeDataPacket.heartbeat.ToString() + " BPM";
+                this.labelCurrentPowerValue.Text = bikeDataPacket.power.ToString() + " W";
+            });
         }
 
         private void Client_OnChatReceived(string sender, string message)
@@ -77,6 +90,7 @@ namespace DoctorApplication
         private void LiveSession_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.client.OnCloseLiveSession();
+            this.client.OnChatReceived -= this.Client_OnChatReceived;
         }
     }
 }

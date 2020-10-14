@@ -164,6 +164,7 @@ namespace ServerApplication
                     }
                 case "BIKEDATA":
                     {
+                        DataPacket<BikeDataPacket> d = data.GetData<BikeDataPacket>();
                         lock (bikeDataLock)
                         {
                             string pathToClientData = "ClientData.txt";
@@ -174,7 +175,7 @@ namespace ServerApplication
                                 );
 
                             Console.WriteLine("Received a bikeData packet");
-                            DataPacket<BikeDataPacket> d = data.GetData<BikeDataPacket>();
+                           
 
                             if (clientData_.ContainsKey(d.sender))
                             {
@@ -188,6 +189,14 @@ namespace ServerApplication
                                 clientData_.Add(d.sender, new List<BikeDataPacket>() { d.data });
                                 string contentClientData = JsonConvert.SerializeObject(clientData_);
                                 File.WriteAllText(pathToClientData, contentClientData);
+                            }
+                        }
+                    
+                        if (d.data.receiver != null)
+                        {
+                            if (Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver) != null)
+                            {
+                                SendDataToUser(Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver), d.ToJson());
                             }
                         }
                         break;

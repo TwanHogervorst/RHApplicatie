@@ -77,8 +77,9 @@ namespace ServerUtils
 
     //Eventueel nog responsePackets
 
-    class BikeDataPacket : DAbstract
+    public class BikeDataPacket : DAbstract
     {
+        public string receiver;
         public double speed;
         public int heartbeat;
         public double elapsedTime;
