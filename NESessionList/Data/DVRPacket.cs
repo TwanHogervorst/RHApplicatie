@@ -13,12 +13,26 @@ namespace NESessionList.Data
         public T data;
     }
 
+    public class DVRClientReceivePacket<T> : DAbstract where T : DAbstract
+    {
+        public string id;
+
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public T data;
+
+        public string status;
+        public string error;
+    }
+
     public class DVRClientPacketArrayResponse<T> : DAbstract where T : DAbstract
     {
         public string id;
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public List<T> data;
+
+        public string status;
+        public string errror;
     }
 
     public class DVRClientReceivePacket : DAbstract

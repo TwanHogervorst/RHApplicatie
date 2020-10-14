@@ -29,15 +29,13 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRSceneResetResult> result = this.SendAndReceiveData<DVRClientPacket<DVRSceneResetResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientReceivePacket<DVRSceneResetResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRSceneResetResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/reset"
                 }); ;
 
-                if (result != null)
-                {
-                    Console.WriteLine($"Scene Reset");
-                }
+                if (result?.status != "error") Console.WriteLine($"Scene Reset");
+                else Console.WriteLine($"SceneReset Error: {result?.error ?? "NULL"}");
             }
             catch (VRClientException ex)
             {
@@ -50,7 +48,7 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRAddNodeResult> result = this.SendAndReceiveData<DVRClientPacket<DVRAddNodeResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientReceivePacket<DVRAddNodeResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRAddNodeResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/node/add",
                     data = new DVRAddNodePacket() // Create Add Node Packet
@@ -67,12 +65,13 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null)
+                if (result?.status != "error")
                 {
                     Console.WriteLine($"Added node: {result.data.name} (uuid: {result.data.uuid})");
 
                     nodeList.Add(result.data.name, result.data.uuid);
                 }
+                else Console.WriteLine($"AddNode Error: {result?.error ?? "NULL"}");
             }
             catch (VRClientException ex)
             {
@@ -84,7 +83,7 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRUpdateNodeResult> result = this.SendAndReceiveData<DVRClientPacket<DVRUpdateNodeResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientReceivePacket<DVRUpdateNodeResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRUpdateNodeResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/node/update",
                     data = new DVRUpdateNodePacket() // Create Update Node Packet
@@ -95,7 +94,8 @@ namespace NESessionList.Core
                     }
                 }); ; ;
 
-                if (result != null) Console.WriteLine($"Update node status: {result.data.status}");
+                if (result?.status != "error") Console.WriteLine($"Update node status: {result.status}");
+                else Console.WriteLine($"UpdateNode Error: {result?.error ?? "NULL"}");
             }
             catch (VRClientException ex)
             {
@@ -107,7 +107,7 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRDeleteNodeResult> result = this.SendAndReceiveData<DVRClientPacket<DVRDeleteNodeResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientReceivePacket<DVRDeleteNodeResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRDeleteNodeResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/node/delete",
                     data = new DVRDeleteNodePacket() // Create Delete Node Packet
@@ -116,10 +116,16 @@ namespace NESessionList.Core
                     }
                 }); ; ;
 
+                if (result?.status != "error")
+                {
+                    Console.WriteLine($"Delete node status: {result.status}");
+                    nodeList.Remove(nodeList.FirstOrDefault(e => e.Value == id_).Key);
+                }
+                else Console.WriteLine($"DeleteNode Error: {result?.error ?? "NULL"}");
                 if (result != null)
                 {
                     //Console.WriteLine($"Delete node status: {result.data.status}");
-                    nodeList.Remove(nodeList.FirstOrDefault(e => e.Value == id_).Key);
+                    
                 }
             }
             catch (VRClientException ex)
@@ -159,7 +165,7 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRMoveNodeToResult> result = this.SendAndReceiveData<DVRClientPacket<DVRMoveNodeToResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientReceivePacket<DVRMoveNodeToResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRMoveNodeToResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/node/moveto",
                     data = new DVRMoveNodeToPacket() // Create Move Node To Packet
@@ -175,7 +181,8 @@ namespace NESessionList.Core
                     }
                 }); ; ;
 
-                if (result != null) Console.WriteLine($"Move node status: {result.data.status}");
+                if (result?.status != "error") Console.WriteLine($"Move node status: {result.status}");
+                else Console.WriteLine($"MoveNode Error: {result?.error ?? "NULL"}");
             }
             catch (VRClientException ex)
             {
@@ -188,7 +195,7 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRNodeAddlayerResult> result = this.SendAndReceiveData<DVRClientPacket<DVRNodeAddlayerResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientReceivePacket<DVRNodeAddlayerResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRNodeAddlayerResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/terrain/add",
                     data = new DVRNodeAddlayerPacket() // Create Add Node layer packet
@@ -215,7 +222,7 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRAddTerrainResult> result = this.SendAndReceiveData<DVRClientPacket<DVRAddTerrainResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientReceivePacket<DVRAddTerrainResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRAddTerrainResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/terrain/add",
                     data = new DVRAddTerrainPacket() // Create Add Terrain Packet
@@ -238,7 +245,7 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRUpdateTerrainResult> result = this.SendAndReceiveData<DVRClientPacket<DVRUpdateTerrainResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientReceivePacket<DVRUpdateTerrainResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRUpdateTerrainResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/terrain/update",
                     data = new DVRUpdateTerrainPacket() // Create Update Terrain Packet
@@ -259,7 +266,7 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRDeleteTerrainResult> result = this.SendAndReceiveData<DVRClientPacket<DVRDeleteTerrainResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientReceivePacket<DVRDeleteTerrainResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRDeleteTerrainResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/terrain/delete",
                     data = new DVRDeleteTerrainPacket() // Create Delete Terrain Packet
@@ -267,7 +274,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine($"Delete Terrain status: {result.data.status}");
+                if (result != null) Console.WriteLine($"Delete Terrain status: {result.data?.status}");
             }
             catch (VRClientException ex)
             {
@@ -280,7 +287,7 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRSetTimeSkyBoxResult> result = this.SendAndReceiveData<DVRClientPacket<DVRSetTimeSkyBoxResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientReceivePacket<DVRSetTimeSkyBoxResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRSetTimeSkyBoxResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/skybox/settime",
                     data = new DVRSetTimeSkyBoxPacket() // Create Set Time SkyBox Packet
@@ -302,7 +309,7 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRAddRoadResult> result = this.SendAndReceiveData<DVRClientPacket<DVRAddRoadResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientReceivePacket<DVRAddRoadResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRAddRoadResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/road/add",
                     data = new DVRAddRoadPacket() // Create Add Road Packet
@@ -331,7 +338,7 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRUpdateRoadResult> result = this.SendAndReceiveData<DVRClientPacket<DVRUpdateRoadResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientReceivePacket<DVRUpdateRoadResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRUpdateRoadResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/road/update",
                     data = new DVRUpdateRoadPacket() // Create Update Road Packet
@@ -356,7 +363,7 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRAddRouteResult> result = this.SendAndReceiveData<DVRClientPacket<DVRAddRouteResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientReceivePacket<DVRAddRouteResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRAddRouteResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "route/add",
                     data = new DVRAddRoutePacket() // Create Add Route Packet
@@ -381,7 +388,7 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRRouteUpdateResult> result = this.SendAndReceiveData<DVRClientPacket<DVRRouteUpdateResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientReceivePacket<DVRRouteUpdateResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRRouteUpdateResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "route/add",
                     data = new DVRRouteUpdatePacket() // Create Update Route Packet
@@ -403,7 +410,7 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRRouteDeleteResult> result = this.SendAndReceiveData<DVRClientPacket<DVRRouteDeleteResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientReceivePacket<DVRRouteDeleteResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRRouteDeleteResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "route/delete",
                     data = new DVRRouteDeletePacket// Create Delete route packet
@@ -430,7 +437,7 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRRouteFollowResult> result = this.SendAndReceiveData<DVRClientPacket<DVRRouteFollowResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientReceivePacket<DVRRouteFollowResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRRouteFollowResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "route/follow",
                     data = new DVRRouteFollowPacket() // Create route follow packet
@@ -459,7 +466,7 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRRouteFollowSpeedResult> result = this.SendAndReceiveData<DVRClientPacket<DVRRouteFollowSpeedResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientReceivePacket<DVRRouteFollowSpeedResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRRouteFollowSpeedResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "route/follow/speed",
                     data = new DVRRouteFollowSpeedPacket() // Create Update Road Packet
@@ -481,7 +488,7 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRRouteShowResult> result = this.SendAndReceiveData<DVRClientPacket<DVRRouteShowResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientReceivePacket<DVRRouteShowResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRRouteShowResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "route/show",
                     data = new DVRRouteShowPacket() // Create Update Road Packet
@@ -502,7 +509,7 @@ namespace NESessionList.Core
         {
             try
             {
-                DVRClientPacket<DVRGetSceneResult> result = this.SendAndReceiveData<DVRClientPacket<DVRGetSceneResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                DVRClientReceivePacket<DVRGetSceneResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRGetSceneResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
                 {
                     id = "scene/get",
                     data = new DVRRouteShowPacket() // Create get scene Packet
