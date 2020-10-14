@@ -3,24 +3,47 @@
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<UseWindowsForms>true</UseWindowsForms>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\RHApplicatieLib\RHApplicatieLib.csproj" />
 	</ItemGroup>
+
 	<ItemGroup>
-	  <Compile Update="Properties\Settings.Designer.cs">
-	    <DesignTimeSharedInput>True</DesignTimeSharedInput>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>Settings.settings</DependentUpon>
-	  </Compile>
+		<Compile Update="HistoryForm.cs">
+			<SubType>Form</SubType>
+		</Compile>
+		<Compile Update="HistoryForm.Designer.cs">
+			<DependentUpon>HistoryForm.cs</DependentUpon>
+		</Compile>
 	</ItemGroup>
+
 	<ItemGroup>
-	  <None Update="Properties\Settings.settings">
-	    <Generator>SettingsSingleFileGenerator</Generator>
-	    <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-	  </None>
+		<Compile Update="HomePageForm.cs">
+			<SubType>Form</SubType>
+		</Compile>
+		<Compile Update="HomePageForm.Designer.cs">
+			<DependentUpon>HomePageForm.cs</DependentUpon>
+		</Compile>
 	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="LiveSession.cs">
+			<SubType>Form</SubType>
+		</Compile>
+		<Compile Update="LiveSession.Designer.cs">
+			<DependentUpon>LiveSession.cs</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="LoginForm.cs">
+			<SubType>Form</SubType>
+		</Compile>
+		<Compile Update="LoginForm.Designer.cs">
+			<DependentUpon>LoginForm.cs</DependentUpon>
+		</Compile>
+	</ItemGroup>
+	
 	<Import Project="..\ServerUtils\ServerUtils.projitems" Label="Shared" />
 </Project>
 

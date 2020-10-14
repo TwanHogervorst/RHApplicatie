@@ -10,5 +10,9 @@ namespace DoctorApplication
             InitializeComponent();
             this.selectedUser = selected;
         }
+        public HistoryForm()
+        {
+            InitializeComponent();
+        }
     }
 }
