@@ -17,20 +17,39 @@ namespace DoctorApplication
     {
         private string selectedUser;
         private DoctorClient client;
+        private bool IsRunning;
+        private DateTime startTimeSession;
         public LiveSession(DoctorClient client, String selected)
         {
             InitializeComponent();
             this.client = client;
             this.client.OnChatReceived += Client_OnChatReceived; ;
             this.client.OnBikeDataReceived += Client_OnBikeDataReceived;
+            this.client.OnSessionStateReceived += Client_OnSessionStateReceived;
             this.selectedUser = selected;
             Patient.Text += selected;
+
+           this.client.RequestSessionState();
+        }
+
+        private void Client_OnSessionStateReceived(string clientUserName, DateTime startTimeSession, bool state)
+        {
+            if (this.selectedUser == clientUserName) {
+                this.IsRunning = state;
+                this.startTimeSession = startTimeSession;
+            }
         }
 
         private void Client_OnBikeDataReceived(ServerUtils.BikeDataPacket bikeDataPacket)
         {
             this.Invoke((Action)delegate
             {
+                if (this.IsRunning)
+                {
+                    TimeSpan ts = DateTime.Now - this.startTimeSession;
+                    this.labelTimeValue.Text = $"{(int)ts.TotalMinutes:00}:{ts.Seconds:00}";
+                }
+               
                 this.labelCurrentSpeedValue.Text = bikeDataPacket.speed.ToString("0.00") + " m/s";
                 this.labelCurrentDistanceValue.Text = bikeDataPacket.distanceTraveled.ToString() + " m";
                 this.labelCurrentHearthbeatValue.Text = bikeDataPacket.heartbeat.ToString() + " BPM";
@@ -63,7 +82,11 @@ namespace DoctorApplication
 
         private void buttonStartStop_Click(object sender, EventArgs e)
         {
-
+            //TODO Start/Stop method
+            if (this.IsRunning)
+                this.client.StopSession();
+            else
+                this.client.StartSession();
         }
 
         private void speedGraph_Click(object sender, EventArgs e)
@@ -93,6 +116,8 @@ namespace DoctorApplication
         {
             this.client.OnCloseLiveSession();
             this.client.OnChatReceived -= this.Client_OnChatReceived;
+            this.client.OnSessionStateReceived -= this.Client_OnSessionStateReceived;
+            this.client.OnBikeDataReceived -= this.Client_OnBikeDataReceived;
         }
 
         private void textBoxResistance_KeyPress(object sender, KeyPressEventArgs e)

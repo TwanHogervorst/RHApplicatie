@@ -15,6 +15,7 @@ namespace ClientApplication.Core
     public delegate void LoginCallback(bool status);
     public delegate void ChatCallback(string message);
     public delegate void ResistanceCallback(int resistance);
+    public delegate void StartStopSessionCallback(bool state);
 
     public class Client
     {
@@ -28,6 +29,7 @@ namespace ClientApplication.Core
         public event LoginCallback OnLogin;
         public event ChatCallback OnChatReceived;
         public event ResistanceCallback OnResistanceReceived;
+        public event StartStopSessionCallback OnStartStopSession;
 
         public Client()
         {
@@ -199,6 +201,18 @@ namespace ClientApplication.Core
                         DataPacket<ResistancePacket> d = data.GetData<ResistancePacket>();
                         //TODO set Resistance of the bike
                         OnResistanceReceived?.Invoke(d.data.resistance);
+                        break;
+                    }
+                case "START_SESSION":
+                    {
+                        DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
+                        OnStartStopSession?.Invoke(d.data.startSession);
+                        break;
+                    }
+                case "STOP_SESSION":
+                    {
+                        DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
+                        OnStartStopSession?.Invoke(d.data.startSession);
                         break;
                     }
                 default:

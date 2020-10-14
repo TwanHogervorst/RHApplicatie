@@ -36,12 +36,13 @@ namespace ClientApplication
 
         private void BikeDataViewModel_OnBikeDataChanged(BikeDataViewModel sender, BikeDataType type)
         {
-            this.Invoke((MethodInvoker)delegate () {
+            this.Invoke((MethodInvoker)delegate ()
+            {
                 switch (type)
                 {
                     case BikeDataType.HeartBeat:
                         labelCurrentHeartbeatValue.Text = sender.HeartBeat.ToString() + " BPM";
-                    break;
+                        break;
                     case BikeDataType.GeneralFEData:
                         labelCurrentElapsedTimeValue.Text = sender.ElapsedTime.ToString("0.00") + " s";
                         labelCurrentDistanceTraveledValue.Text = sender.DistanceTraveled.ToString() + " m";
@@ -63,8 +64,18 @@ namespace ClientApplication
             this.client = client;
             this.client.OnChatReceived += Client_OnChatReceived;
             this.client.OnResistanceReceived += Client_OnResistanceReceived;
+            this.client.OnStartStopSession += Client_OnStartStopSession;
 
             Utility.DisableAllChildControls(groupBoxSimulator);
+        }
+
+        private void Client_OnStartStopSession(bool state)
+        {
+            if (state)
+                this.Client_OnChatReceived("The session has started\r\n");
+            else
+                this.Client_OnChatReceived("The session has stopped\r\n");
+
         }
 
         private void Client_OnResistanceReceived(int resistance)
@@ -96,7 +107,8 @@ namespace ClientApplication
             if (status)
             {
                 //turn all groups on, and give dialog that you are succesfully logged in
-            }else
+            }
+            else
             {
                 //give dialog that logged in was unsuccesfull
             }

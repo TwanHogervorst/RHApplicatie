@@ -33,8 +33,8 @@ namespace DoctorApplication
 
         private void LiveSessionButton_Click(object sender, System.EventArgs e)
         {
-            LiveSession liveSession = new LiveSession(this.client, selectedUser);
             this.client.SendUserName(selectedUser);
+            LiveSession liveSession = new LiveSession(this.client, selectedUser);
             liveSession.Show();
         }
 

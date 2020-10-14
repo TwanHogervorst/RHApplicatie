@@ -76,6 +76,24 @@ namespace ServerUtils
 
     }
 
+    class StartStopPacket : DAbstract
+    {
+        public string receiver;
+        public bool startSession;
+    }
+
+    class RequestSessionStatePacket : DAbstract
+    {
+        public string receiver;
+    }
+
+    class ResponseSessionStatePacket : DAbstract
+    {
+        public string receiver;
+        public bool sessionState;
+        public DateTime startTimeSession;
+    }
+
     //Eventueel nog responsePackets
 
     public class BikeDataPacket : DAbstract
