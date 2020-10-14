@@ -53,39 +53,39 @@ namespace NESessionList
                         //tunnel.GetScene();
                         tunnel.FindNode("GroundPlane");
                         tunnel.DeleteNode(tunnel.nodeList["GroundPlane"]);
-                        //tunnel.AddTerrain(new decimal[] { 256,256 }, new decimal[256*256]);
-                        //tunnel.SetTimeSkyBox(new decimal(15));
-                        //tunnel.AddNode("terrain", new DVRAddNodePacket.DComponents.DTransform(new decimal[] { 0, 0, 0 }, new decimal(1), new decimal[] { 0, 0, 0 }),
-                        //                null,
-                        //                new DVRAddNodePacket.DComponents.DTerrain(true),
-                        //                null,
-                        //                null);
-                        //tunnel.DeleteTerrain();
+                        tunnel.AddTerrain(new decimal[] { 256,256 }, new decimal[256*256]);
+                        tunnel.SetTimeSkyBox(15m);
+                        tunnel.AddNode("terrain", new DVRAddNodePacket.DComponents.DTransform(new decimal[] { 0, 0, 0 }, new decimal(1), new decimal[] { 0, 0, 0 }),
+                                        null,
+                                       new DVRAddNodePacket.DComponents.DTerrain(true),
+                                       null,
+                                       null);
+                        tunnel.DeleteTerrain();
 
-                        //tunnel.AddNode("tree1", new DVRAddNodePacket.DComponents.DTransform(new decimal[] { 0, 5, 0 }, new decimal(1), new decimal[] { 0, 0, 0 }),
-                        //                new DVRAddNodePacket.DComponents.DModel("data/NetworkEngine/models/trees/fantasy/tree1.obj", false, false, null),
-                        //                null,
-                        //                null,
-                        //                null);
+                        tunnel.AddNode("tree1", new DVRAddNodePacket.DComponents.DTransform(new decimal[] { 0, 5, 0 }, new decimal(1), new decimal[] { 0, 0, 0 }),
+                                       new DVRAddNodePacket.DComponents.DModel("data/NetworkEngine/models/trees/fantasy/tree1.obj", false, false, null),
+                                        null,
+                                        null,
+                                        null);
                         //tunnel.DeleteNode(tunnel.nodeList["tree1"]);
 
-                        //tunnel.UpdateNode(tunnel.nodeList["tree1"], new DVRUpdateNodePacket.DTransform(new decimal[] { 10, 0, 0 },10,new decimal[]{0,0,0 }),null);
-                        //tunnel.MoveNodeTo(tunnel.nodeList["tree1"], new decimal[] { 100, 0, 0 }, "XY", "linear", true, new decimal(0), new decimal(5));
-                        //tunnel.MoveNodeTo(tunnel.nodeList["tree1"], new decimal[] { 100, 0, 0 }, "XY", "linear", true, new decimal(10));
+                        tunnel.UpdateNode(tunnel.nodeList["tree1"], new DVRUpdateNodePacket.DTransform(new decimal[] { 10, 0, 0 },10,new decimal[]{0,0,0 }),null);
+                        tunnel.MoveNodeTo(tunnel.nodeList["tree1"], new decimal[] { 100, 0, 0 }, "XY", "linear", true, new decimal(0), new decimal(5));
+                        tunnel.MoveNodeTo(tunnel.nodeList["tree1"], new decimal[] { 100, 0, 0 }, "XY", "linear", true, new decimal(10));
 
 
-                        //tunnel.ShowRoute(true);
-                        //tunnel.AddRoute("route test", new List<DVRAddRouteNodesPacket> {
-                        //    new DVRAddRouteNodesPacket(new decimal[] { 0,10,0},new decimal[] { 5,0,-5}),
-                        //    new DVRAddRouteNodesPacket(new decimal[] { 50, 10, 0 }, new decimal[] { 5, 0, 5 }),
-                        //    new DVRAddRouteNodesPacket(new decimal[] { 50, 10, 50 }, new decimal[] { -5, 0, 5 }),
-                        //    new DVRAddRouteNodesPacket(new decimal[] { 0, 10, 50 }, new decimal[] { -5, 0, -5 }) });
-                        //tunnel.AddRoad(
-                        //    tunnel.routeList["route test"],
-                        //    "data/NetworkEngine/textures/tarmac_diffuse.png",
-                        //    "data/NetworkEngine/textures/tarmac_normal.png",
-                        //    "data/NetworkEngine/textures/tarmac_specular.png",
-                        //    new decimal(0.01));
+                        tunnel.ShowRoute(true);
+                        tunnel.AddRoute("route test", new List<DVRAddRouteNodesPacket> {
+                            new DVRAddRouteNodesPacket(new decimal[] { 0,10,0},new decimal[] { 5,0,-5}),
+                            new DVRAddRouteNodesPacket(new decimal[] { 50, 10, 0 }, new decimal[] { 5, 0, 5 }),
+                            new DVRAddRouteNodesPacket(new decimal[] { 50, 10, 50 }, new decimal[] { -5, 0, 5 }),
+                            new DVRAddRouteNodesPacket(new decimal[] { 0, 10, 50 }, new decimal[] { -5, 0, -5 }) });
+                        tunnel.AddRoad(
+                            tunnel.routeList["route test"],
+                            "data/NetworkEngine/textures/tarmac_diffuse.png",
+                            "data/NetworkEngine/textures/tarmac_normal.png",
+                            "data/NetworkEngine/textures/tarmac_specular.png",
+                            new decimal(0.01));
 
 
 
