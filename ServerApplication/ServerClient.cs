@@ -344,6 +344,15 @@ namespace ServerApplication
                         }
                             break;
                     }
+                case "INVALID_BIKE":
+                    {
+                        DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
+                        if (Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver) != null)
+                        {
+                            SendDataToUser(Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver), d.ToJson());
+                        }
+                        break;
+                    }
                 default:
                     Console.WriteLine("Unkown packetType");
                     break;

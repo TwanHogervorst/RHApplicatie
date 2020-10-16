@@ -27,10 +27,19 @@ namespace DoctorApplication
             this.client.OnBikeDataReceived += Client_OnBikeDataReceived;
             this.client.OnSessionStateReceived += Client_OnSessionStateReceived;
             this.client.OnSessionStateMessageReceived += Client_OnSessionStateMessageReceived;
+            this.client.OnInvalidBikeReceived += Client_OnInvalidBikeReceived;
             this.selectedUser = selected;
             Patient.Text += selected;
 
            this.client.RequestSessionState();
+        }
+
+        private void Client_OnInvalidBikeReceived(string sender)
+        {
+            if (sender == selectedUser)
+            {
+                this.IsRunning = !this.IsRunning;
+            }
         }
 
         private void Client_OnSessionStateMessageReceived(string sender, bool state)
@@ -152,6 +161,7 @@ namespace DoctorApplication
             this.client.OnSessionStateReceived -= this.Client_OnSessionStateReceived;
             this.client.OnBikeDataReceived -= this.Client_OnBikeDataReceived;
             this.client.OnSessionStateMessageReceived -= this.Client_OnSessionStateMessageReceived;
+            this.client.OnInvalidBikeReceived -= this.Client_OnInvalidBikeReceived;
         }
 
         private void textBoxResistance_KeyPress(object sender, KeyPressEventArgs e)

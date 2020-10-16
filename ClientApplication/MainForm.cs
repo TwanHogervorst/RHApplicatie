@@ -84,6 +84,9 @@ namespace ClientApplication
                     this.Client_OnChatReceived("The session has stopped\r\n");
                     this.client.SendStartStopSessionResponse(false);
                 }
+            } else
+            {
+                this.client.SendInvalidBike(state);
             }
         }
 

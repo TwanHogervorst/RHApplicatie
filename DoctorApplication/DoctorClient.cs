@@ -16,6 +16,7 @@ namespace DoctorApplication
     public delegate void BikeDataCallback(BikeDataPacket bikeDataPacket);
     public delegate void SessionStateCallback(string clientUserName, DateTime startTimeSession, bool state);
     public delegate void SessionStateMessageCallback(string sender, bool state);
+    public delegate void InvalidBikeCallback(string sender);
 
     public class DoctorClient
     {
@@ -29,6 +30,7 @@ namespace DoctorApplication
         public event LoginCallback OnLogin;
         public event ChatCallback OnChatReceived;
         public event ClientListCallback OnClientListReceived;
+        public event InvalidBikeCallback OnInvalidBikeReceived;
 
         public void RequestSessionState()
         {
@@ -385,6 +387,12 @@ namespace DoctorApplication
                     {
                         DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
                         OnSessionStateMessageReceived?.Invoke(d.sender,d.data.startSession);
+                        break;
+                    }
+                case "INVALID_BIKE":
+                    {
+                        DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
+                        OnInvalidBikeReceived?.Invoke(d.sender);
                         break;
                     }
                 default:

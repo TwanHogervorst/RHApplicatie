@@ -182,11 +182,37 @@ namespace ClientApplication.Core
             }
         }
 
-        public void SendInvalidBike(DataPacket<StartStopPacket> data)
+        public void SendInvalidBike(bool state)
         {
             if (this.loggedIn)
             {
-                DataPacket<StartStopPacket> dataPacket = data;
+                DataPacket<StartStopPacket> dataPacket;
+
+                if (state) {
+                    dataPacket = new DataPacket<StartStopPacket>()
+                    {
+                        sender = this.username,
+                        type = "INVALID_BIKE",
+                        data = new StartStopPacket()
+                        {
+                            receiver = this.doctorUserName,
+                            startSession = state
+                        }
+                    };
+                }
+                else
+                {
+                    dataPacket = new DataPacket<StartStopPacket>()
+                    {
+                        sender = this.username,
+                        type = "INVALID_BIKE",
+                        data = new StartStopPacket()
+                        {
+                            receiver = this.doctorUserName,
+                            startSession = state
+                        }
+                    };
+                }
 
                 // create the sendBuffer based on the message
                 List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
