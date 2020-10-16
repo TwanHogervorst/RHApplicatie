@@ -38,7 +38,8 @@ namespace DoctorApplication
         {
             if (sender == selectedUser)
             {
-                this.IsRunning = !this.IsRunning;
+                this.IsRunning = false;
+                this.client.SendChatMessage("The session has stopped!");
             }
         }
 
@@ -50,7 +51,7 @@ namespace DoctorApplication
                 {
                     if (sender == selectedUser)
                     {
-                        textBoxChat.Text += "The training has started!\r\n";
+                        textBoxChat.Text += "The session has started!\r\n";
                         textBoxChat.SelectionStart = textBoxChat.Text.Length;
                         textBoxChat.ScrollToCaret();
                     }
@@ -62,7 +63,7 @@ namespace DoctorApplication
                 {
                     if (sender == selectedUser)
                     {
-                        textBoxChat.Text += "The training has stopped!\r\n";
+                        textBoxChat.Text += "The session has stopped!\r\n";
                         textBoxChat.SelectionStart = textBoxChat.Text.Length;
                         textBoxChat.ScrollToCaret();
                     }

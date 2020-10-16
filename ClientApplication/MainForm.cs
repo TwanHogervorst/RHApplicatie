@@ -214,6 +214,9 @@ namespace ClientApplication
 
                 this.buttonConnect.Text = "Connect";
             }
+
+            this.client.SendInvalidBike(false);
+            this.client.SendChatMessage("The session has stopped!");
         }
 
         private void radioButtonSimulator_CheckedChanged(object sender, EventArgs e)
@@ -232,6 +235,8 @@ namespace ClientApplication
             {
                 Utility.DisableAllChildControls(groupBoxSimulator);
             }
+
+            this.client.SendInvalidBike(false);
         }
 
         #endregion
