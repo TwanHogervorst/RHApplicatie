@@ -38,7 +38,18 @@ namespace DoctorApplication
         {
             if (sender == selectedUser)
             {
-                this.IsRunning = !this.IsRunning;
+                if (this.IsRunning)
+                {
+                    this.Invoke((Action)delegate
+                    {
+                        textBoxChat.Text += "Bike is not connected!\r\n";
+                    textBoxChat.SelectionStart = textBoxChat.Text.Length;
+                    textBoxChat.ScrollToCaret();
+
+                    this.client.SendServerMessage(this.selectedUser,"Bike is not connected!");
+                    });
+                }
+                this.IsRunning = false;
             }
         }
 
@@ -50,7 +61,7 @@ namespace DoctorApplication
                 {
                     if (sender == selectedUser)
                     {
-                        textBoxChat.Text += "The training has started!\r\n";
+                        textBoxChat.Text += "The session has started!\r\n";
                         textBoxChat.SelectionStart = textBoxChat.Text.Length;
                         textBoxChat.ScrollToCaret();
                     }
@@ -62,7 +73,7 @@ namespace DoctorApplication
                 {
                     if (sender == selectedUser)
                     {
-                        textBoxChat.Text += "The training has stopped!\r\n";
+                        textBoxChat.Text += "The session has stopped!\r\n";
                         textBoxChat.SelectionStart = textBoxChat.Text.Length;
                         textBoxChat.ScrollToCaret();
                     }
@@ -154,6 +165,19 @@ namespace DoctorApplication
             textBoxSendChat.Text = "";
         }
 
+        private void buttonSendChat_Click()
+        {
+            this.Invoke((Action)delegate
+            {
+                textBoxChat.Text += $"{this.client.username}: {textBoxSendChat.Text}\r\n";
+                textBoxChat.SelectionStart = textBoxChat.Text.Length;
+                textBoxChat.ScrollToCaret();
+            });
+
+            this.client.SendChatMessage(textBoxSendChat.Text);
+            textBoxSendChat.Text = "";
+        }
+
         private void LiveSession_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.client.OnCloseLiveSession();
@@ -200,6 +224,14 @@ namespace DoctorApplication
             labelCurrentResistanceValue.Text = $"{trackBarResistance.Value / 2.0:0.0} %";
 
             this.client.SendResistance(trackBarResistance.Value);
+        }
+
+        private void textBoxSendChat_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                buttonSendChat_Click();
+            }
         }
     }
 }

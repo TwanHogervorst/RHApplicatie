@@ -62,5 +62,22 @@ namespace DoctorApplication
                 BroadcastTextBox.Clear();
             }
         }
+
+        private void BroadcastSendButton_Click()
+        {
+            if (!string.IsNullOrEmpty(BroadcastTextBox.Text))
+            {
+                this.client.BroadCast(BroadcastTextBox.Text);
+                BroadcastTextBox.Clear();
+            }
+        }
+
+        private void BroadcastTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                BroadcastSendButton_Click();
+            }
+        }
     }
 }

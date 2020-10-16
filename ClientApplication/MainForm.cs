@@ -214,6 +214,8 @@ namespace ClientApplication
 
                 this.buttonConnect.Text = "Connect";
             }
+
+            this.client.SendInvalidBike(false);
         }
 
         private void radioButtonSimulator_CheckedChanged(object sender, EventArgs e)
@@ -232,6 +234,8 @@ namespace ClientApplication
             {
                 Utility.DisableAllChildControls(groupBoxSimulator);
             }
+
+            this.client.SendInvalidBike(false);
         }
 
         #endregion
@@ -307,6 +311,25 @@ namespace ClientApplication
             textBoxSendChat.Text = "";
         }
 
+        private void buttonChatSend_Click()
+        {
+            this.Invoke((Action)delegate
+            {
+                textBoxChat.Text += $"{this.client.username}: {textBoxSendChat.Text}\r\n";
+                textBoxChat.SelectionStart = textBoxChat.Text.Length;
+                textBoxChat.ScrollToCaret();
+            });
 
+            this.client.SendChatMessage(textBoxSendChat.Text);
+            textBoxSendChat.Text = "";
+        }
+
+        private void textBoxSendChat_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                buttonChatSend_Click();
+            }
+        }
     }
 }

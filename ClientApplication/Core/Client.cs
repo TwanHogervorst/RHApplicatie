@@ -285,6 +285,12 @@ namespace ClientApplication.Core
                         OnStartStopSession?.Invoke(d.data.startSession);
                         break;
                     }
+                case "SERVER_MESSAGE":
+                    {
+                        DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
+                        OnChatReceived?.Invoke(d.data.chatMessage);
+                        break;
+                    }
                 default:
                     Console.WriteLine("Type is not valid");
                     break;

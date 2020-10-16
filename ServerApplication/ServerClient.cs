@@ -421,6 +421,15 @@ namespace ServerApplication
 
                         break;
                     }
+                case "SERVER_MESSAGE":
+                    {
+                        DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
+                        if (Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver) != null)
+                        {
+                            SendDataToUser(Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver), d.ToJson());
+                        }
+                        break;
+                    }
                 default:
                     Console.WriteLine("Unkown packetType");
                     break;
