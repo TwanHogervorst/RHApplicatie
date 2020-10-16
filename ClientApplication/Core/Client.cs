@@ -110,12 +110,13 @@ namespace ClientApplication.Core
                     type = "BIKEDATA",
                     data = new BikeDataPacket()
                     {
-                       receiver = this.doctorUserName,
-                       speed = speed,
-                       heartbeat = heartbeat,
-                       elapsedTime = elapsedTime,
-                       power = power,
-                       distanceTraveled = distanceTraveled
+                        receiver = this.doctorUserName,
+                        speed = speed,
+                        heartbeat = heartbeat,
+                        elapsedTime = elapsedTime,
+                        power = power,
+                        distanceTraveled = distanceTraveled,
+                        timestamp = DateTime.Now
                    }
                 };
 

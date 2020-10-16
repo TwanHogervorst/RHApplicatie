@@ -90,6 +90,7 @@ namespace ServerUtils
     class ResponseSessionStatePacket : DAbstract
     {
         public string receiver;
+        public string sessionId;
         public bool sessionState;
         public DateTime startTimeSession;
     }
@@ -104,5 +105,6 @@ namespace ServerUtils
         public double elapsedTime;
         public int distanceTraveled;
         public int power;
+        public DateTime timestamp;
     }
 }
