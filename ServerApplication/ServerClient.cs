@@ -21,13 +21,13 @@ namespace ServerApplication
         private bool isConnected;
         private bool isClient;
 
-        private object bikeDataLock = new object();
         private bool isRunning = false;
-        private string sessionId;
 
         private DateTime startTimeSession;
 
         public string UserName { get; set; }
+        public string SessionId { get; set; }
+        public object BikeDataLock { get; } = new object();
 
         public ServerClient(TcpClient tcpClient)
         {
@@ -181,16 +181,17 @@ namespace ServerApplication
                     {
                         DataPacket<BikeDataPacket> d = data.GetData<BikeDataPacket>();
 
-                        if(!string.IsNullOrEmpty(this.sessionId))
+                        if(!string.IsNullOrEmpty(this.SessionId))
                         {
-                            lock(this.bikeDataLock)
+                            lock(this.BikeDataLock)
                             {
                                 try
                                 {
-                                    using (StreamWriter fileStream = new StreamWriter(new FileStream("Trainingen\\" + this.UserName + "\\" + this.sessionId + ".json", FileMode.Append, FileAccess.Write)))
+                                    using (StreamWriter fileStream = new StreamWriter(new FileStream("Trainingen\\" + this.UserName + "\\" + this.SessionId + ".json", FileMode.Append, FileAccess.Write)))
                                     {
                                         fileStream.Write(d.data.ToJson());
                                         fileStream.Write(',');
+                                        fileStream.Flush();
                                     }
                                 }
                                 catch (Exception ex)
@@ -226,8 +227,7 @@ namespace ServerApplication
                                 clientList = temp
                             }
 
-                        }.ToJson()
-                        );
+                        }.ToJson());
                         break;
                     }
                 case "USERNAME":
@@ -272,14 +272,17 @@ namespace ServerApplication
                     {
                         this.startTimeSession = DateTime.Now;
                         DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
-                        if (Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver) != null)
-                        {
-                            Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver).isRunning = true;
-                            SendDataToUser(Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver), d.ToJson());
 
-                            if (Directory.Exists("Trainingen\\" + this.UserName))
+                        ServerClient receiver = Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver);
+
+                        if (receiver != null)
+                        {
+                            receiver.isRunning = true;
+                            SendDataToUser(receiver, d.ToJson());
+
+                            if (Directory.Exists("Trainingen\\" + receiver.UserName))
                             {
-                                List<string> trainingFiles = Directory.GetFiles("Trainingen\\" + this.UserName)
+                                List<string> trainingFiles = Directory.GetFiles("Trainingen\\" + receiver.UserName)
                                     .Select((path) => Path.GetFileNameWithoutExtension(path))
                                     .ToList();
 
@@ -291,19 +294,32 @@ namespace ServerApplication
                                 {
                                     string lastTrainingId = lastTrainingFileName.Split(' ').LastOrDefault();
 
-                                    if (int.TryParse(lastTrainingId, out int trainingsId)) this.sessionId = "Training " + (++trainingsId);
+                                    if (int.TryParse(lastTrainingId, out int trainingsId)) receiver.SessionId = "Training " + (++trainingsId);
                                 }
                             }
                             
-                            if(string.IsNullOrEmpty(this.sessionId)) this.sessionId = "Training 1";
-
-                            lock(this.bikeDataLock)
+                            if(string.IsNullOrEmpty(receiver.SessionId))
                             {
                                 try
                                 {
-                                    using (StreamWriter fileStream = new StreamWriter(new FileStream("Trainingen\\" + this.UserName + "\\" + this.sessionId + ".json", FileMode.Create, FileAccess.Write)))
+                                    Directory.CreateDirectory("Trainingen\\" + receiver.UserName);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex.GetType().Name + ": " + ex.Message);
+                                }
+                                
+                                receiver.SessionId = "Training 1";
+                            }
+
+                            lock(receiver.BikeDataLock)
+                            {
+                                try
+                                {
+                                    using (StreamWriter fileStream = new StreamWriter(new FileStream("Trainingen\\" + receiver.UserName + "\\" + receiver.SessionId + ".json", FileMode.Create, FileAccess.Write)))
                                     {
                                         fileStream.Write('[');
+                                        fileStream.Flush();
                                     }
                                 }
                                 catch (Exception ex)
@@ -319,9 +335,9 @@ namespace ServerApplication
                                 data = new ResponseSessionStatePacket()
                                 {
                                     receiver = d.data.receiver,
-                                    sessionState = Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver).isRunning,
+                                    sessionState = receiver.isRunning,
                                     startTimeSession = this.startTimeSession,
-                                    sessionId = this.sessionId
+                                    sessionId = receiver.SessionId
                                 }
                             }.ToJson());
                         }
@@ -330,23 +346,30 @@ namespace ServerApplication
                 case "STOP_SESSION":
                     {
                         DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
-                        if (Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver) != null)
-                        {
-                            Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver).isRunning = false;
-                            SendDataToUser(Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver), d.ToJson());
 
-                            lock(this.bikeDataLock)
+                        ServerClient receiver = Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver);
+
+                        if (receiver != null)
+                        {
+                            receiver.isRunning = false;
+                            SendDataToUser(receiver, d.ToJson());
+
+                            if (!string.IsNullOrEmpty(receiver.SessionId))
                             {
-                                try
+                                lock (receiver.BikeDataLock)
                                 {
-                                    using (StreamWriter fileStream = new StreamWriter(new FileStream("Trainingen\\" + this.UserName + "\\" + this.sessionId + ".json", FileMode.Append, FileAccess.Write)))
+                                    try
                                     {
-                                        fileStream.Write(']');
+                                        using (StreamWriter fileStream = new StreamWriter(new FileStream("Trainingen\\" + receiver.UserName + "\\" + receiver.SessionId + ".json", FileMode.Append, FileAccess.Write)))
+                                        {
+                                            fileStream.Write(']');
+                                            fileStream.Flush();
+                                        }
                                     }
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine(ex.GetType().Name + ": " + ex.Message);
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine(ex.GetType().Name + ": " + ex.Message);
+                                    }
                                 }
                             }
 
@@ -359,18 +382,21 @@ namespace ServerApplication
                                     receiver = d.data.receiver,
                                     sessionState = Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver).isRunning,
                                     startTimeSession = this.startTimeSession,
-                                    sessionId = this.sessionId
+                                    sessionId = receiver.SessionId
                                 }
                             }.ToJson());
 
-                            this.sessionId = null;
+                            receiver.SessionId = null;
                         }
                         break;
                     }
                 case "REQUEST_SESSIONSTATE":
                     {
                         DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
-                        if (Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver) != null)
+
+                        ServerClient receiver = Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver);
+
+                        if (receiver != null)
                         {
                             SendDataToUser(this, new DataPacket<ResponseSessionStatePacket>()
                             {
@@ -379,9 +405,9 @@ namespace ServerApplication
                                 data = new ResponseSessionStatePacket()
                                 {
                                     receiver = d.data.receiver,
-                                    sessionState = Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver).isRunning,
+                                    sessionState = receiver.isRunning,
                                     startTimeSession = this.startTimeSession,
-                                    sessionId = this.sessionId
+                                    sessionId = receiver.SessionId
                                 }
                             }.ToJson()) ;
                         }
@@ -404,19 +430,22 @@ namespace ServerApplication
                             SendDataToUser(Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver), d.ToJson());
                         }
 
-                        if(!string.IsNullOrEmpty(this.sessionId))
+                        if(!string.IsNullOrEmpty(this.SessionId))
                         {
-                            lock(this.bikeDataLock)
+                            lock(this.BikeDataLock)
                             {
                                 try
                                 {
-                                    File.Delete("Trainingen\\" + this.UserName + "\\" + this.sessionId + ".json");
+                                    if(File.Exists("Trainingen\\" + this.UserName + "\\" + this.SessionId + ".json"))
+                                        File.Delete("Trainingen\\" + this.UserName + "\\" + this.SessionId + ".json");
                                 }
                                 catch (Exception ex)
                                 {
                                     Console.WriteLine(ex.GetType().Name + ": " + ex.Message);
                                 }
                             }
+
+                            this.SessionId = null;
                         } 
 
                         break;
