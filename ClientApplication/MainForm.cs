@@ -2,6 +2,7 @@
 using ClientApplication.Data;
 using ClientApplication.Interface;
 using RHApplicationLib.Core;
+using ServerUtils;
 using System;
 using System.Globalization;
 using System.Windows.Forms;
@@ -71,11 +72,19 @@ namespace ClientApplication
 
         private void Client_OnStartStopSession(bool state)
         {
-            if (state)
-                this.Client_OnChatReceived("The session has started\r\n");
-            else
-                this.Client_OnChatReceived("The session has stopped\r\n");
-
+            if (this.bike != null)
+            {
+                if (state)
+                {
+                    this.Client_OnChatReceived("The session has started\r\n");
+                    this.client.SendStartStopSessionResponse(true);
+                }
+                else
+                {
+                    this.Client_OnChatReceived("The session has stopped\r\n");
+                    this.client.SendStartStopSessionResponse(false);
+                }
+            }
         }
 
         private void Client_OnResistanceReceived(int resistance)

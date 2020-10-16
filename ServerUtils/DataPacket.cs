@@ -7,7 +7,7 @@ using System.Text;
 
 namespace ServerUtils
 {
-    class DataPacket<T> : DAbstract where T : DAbstract
+    public class DataPacket<T> : DAbstract where T : DAbstract
     {
         public string sender;
         public string type; // Id can for example be "chatMessage" or "LoginStatus"
@@ -76,7 +76,7 @@ namespace ServerUtils
 
     }
 
-    class StartStopPacket : DAbstract
+    public class StartStopPacket : DAbstract
     {
         public string receiver;
         public bool startSession;

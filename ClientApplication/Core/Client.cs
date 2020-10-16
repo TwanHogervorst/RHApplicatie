@@ -156,6 +156,49 @@ namespace ClientApplication.Core
             }
         }
 
+        public void SendStartStopSessionResponse(bool state)
+        {
+            if (this.loggedIn)
+            {
+                DataPacket<StartStopPacket> dataPacket = new DataPacket<StartStopPacket>()
+                {
+                    sender = this.username,
+                    type = "SESSIONSTATE_RESPONSE",
+                    data = new StartStopPacket()
+                    {
+                        receiver = this.doctorUserName,
+                        startSession = state
+                    }
+                };
+
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
+        public void SendInvalidBike(DataPacket<StartStopPacket> data)
+        {
+            if (this.loggedIn)
+            {
+                DataPacket<StartStopPacket> dataPacket = data;
+
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
         private void handleData(DataPacket data)
         {
             switch (data.type)

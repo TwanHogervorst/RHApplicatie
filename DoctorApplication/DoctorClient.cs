@@ -15,6 +15,7 @@ namespace DoctorApplication
     public delegate void ClientListCallback(Dictionary<string, bool> clientList);
     public delegate void BikeDataCallback(BikeDataPacket bikeDataPacket);
     public delegate void SessionStateCallback(string clientUserName, DateTime startTimeSession, bool state);
+    public delegate void SessionStateMessageCallback(string sender, bool state);
 
     public class DoctorClient
     {
@@ -56,6 +57,7 @@ namespace DoctorApplication
 
         public event BikeDataCallback OnBikeDataReceived;
         public event SessionStateCallback OnSessionStateReceived;
+        public event SessionStateMessageCallback OnSessionStateMessageReceived;
 
         public DoctorClient()
         {
@@ -377,6 +379,12 @@ namespace DoctorApplication
                     {
                         DataPacket<ResponseSessionStatePacket> d = data.GetData<ResponseSessionStatePacket>();
                         OnSessionStateReceived?.Invoke(d.data.receiver, d.data.startTimeSession, d.data.sessionState);
+                        break;
+                    }
+                case "SESSIONSTATE_RESPONSE":
+                    {
+                        DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
+                        OnSessionStateMessageReceived?.Invoke(d.sender,d.data.startSession);
                         break;
                     }
                 default:

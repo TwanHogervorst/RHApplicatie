@@ -26,10 +26,39 @@ namespace DoctorApplication
             this.client.OnChatReceived += Client_OnChatReceived; ;
             this.client.OnBikeDataReceived += Client_OnBikeDataReceived;
             this.client.OnSessionStateReceived += Client_OnSessionStateReceived;
+            this.client.OnSessionStateMessageReceived += Client_OnSessionStateMessageReceived;
             this.selectedUser = selected;
             Patient.Text += selected;
 
            this.client.RequestSessionState();
+        }
+
+        private void Client_OnSessionStateMessageReceived(string sender, bool state)
+        {
+            if (state)
+            {
+                this.Invoke((Action)delegate
+                {
+                    if (sender == selectedUser)
+                    {
+                        textBoxChat.Text += "The training has started!\r\n";
+                        textBoxChat.SelectionStart = textBoxChat.Text.Length;
+                        textBoxChat.ScrollToCaret();
+                    }
+                });
+            }
+            else
+            {
+                this.Invoke((Action)delegate
+                {
+                    if (sender == selectedUser)
+                    {
+                        textBoxChat.Text += "The training has stopped!\r\n";
+                        textBoxChat.SelectionStart = textBoxChat.Text.Length;
+                        textBoxChat.ScrollToCaret();
+                    }
+                });
+            }
         }
 
         private void Client_OnSessionStateReceived(string clientUserName, DateTime startTimeSession, bool state)
@@ -84,9 +113,13 @@ namespace DoctorApplication
         {
             //TODO Start/Stop method
             if (this.IsRunning)
+            {
                 this.client.StopSession();
+            }
             else
+            {
                 this.client.StartSession();
+            }
         }
 
         private void speedGraph_Click(object sender, EventArgs e)
@@ -118,6 +151,7 @@ namespace DoctorApplication
             this.client.OnChatReceived -= this.Client_OnChatReceived;
             this.client.OnSessionStateReceived -= this.Client_OnSessionStateReceived;
             this.client.OnBikeDataReceived -= this.Client_OnBikeDataReceived;
+            this.client.OnSessionStateMessageReceived -= this.Client_OnSessionStateMessageReceived;
         }
 
         private void textBoxResistance_KeyPress(object sender, KeyPressEventArgs e)
