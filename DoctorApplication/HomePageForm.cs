@@ -33,8 +33,8 @@ namespace DoctorApplication
 
         private void LiveSessionButton_Click(object sender, System.EventArgs e)
         {
-            LiveSession liveSession = new LiveSession(this.client, selectedUser);
             this.client.SendUserName(selectedUser);
+            LiveSession liveSession = new LiveSession(this.client, selectedUser);
             liveSession.Show();
         }
 
@@ -60,6 +60,23 @@ namespace DoctorApplication
             {
                 this.client.BroadCast(BroadcastTextBox.Text);
                 BroadcastTextBox.Clear();
+            }
+        }
+
+        private void BroadcastSendButton_Click()
+        {
+            if (!string.IsNullOrEmpty(BroadcastTextBox.Text))
+            {
+                this.client.BroadCast(BroadcastTextBox.Text);
+                BroadcastTextBox.Clear();
+            }
+        }
+
+        private void BroadcastTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                BroadcastSendButton_Click();
             }
         }
     }

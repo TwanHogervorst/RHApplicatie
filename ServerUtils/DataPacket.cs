@@ -7,7 +7,7 @@ using System.Text;
 
 namespace ServerUtils
 {
-    class DataPacket<T> : DAbstract where T : DAbstract
+    public class DataPacket<T> : DAbstract where T : DAbstract
     {
         public string sender;
         public string type; // Id can for example be "chatMessage" or "LoginStatus"
@@ -76,6 +76,25 @@ namespace ServerUtils
 
     }
 
+    public class StartStopPacket : DAbstract
+    {
+        public string receiver;
+        public bool startSession;
+    }
+
+    class RequestSessionStatePacket : DAbstract
+    {
+        public string receiver;
+    }
+
+    class ResponseSessionStatePacket : DAbstract
+    {
+        public string receiver;
+        public string sessionId;
+        public bool sessionState;
+        public DateTime startTimeSession;
+    }
+
     //Eventueel nog responsePackets
 
     public class BikeDataPacket : DAbstract
@@ -86,5 +105,6 @@ namespace ServerUtils
         public double elapsedTime;
         public int distanceTraveled;
         public int power;
+        public DateTime timestamp;
     }
 }

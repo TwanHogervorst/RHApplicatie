@@ -15,6 +15,7 @@ namespace ClientApplication.Core
     public delegate void LoginCallback(bool status);
     public delegate void ChatCallback(string message);
     public delegate void ResistanceCallback(int resistance);
+    public delegate void StartStopSessionCallback(bool state);
 
     public class Client
     {
@@ -28,6 +29,7 @@ namespace ClientApplication.Core
         public event LoginCallback OnLogin;
         public event ChatCallback OnChatReceived;
         public event ResistanceCallback OnResistanceReceived;
+        public event StartStopSessionCallback OnStartStopSession;
 
         public Client()
         {
@@ -108,12 +110,13 @@ namespace ClientApplication.Core
                     type = "BIKEDATA",
                     data = new BikeDataPacket()
                     {
-                       receiver = this.doctorUserName,
-                       speed = speed,
-                       heartbeat = heartbeat,
-                       elapsedTime = elapsedTime,
-                       power = power,
-                       distanceTraveled = distanceTraveled
+                        receiver = this.doctorUserName,
+                        speed = speed,
+                        heartbeat = heartbeat,
+                        elapsedTime = elapsedTime,
+                        power = power,
+                        distanceTraveled = distanceTraveled,
+                        timestamp = DateTime.Now
                    }
                 };
 
@@ -142,6 +145,75 @@ namespace ClientApplication.Core
                         chatMessage = message
                     }
                 };
+
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
+        public void SendStartStopSessionResponse(bool state)
+        {
+            if (this.loggedIn)
+            {
+                DataPacket<StartStopPacket> dataPacket = new DataPacket<StartStopPacket>()
+                {
+                    sender = this.username,
+                    type = "SESSIONSTATE_RESPONSE",
+                    data = new StartStopPacket()
+                    {
+                        receiver = this.doctorUserName,
+                        startSession = state
+                    }
+                };
+
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
+        public void SendInvalidBike(bool state)
+        {
+            if (this.loggedIn)
+            {
+                DataPacket<StartStopPacket> dataPacket;
+
+                if (state) {
+                    dataPacket = new DataPacket<StartStopPacket>()
+                    {
+                        sender = this.username,
+                        type = "INVALID_BIKE",
+                        data = new StartStopPacket()
+                        {
+                            receiver = this.doctorUserName,
+                            startSession = state
+                        }
+                    };
+                }
+                else
+                {
+                    dataPacket = new DataPacket<StartStopPacket>()
+                    {
+                        sender = this.username,
+                        type = "INVALID_BIKE",
+                        data = new StartStopPacket()
+                        {
+                            receiver = this.doctorUserName,
+                            startSession = state
+                        }
+                    };
+                }
 
                 // create the sendBuffer based on the message
                 List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
@@ -199,6 +271,24 @@ namespace ClientApplication.Core
                         DataPacket<ResistancePacket> d = data.GetData<ResistancePacket>();
                         //TODO set Resistance of the bike
                         OnResistanceReceived?.Invoke(d.data.resistance);
+                        break;
+                    }
+                case "START_SESSION":
+                    {
+                        DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
+                        OnStartStopSession?.Invoke(d.data.startSession);
+                        break;
+                    }
+                case "STOP_SESSION":
+                    {
+                        DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
+                        OnStartStopSession?.Invoke(d.data.startSession);
+                        break;
+                    }
+                case "SERVER_MESSAGE":
+                    {
+                        DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
+                        OnChatReceived?.Invoke(d.data.chatMessage);
                         break;
                     }
                 default:

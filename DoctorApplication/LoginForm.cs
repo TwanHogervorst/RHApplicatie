@@ -38,5 +38,29 @@ namespace DoctorApplication
                 client.SendLogin(NameTextBox.Text, PasswordTextBox.Text);
             }
         }
+
+        private void LoginButton_Click()
+        {
+            if (NameTextBox.Text != null || PasswordTextBox.Text != null)
+            {
+                client.SendLogin(NameTextBox.Text, PasswordTextBox.Text);
+            }
+        }
+
+        private void NameTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                LoginButton_Click();
+            }
+        }
+
+        private void PasswordTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                LoginButton_Click();
+            }
+        }
     }
 }

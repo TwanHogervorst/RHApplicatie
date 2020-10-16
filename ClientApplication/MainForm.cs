@@ -2,6 +2,7 @@
 using ClientApplication.Data;
 using ClientApplication.Interface;
 using RHApplicationLib.Core;
+using ServerUtils;
 using System;
 using System.Globalization;
 using System.Windows.Forms;
@@ -36,12 +37,13 @@ namespace ClientApplication
 
         private void BikeDataViewModel_OnBikeDataChanged(BikeDataViewModel sender, BikeDataType type)
         {
-            this.Invoke((MethodInvoker)delegate () {
+            this.Invoke((MethodInvoker)delegate ()
+            {
                 switch (type)
                 {
                     case BikeDataType.HeartBeat:
                         labelCurrentHeartbeatValue.Text = sender.HeartBeat.ToString() + " BPM";
-                    break;
+                        break;
                     case BikeDataType.GeneralFEData:
                         labelCurrentElapsedTimeValue.Text = sender.ElapsedTime.ToString("0.00") + " s";
                         labelCurrentDistanceTraveledValue.Text = sender.DistanceTraveled.ToString() + " m";
@@ -63,8 +65,29 @@ namespace ClientApplication
             this.client = client;
             this.client.OnChatReceived += Client_OnChatReceived;
             this.client.OnResistanceReceived += Client_OnResistanceReceived;
+            this.client.OnStartStopSession += Client_OnStartStopSession;
 
             Utility.DisableAllChildControls(groupBoxSimulator);
+        }
+
+        private void Client_OnStartStopSession(bool state)
+        {
+            if (this.bike != null)
+            {
+                if (state)
+                {
+                    this.Client_OnChatReceived("The session has started\r\n");
+                    this.client.SendStartStopSessionResponse(true);
+                }
+                else
+                {
+                    this.Client_OnChatReceived("The session has stopped\r\n");
+                    this.client.SendStartStopSessionResponse(false);
+                }
+            } else
+            {
+                this.client.SendInvalidBike(state);
+            }
         }
 
         private void Client_OnResistanceReceived(int resistance)
@@ -96,7 +119,8 @@ namespace ClientApplication
             if (status)
             {
                 //turn all groups on, and give dialog that you are succesfully logged in
-            }else
+            }
+            else
             {
                 //give dialog that logged in was unsuccesfull
             }
@@ -190,6 +214,8 @@ namespace ClientApplication
 
                 this.buttonConnect.Text = "Connect";
             }
+
+            this.client.SendInvalidBike(false);
         }
 
         private void radioButtonSimulator_CheckedChanged(object sender, EventArgs e)
@@ -208,6 +234,8 @@ namespace ClientApplication
             {
                 Utility.DisableAllChildControls(groupBoxSimulator);
             }
+
+            this.client.SendInvalidBike(false);
         }
 
         #endregion
@@ -283,6 +311,25 @@ namespace ClientApplication
             textBoxSendChat.Text = "";
         }
 
+        private void buttonChatSend_Click()
+        {
+            this.Invoke((Action)delegate
+            {
+                textBoxChat.Text += $"{this.client.username}: {textBoxSendChat.Text}\r\n";
+                textBoxChat.SelectionStart = textBoxChat.Text.Length;
+                textBoxChat.ScrollToCaret();
+            });
 
+            this.client.SendChatMessage(textBoxSendChat.Text);
+            textBoxSendChat.Text = "";
+        }
+
+        private void textBoxSendChat_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                buttonChatSend_Click();
+            }
+        }
     }
 }

@@ -14,6 +14,9 @@ namespace DoctorApplication
     public delegate void ChatCallback(string sender, string message);
     public delegate void ClientListCallback(Dictionary<string, bool> clientList);
     public delegate void BikeDataCallback(BikeDataPacket bikeDataPacket);
+    public delegate void SessionStateCallback(string clientUserName, DateTime startTimeSession, bool state);
+    public delegate void SessionStateMessageCallback(string sender, bool state);
+    public delegate void InvalidBikeCallback(string sender);
 
     public class DoctorClient
     {
@@ -27,7 +30,36 @@ namespace DoctorApplication
         public event LoginCallback OnLogin;
         public event ChatCallback OnChatReceived;
         public event ClientListCallback OnClientListReceived;
+        public event InvalidBikeCallback OnInvalidBikeReceived;
+
+        public void RequestSessionState()
+        {
+            if (this.loggedIn)
+            {
+                DataPacket<RequestSessionStatePacket> dataPacket = new DataPacket<RequestSessionStatePacket>()
+                {
+                    sender = this.username,
+                    type = "REQUEST_SESSIONSTATE",
+                    data = new RequestSessionStatePacket()
+                    {
+                        receiver = clientUserName
+                    }
+                };
+
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
         public event BikeDataCallback OnBikeDataReceived;
+        public event SessionStateCallback OnSessionStateReceived;
+        public event SessionStateMessageCallback OnSessionStateMessageReceived;
 
         public DoctorClient()
         {
@@ -124,6 +156,32 @@ namespace DoctorApplication
             }
         }
 
+        public void SendServerMessage(string receiver, string message)
+        {
+            if (this.loggedIn)
+            {
+                DataPacket<ChatPacket> dataPacket = new DataPacket<ChatPacket>()
+                {
+                    sender = this.username,
+                    type = "SERVER_MESSAGE",
+                    data = new ChatPacket()
+                    {
+                        receiver = clientUserName,
+                        chatMessage = message
+                    }
+                };
+
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
         public void BroadCast(string message)
         {
             if (this.loggedIn)
@@ -160,8 +218,60 @@ namespace DoctorApplication
                     type = "RESISTANCE",
                     data = new ResistancePacket()
                     {
-                        receiver = clientUserName,
+                        receiver = this.clientUserName,
                         resistance = resistance
+                    }
+                };
+
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
+        public void StartSession()
+        {
+            if (this.loggedIn)
+            {
+                DataPacket<StartStopPacket> dataPacket = new DataPacket<StartStopPacket>()
+                {
+                    sender = this.username,
+                    type = "START_SESSION",
+                    data = new StartStopPacket()
+                    {
+                        receiver = this.clientUserName,
+                        startSession = true
+                    }
+                };
+
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
+        public void StopSession()
+        {
+            if (this.loggedIn)
+            {
+                DataPacket<StartStopPacket> dataPacket = new DataPacket<StartStopPacket>()
+                {
+                    sender = this.username,
+                    type = "STOP_SESSION",
+                    data = new StartStopPacket()
+                    {
+                        receiver = clientUserName,
+                        startSession = false
                     }
                 };
 
@@ -248,11 +358,11 @@ namespace DoctorApplication
 
                 this.clientUserName = null;
 
-                
+
             }
         }
 
-            private void handleData(DataPacket data)
+        private void handleData(DataPacket data)
         {
             switch (data.type)
             {
@@ -291,6 +401,24 @@ namespace DoctorApplication
                     {
                         DataPacket<BikeDataPacket> d = data.GetData<BikeDataPacket>();
                         OnBikeDataReceived?.Invoke(d.data);
+                        break;
+                    }
+                case "RESPONSE_SESSIONSTATE":
+                    {
+                        DataPacket<ResponseSessionStatePacket> d = data.GetData<ResponseSessionStatePacket>();
+                        OnSessionStateReceived?.Invoke(d.data.receiver, d.data.startTimeSession, d.data.sessionState);
+                        break;
+                    }
+                case "SESSIONSTATE_RESPONSE":
+                    {
+                        DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
+                        OnSessionStateMessageReceived?.Invoke(d.sender,d.data.startSession);
+                        break;
+                    }
+                case "INVALID_BIKE":
+                    {
+                        DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
+                        OnInvalidBikeReceived?.Invoke(d.sender);
                         break;
                     }
                 default:
