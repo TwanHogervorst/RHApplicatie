@@ -216,7 +216,6 @@ namespace ClientApplication
             }
 
             this.client.SendInvalidBike(false);
-            this.client.SendChatMessage("The session has stopped!");
         }
 
         private void radioButtonSimulator_CheckedChanged(object sender, EventArgs e)

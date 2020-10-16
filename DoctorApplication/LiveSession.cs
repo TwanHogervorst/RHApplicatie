@@ -38,8 +38,18 @@ namespace DoctorApplication
         {
             if (sender == selectedUser)
             {
+                if (this.IsRunning)
+                {
+                    this.Invoke((Action)delegate
+                    {
+                        textBoxChat.Text += "Bike is not connected!\r\n";
+                    textBoxChat.SelectionStart = textBoxChat.Text.Length;
+                    textBoxChat.ScrollToCaret();
+
+                    this.client.SendServerMessage(this.selectedUser,"Bike is not connected!");
+                    });
+                }
                 this.IsRunning = false;
-                this.client.SendChatMessage("The session has stopped!");
             }
         }
 
