@@ -311,6 +311,25 @@ namespace ClientApplication
             textBoxSendChat.Text = "";
         }
 
+        private void buttonChatSend_Click()
+        {
+            this.Invoke((Action)delegate
+            {
+                textBoxChat.Text += $"{this.client.username}: {textBoxSendChat.Text}\r\n";
+                textBoxChat.SelectionStart = textBoxChat.Text.Length;
+                textBoxChat.ScrollToCaret();
+            });
 
+            this.client.SendChatMessage(textBoxSendChat.Text);
+            textBoxSendChat.Text = "";
+        }
+
+        private void textBoxSendChat_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                buttonChatSend_Click();
+            }
+        }
     }
 }

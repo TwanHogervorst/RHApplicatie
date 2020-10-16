@@ -165,6 +165,19 @@ namespace DoctorApplication
             textBoxSendChat.Text = "";
         }
 
+        private void buttonSendChat_Click()
+        {
+            this.Invoke((Action)delegate
+            {
+                textBoxChat.Text += $"{this.client.username}: {textBoxSendChat.Text}\r\n";
+                textBoxChat.SelectionStart = textBoxChat.Text.Length;
+                textBoxChat.ScrollToCaret();
+            });
+
+            this.client.SendChatMessage(textBoxSendChat.Text);
+            textBoxSendChat.Text = "";
+        }
+
         private void LiveSession_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.client.OnCloseLiveSession();
@@ -211,6 +224,14 @@ namespace DoctorApplication
             labelCurrentResistanceValue.Text = $"{trackBarResistance.Value / 2.0:0.0} %";
 
             this.client.SendResistance(trackBarResistance.Value);
+        }
+
+        private void textBoxSendChat_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                buttonSendChat_Click();
+            }
         }
     }
 }

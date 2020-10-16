@@ -375,6 +375,7 @@
             this.textBoxSendChat.Name = "textBoxSendChat";
             this.textBoxSendChat.Size = new System.Drawing.Size(201, 27);
             this.textBoxSendChat.TabIndex = 36;
+            this.textBoxSendChat.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSendChat_KeyPress);
             // 
             // buttonChatSend
             // 
