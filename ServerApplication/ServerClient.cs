@@ -430,14 +430,17 @@ namespace ServerApplication
                             SendDataToUser(Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver), d.ToJson());
                         }
 
-                        if(!string.IsNullOrEmpty(this.SessionId))
+                        if (!string.IsNullOrEmpty(this.SessionId))
                         {
-                            lock(this.BikeDataLock)
+                            lock (this.BikeDataLock)
                             {
                                 try
                                 {
-                                    if(File.Exists("Trainingen\\" + this.UserName + "\\" + this.SessionId + ".json"))
-                                        File.Delete("Trainingen\\" + this.UserName + "\\" + this.SessionId + ".json");
+                                    using (StreamWriter fileStream = new StreamWriter(new FileStream("Trainingen\\" + this.UserName + "\\" + this.SessionId + ".json", FileMode.Append, FileAccess.Write)))
+                                    {
+                                        fileStream.Write(']');
+                                        fileStream.Flush();
+                                    }
                                 }
                                 catch (Exception ex)
                                 {
@@ -446,7 +449,7 @@ namespace ServerApplication
                             }
 
                             this.SessionId = null;
-                        } 
+                        }
 
                         break;
                     }
