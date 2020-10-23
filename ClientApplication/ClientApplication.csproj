@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NESessionList\NESessionList.csproj" />
     <ProjectReference Include="..\RHApplicatieLib\RHApplicatieLib.csproj" />
   </ItemGroup>
 

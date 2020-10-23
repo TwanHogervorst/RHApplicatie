@@ -68,7 +68,6 @@ namespace NESessionList.Core
                 if (result?.status != "error")
                 {
                     Console.WriteLine($"Added node: {result.data.name} (uuid: {result.data.uuid})");
-
                     nodeList.Add(result.data.name, result.data.uuid);
                 }
                 else Console.WriteLine($"AddNode Error: {result?.error ?? "NULL"}");
@@ -149,7 +148,7 @@ namespace NESessionList.Core
                     }
                 }); ; ;
 
-                if (result != null)
+                if (result?.status != "error")
                 {
                     Console.WriteLine($"Node info: {result.data[0].uuid}");
                     nodeList.Add(name_, result.data[0].uuid);
@@ -209,7 +208,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine("Added Terrain");
+                if (result?.status != "error") Console.WriteLine("Added Terrain");
             }
             catch (VRClientException ex)
             {
@@ -232,7 +231,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine("Added Terrain");
+                if (result?.status != "error") Console.WriteLine("Added Terrain");
             }
             catch (VRClientException ex)
             {
@@ -253,7 +252,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine("Updated Terrain");
+                if (result?.status != "error") Console.WriteLine("Updated Terrain");
             }
             catch (VRClientException ex)
             {
@@ -274,7 +273,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine($"Delete Terrain status: {result.data?.status}");
+                if (result?.status != "error") Console.WriteLine($"Delete Terrain status: {result.data?.status}");
             }
             catch (VRClientException ex)
             {
@@ -296,7 +295,7 @@ namespace NESessionList.Core
                     }
                 }); ; ;
 
-                if (result != null) Console.WriteLine("Set time of SkyBox");
+                if (result?.status != "error") Console.WriteLine("Set time of SkyBox");
             }
             catch (VRClientException ex)
             {
@@ -322,7 +321,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null)
+                if (result?.status != "error")
                 {
                     Console.WriteLine($"Added Road uuid: {result.data.uuid}");
                     roadList.Add(route_, result.data.uuid);
@@ -352,7 +351,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine($"Updated Road uuid: {result.data.uuid}");
+                if (result?.status != "error") Console.WriteLine($"Updated Road uuid: {result.data.uuid}");
             }
             catch (VRClientException ex)
             {
@@ -372,7 +371,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null)
+                if (result?.status != "error")
                 {
                     Console.WriteLine($"Add Route : {result.data.uuid}");
                     routeList.Add(name, result.data.uuid);
@@ -398,7 +397,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine($"Update Route : {result.data.status}");
+                if (result?.status != "error") Console.WriteLine($"Update Route : {result.data.status}");
             }
             catch (VRClientException ex)
             {
@@ -419,7 +418,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null)
+                if (result?.status != "error")
                 {
                     Console.WriteLine($"Status deleted route: {result.data.status}");
                     routeList.Remove(routeList.FirstOrDefault(e => e.Value == id_).Key);
@@ -454,7 +453,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine($"Status follow route: {result.data.status}");
+                if (result?.status != "error") Console.WriteLine($"Status follow route: {result.status}");
             }
             catch (VRClientException ex)
             {
@@ -476,7 +475,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine($"Status route follow: {result.data.status}");
+                if (result?.status != "error") Console.WriteLine($"Status route follow: {result.data.status}");
             }
             catch (VRClientException ex)
             {
@@ -497,7 +496,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine($"Status route show: {result.data.status}");
+                if (result?.status != "error") Console.WriteLine($"Status route show: {result.data.status}");
             }
             catch (VRClientException ex)
             {
@@ -517,7 +516,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null)
+                if (result?.status != "error")
                 {
                     Console.WriteLine($"Scene info: {result.data.sceneData.ToString()}");
 
