@@ -183,7 +183,9 @@ namespace NESessionList.Data
         public string id;
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string parent;
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public DTransform transform;
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public DAnimation animation;
 
         public class DTransform : DAbstract
@@ -450,5 +452,43 @@ namespace NESessionList.Data
     public class DVRGetSceneResult : DAbstract
     {
         public string sceneData;
+    }
+
+    public class DVRClearPanelPacket : DAbstract
+    {
+        public string id;
+    }
+
+    public class DVRSwapPanelPacket : DAbstract
+    {
+        public string id;
+    }
+
+    public class DVRDrawTextPanelPacket : DAbstract
+    {
+        public string id;
+        public string text;
+        public decimal[] position;
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public decimal size = 1;
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public decimal[] color;
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string font = "Arial";
+    }
+
+    public class DVRClearPanelResult : DAbstract
+    {
+        public string status;
+    }
+
+    public class DVRSwapPanelResult : DAbstract
+    {
+        public string status;
+    }
+
+    public class DVRDrawTextPanelResult : DAbstract
+    {
+        public string status;
     }
 }
