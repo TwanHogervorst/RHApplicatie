@@ -254,6 +254,7 @@ namespace ServerApplication
                         string trainingDirPath = $"Trainingen\\{d.data.forClient}";
                         if (!string.IsNullOrEmpty(d.data.forClient) && Directory.Exists(trainingDirPath))
                         {
+                            result.forClient = d.data.forClient;
                             string[] trainingFiles = Directory.GetFiles(trainingDirPath);
 
                             result.trainingList = trainingFiles.Where(f => Path.GetExtension(f) == ".json")
