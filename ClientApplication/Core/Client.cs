@@ -141,7 +141,7 @@ namespace ClientApplication.Core
                     type = "BIKEDATA",
                     data = new BikeDataPacket()
                     {
-                        receiver = this.doctorUserName,
+                        doctor = this.doctorUserName,
                         speed = speed,
                         heartbeat = heartbeat,
                         elapsedTime = elapsedTime,

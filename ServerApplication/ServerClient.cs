@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RHApplicationLib.Abstract;
 using RHApplicationLib.Core;
 using ServerUtils;
@@ -235,15 +236,73 @@ namespace ServerApplication
                             }
                         }
                     
-                        if (d.data.receiver != null)
+                        if (d.data.doctor != null)
                         {
-                            if (Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver) != null)
+                            if (Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.doctor) != null)
                             {
-                                SendDataToUser(Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver), d.ToJson());
+                                SendDataToUser(Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.doctor), d.ToJson());
                             }
                         }
                         break;
                     }
+                case "REQUEST_TRAINING_LIST":
+                    {
+                        DataPacket<RequestTrainingList> d = data.GetData<RequestTrainingList>();
+
+                        ResponseTrainingList result = new ResponseTrainingList();
+
+                        string trainingDirPath = $"Trainingen\\{d.data.forClient}";
+                        if (!string.IsNullOrEmpty(d.data.forClient) && Directory.Exists(trainingDirPath))
+                        {
+                            string[] trainingFiles = Directory.GetFiles(trainingDirPath);
+
+                            result.trainingList = trainingFiles.Where(f => Path.GetExtension(f) == ".json")
+                                .Select(f => Path.GetFileNameWithoutExtension(f))
+                                .ToList();
+                        }
+
+                        this.SendData(new DataPacket<ResponseTrainingList>
+                        {
+                            sender = this.UserName,
+                            type = "RESPONSE_TRAINING_LIST",
+                            data = result
+                        }.ToJson());
+                    }
+                    break;
+                case "REQUEST_TRAINING_DATA":
+                    {
+                        DataPacket<RequestTrainingData> d = data.GetData<RequestTrainingData>();
+
+                        ResponseTrainingData result = new ResponseTrainingData();
+
+                        string trainingFilePath = $"Trainingen\\{d.data.forClient}\\{d.data.trainingName}.json";
+                        if(!string.IsNullOrEmpty(d.data.forClient) && !string.IsNullOrEmpty(d.data.trainingName) && File.Exists(trainingFilePath))
+                        {
+                            result.forClient = d.data.forClient;
+                            result.trainingName = d.data.trainingName;
+
+                            try
+                            {
+                                using (StreamReader reader = File.OpenText(trainingFilePath))
+                                {
+                                    result.trainingData = JsonConvert.DeserializeObject<List<BikeDataPacket>>(reader.ReadToEnd());
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"{ex.GetType().Name}: {ex.Message}");
+                                result.trainingData = new List<BikeDataPacket>();
+                            }
+                        } 
+
+                        this.SendData(new DataPacket<ResponseTrainingData>
+                        {
+                            sender = this.UserName,
+                            type = "RESPONSE_TRAINING_DATA",
+                            data = result
+                        }.ToJson());
+                    }
+                    break;
                 case "REQUEST_CLIENTLIST":
                     {
                         Dictionary<string, bool> temp = new Dictionary<string, bool>();

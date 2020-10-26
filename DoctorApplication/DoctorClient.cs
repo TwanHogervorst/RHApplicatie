@@ -17,6 +17,8 @@ namespace DoctorApplication
     public delegate void SessionStateCallback(string clientUserName, DateTime startTimeSession, bool state);
     public delegate void SessionStateMessageCallback(string sender, bool state);
     public delegate void InvalidBikeCallback(string sender);
+    public delegate void TrainingListCallback(string forClient, List<string> trainingList);
+    public delegate void TrainingDataCallback(string forClient, string trainingName, List<BikeDataPacket> trainingData);
 
     public class DoctorClient
     {
@@ -30,6 +32,11 @@ namespace DoctorApplication
         public event ChatCallback OnChatReceived;
         public event ClientListCallback OnClientListReceived;
         public event InvalidBikeCallback OnInvalidBikeReceived;
+        public event BikeDataCallback OnBikeDataReceived;
+        public event SessionStateCallback OnSessionStateReceived;
+        public event SessionStateMessageCallback OnSessionStateMessageReceived;
+        public event TrainingListCallback OnTrainingListReceived;
+        public event TrainingDataCallback OnTrainingDataReceived;
 
         private int receivedBytes;
         private byte[] receiveBuffer;
@@ -58,10 +65,6 @@ namespace DoctorApplication
                 this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
             }
         }
-
-        public event BikeDataCallback OnBikeDataReceived;
-        public event SessionStateCallback OnSessionStateReceived;
-        public event SessionStateMessageCallback OnSessionStateMessageReceived;
 
         public DoctorClient()
         {
@@ -395,6 +398,57 @@ namespace DoctorApplication
             }
         }
 
+        public void RequestTrainingList(string forClient)
+        {
+            if(this.loggedIn)
+            {
+                DataPacket<RequestTrainingList> dataPacket = new DataPacket<RequestTrainingList>()
+                {
+                    sender = this.username,
+                    type = "REQUEST_TRAINING_LIST",
+                    data = new RequestTrainingList
+                    {
+                        forClient = forClient
+                    }
+                };
+
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
+        public void RequestTrainingData(string forClient, string trainingName)
+        {
+            if (this.loggedIn)
+            {
+                DataPacket<RequestTrainingData> dataPacket = new DataPacket<RequestTrainingData>()
+                {
+                    sender = this.username,
+                    type = "REQUEST_TRAINING_DATA",
+                    data = new RequestTrainingData
+                    {
+                        forClient = forClient,
+                        trainingName = trainingName
+                    }
+                };
+
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
         private void handleData(DataPacket data)
         {
             switch (data.type)
@@ -452,6 +506,18 @@ namespace DoctorApplication
                     {
                         DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
                         OnInvalidBikeReceived?.Invoke(d.sender);
+                        break;
+                    }
+                case "RESPONSE_TRAINING_LIST":
+                    {
+                        DataPacket<ResponseTrainingList> d = data.GetData<ResponseTrainingList>();
+                        this.OnTrainingListReceived?.Invoke(d.data.forClient, d.data.trainingList);
+                        break;
+                    }
+                case "RESPONSE_TRAINING_DATA":
+                    {
+                        DataPacket<ResponseTrainingData> d = data.GetData<ResponseTrainingData>();
+                        this.OnTrainingDataReceived?.Invoke(d.data.forClient, d.data.trainingName, d.data.trainingData);
                         break;
                     }
                 default:
