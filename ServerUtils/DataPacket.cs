@@ -106,5 +106,6 @@ namespace ServerUtils
         public int distanceTraveled;
         public int power;
         public DateTime timestamp;
+        public double resistance;
     }
 }

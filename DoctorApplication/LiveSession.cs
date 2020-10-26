@@ -103,6 +103,7 @@ namespace DoctorApplication
                 this.labelCurrentDistanceValue.Text = bikeDataPacket.distanceTraveled.ToString() + " m";
                 this.labelCurrentHearthbeatValue.Text = bikeDataPacket.heartbeat.ToString() + " BPM";
                 this.labelCurrentPowerValue.Text = bikeDataPacket.power.ToString() + " W";
+                labelCurrentResistanceValue.Text = bikeDataPacket.resistance.ToString() + " %";
             });
         }
 
@@ -212,7 +213,7 @@ namespace DoctorApplication
                 textBoxResistance.Text = (resistance / 2.0).ToString("0.0");
                 trackBarResistance.Value = resistance;
 
-                labelCurrentResistanceValue.Text = double.Parse(textBoxResistance.Text) / 2 + " %";
+                //labelCurrentResistanceValue.Text = double.Parse(textBoxResistance.Text) / 2 + " %";
 
                 this.client.SendResistance(resistance);
             }
@@ -221,7 +222,7 @@ namespace DoctorApplication
         private void trackBarResistance_Changed(object sender, EventArgs e)
         {
             textBoxResistance.Text = (trackBarResistance.Value / 2.0).ToString("0.0");
-            labelCurrentResistanceValue.Text = $"{trackBarResistance.Value / 2.0:0.0} %";
+            //labelCurrentResistanceValue.Text = $"{trackBarResistance.Value / 2.0:0.0} %";
 
             this.client.SendResistance(trackBarResistance.Value);
         }

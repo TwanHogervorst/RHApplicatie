@@ -15,6 +15,9 @@ namespace ClientApplication
         private Client client;
         private IBikeTrainer _bike; // DONT USE THIS VARIABLE
         private Timer dataSendTimer;
+        private Timer resistanceTimer;
+        private double currentResistance;
+        private double targetResistance;
         private IBikeTrainer bike
         {
             get => this._bike;
@@ -62,12 +65,47 @@ namespace ClientApplication
             dataSendTimer = new Timer();
             dataSendTimer.Interval = 500;
             dataSendTimer.Tick += DataSendTimer_Tick;
+            this.resistanceTimer = new Timer();
+            this.resistanceTimer.Interval = 1000;
+            this.resistanceTimer.Tick += ResistanceTimer_Tick1;
             this.client = client;
             this.client.OnChatReceived += Client_OnChatReceived;
             this.client.OnResistanceReceived += Client_OnResistanceReceived;
             this.client.OnStartStopSession += Client_OnStartStopSession;
 
             Utility.DisableAllChildControls(groupBoxSimulator);
+        }
+
+        private void ResistanceTimer_Tick1(object sender, EventArgs e)
+        {
+            if (this.targetResistance > this.currentResistance)
+            {
+                this.currentResistance--;
+                if (this.targetResistance < this.currentResistance)
+                {
+                    this.currentResistance = this.targetResistance;
+                    this.resistanceTimer.Stop();
+                }
+            }
+            else if (this.targetResistance < this.currentResistance)
+            {
+                this.currentResistance++;
+                if (this.targetResistance > this.currentResistance)
+                {
+                    this.currentResistance = this.targetResistance;
+                    this.resistanceTimer.Stop();
+                }
+            }
+            else if (this.currentResistance == this.targetResistance)
+            {
+                this.resistanceTimer.Stop();
+            }
+
+            this.Invoke((Action)delegate
+            {
+                labelCurrentResistanceValue.Text = $"{this.currentResistance / 2.0:0.0} %";
+                this.bike.SetResistance((int)this.currentResistance);
+            });
         }
 
         private void Client_OnStartStopSession(bool state)
@@ -92,16 +130,54 @@ namespace ClientApplication
 
         private void Client_OnResistanceReceived(int resistance)
         {
-            this.Invoke((Action)delegate
-            {
-                labelCurrentResistanceValue.Text = $"{resistance / 2.0:0.0} %";
-                this.bike.SetResistance(resistance);
-            });
+            this.targetResistance = resistance;
         }
+
 
         private void DataSendTimer_Tick(object sender, EventArgs e)
         {
-            this.client.SendData(bikeDataViewModel.Speed, bikeDataViewModel.HeartBeat, bikeDataViewModel.ElapsedTime, bikeDataViewModel.Power, bikeDataViewModel.DistanceTraveled);
+            this.client.SendData(bikeDataViewModel.Speed, bikeDataViewModel.HeartBeat, bikeDataViewModel.ElapsedTime, bikeDataViewModel.Power, bikeDataViewModel.DistanceTraveled, this.currentResistance / 2);
+
+            if(this.currentResistance != this.targetResistance)
+            {
+                if (this.targetResistance > this.currentResistance)
+                {
+                    this.currentResistance++;
+                    this.Invoke((Action)delegate
+                    {
+                        labelCurrentResistanceValue.Text = $"{this.currentResistance / 2.0:0.0} %";
+                        this.bike.SetResistance((int)this.currentResistance);
+                    });
+                    if (this.targetResistance < this.currentResistance)
+                    {
+                        this.currentResistance = this.targetResistance;
+                        this.Invoke((Action)delegate
+                        {
+                            labelCurrentResistanceValue.Text = $"{this.currentResistance / 2.0:0.0} %";
+                            this.bike.SetResistance((int)this.currentResistance);
+                        });
+                    }
+                }
+                else if (this.targetResistance < this.currentResistance)
+                {
+                    this.currentResistance--;
+                    this.Invoke((Action)delegate
+                    {
+                        labelCurrentResistanceValue.Text = $"{this.currentResistance / 2.0:0.0} %";
+                        this.bike.SetResistance((int)this.currentResistance);
+                    });
+                    if (this.targetResistance > this.currentResistance)
+                    {
+                        this.currentResistance = this.targetResistance;
+                        this.Invoke((Action)delegate
+                        {
+                            labelCurrentResistanceValue.Text = $"{this.currentResistance / 2.0:0.0} %";
+                            this.bike.SetResistance((int)this.currentResistance);
+                        });
+                    }
+                }
+
+            }
         }
 
         private void Client_OnChatReceived(string message)
