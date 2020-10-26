@@ -260,6 +260,7 @@ namespace ClientApplication
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.bike = null; // kills the connection
+            Application.Exit();
         }
 
         #region Bike Events

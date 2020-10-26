@@ -79,5 +79,10 @@ namespace DoctorApplication
                 BroadcastSendButton_Click();
             }
         }
+
+        private void HomePageForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }
