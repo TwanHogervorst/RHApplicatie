@@ -44,7 +44,7 @@ namespace NESessionList.Core
         }
 
         public void AddNode(string name_, DVRAddNodePacket.DComponents.DTransform transform_, DVRAddNodePacket.DComponents.DModel model_,
-                            DVRAddNodePacket.DComponents.DTerrain terrain_, DVRAddNodePacket.DComponents.DPanel panel_, DVRAddNodePacket.DComponents.DWater water_)
+                            DVRAddNodePacket.DComponents.DTerrain terrain_, DVRAddNodePacket.DComponents.DPanel panel_, DVRAddNodePacket.DComponents.DWater water_, string parent_ = null)
         {
             try
             {
@@ -54,6 +54,7 @@ namespace NESessionList.Core
                     data = new DVRAddNodePacket() // Create Add Node Packet
                     {
                         name = name_,
+                        parent = parent_,
                         components = new DVRAddNodePacket.DComponents
                         {
                             transform = transform_,
@@ -63,12 +64,11 @@ namespace NESessionList.Core
                             water = water_
                         }
                     }
-                }); ;
+                }); 
 
                 if (result?.status != "error")
                 {
                     Console.WriteLine($"Added node: {result.data.name} (uuid: {result.data.uuid})");
-
                     nodeList.Add(result.data.name, result.data.uuid);
                 }
                 else Console.WriteLine($"AddNode Error: {result?.error ?? "NULL"}");
@@ -79,7 +79,7 @@ namespace NESessionList.Core
             }
         }
 
-        public void UpdateNode(string id_, DVRUpdateNodePacket.DTransform transform_, DVRUpdateNodePacket.DAnimation animation_)
+        public void UpdateNode(string id_, DVRUpdateNodePacket.DTransform transform_ = null, DVRUpdateNodePacket.DAnimation animation_ = null, string parent_ = null)
         {
             try
             {
@@ -89,10 +89,11 @@ namespace NESessionList.Core
                     data = new DVRUpdateNodePacket() // Create Update Node Packet
                     {
                         id = id_,
+                        parent = parent_,
                         transform = transform_,
                         animation = animation_
                     }
-                }); ; ;
+                });
 
                 if (result?.status != "error") Console.WriteLine($"Update node status: {result.status}");
                 else Console.WriteLine($"UpdateNode Error: {result?.error ?? "NULL"}");
@@ -125,7 +126,7 @@ namespace NESessionList.Core
                 if (result != null)
                 {
                     //Console.WriteLine($"Delete node status: {result.data.status}");
-                    
+
                 }
             }
             catch (VRClientException ex)
@@ -136,8 +137,6 @@ namespace NESessionList.Core
 
         public void FindNode(string name_)
         {
-
-
             try
             {
                 DVRClientPacketArrayResponse<DVRFindNodeResult> result = this.SendAndReceiveData<DVRClientPacketArrayResponse<DVRFindNodeResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
@@ -149,7 +148,7 @@ namespace NESessionList.Core
                     }
                 }); ; ;
 
-                if (result != null)
+                if (result?.status != "error")
                 {
                     Console.WriteLine($"Node info: {result.data[0].uuid}");
                     nodeList.Add(name_, result.data[0].uuid);
@@ -209,7 +208,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine("Added Terrain");
+                if (result?.status != "error") Console.WriteLine("Added Terrain");
             }
             catch (VRClientException ex)
             {
@@ -232,7 +231,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine("Added Terrain");
+                if (result?.status != "error") Console.WriteLine("Added Terrain");
             }
             catch (VRClientException ex)
             {
@@ -253,7 +252,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine("Updated Terrain");
+                if (result?.status != "error") Console.WriteLine("Updated Terrain");
             }
             catch (VRClientException ex)
             {
@@ -274,7 +273,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine($"Delete Terrain status: {result.data?.status}");
+                if (result?.status != "error") Console.WriteLine($"Delete Terrain status: {result.data?.status}");
             }
             catch (VRClientException ex)
             {
@@ -296,7 +295,7 @@ namespace NESessionList.Core
                     }
                 }); ; ;
 
-                if (result != null) Console.WriteLine("Set time of SkyBox");
+                if (result?.status != "error") Console.WriteLine("Set time of SkyBox");
             }
             catch (VRClientException ex)
             {
@@ -322,7 +321,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null)
+                if (result?.status != "error")
                 {
                     Console.WriteLine($"Added Road uuid: {result.data.uuid}");
                     roadList.Add(route_, result.data.uuid);
@@ -352,7 +351,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine($"Updated Road uuid: {result.data.uuid}");
+                if (result?.status != "error") Console.WriteLine($"Updated Road uuid: {result.data.uuid}");
             }
             catch (VRClientException ex)
             {
@@ -372,7 +371,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null)
+                if (result?.status != "error")
                 {
                     Console.WriteLine($"Add Route : {result.data.uuid}");
                     routeList.Add(name, result.data.uuid);
@@ -398,7 +397,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine($"Update Route : {result.data.status}");
+                if (result?.status != "error") Console.WriteLine($"Update Route : {result.status}");
             }
             catch (VRClientException ex)
             {
@@ -419,9 +418,9 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null)
+                if (result?.status != "error")
                 {
-                    Console.WriteLine($"Status deleted route: {result.data.status}");
+                    Console.WriteLine($"Status deleted route: {result.status}");
                     routeList.Remove(routeList.FirstOrDefault(e => e.Value == id_).Key);
                     roadList.Remove(id_);
                 }
@@ -454,7 +453,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine($"Status follow route: {result.data.status}");
+                if (result?.status != "error") Console.WriteLine($"Status follow route: {result.status}");
             }
             catch (VRClientException ex)
             {
@@ -476,7 +475,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine($"Status route follow: {result.data.status}");
+                if (result?.status != "error") Console.WriteLine($"Status route follow: {result.status}");
             }
             catch (VRClientException ex)
             {
@@ -497,11 +496,80 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null) Console.WriteLine($"Status route show: {result.data.status}");
+                if (result?.status != "error") Console.WriteLine($"Status route show: {result.status}");
             }
             catch (VRClientException ex)
             {
                 Console.WriteLine($"route show failed: {ex.Message}");
+            }
+        }
+
+        public void ClearPanel(string panelId)
+        {
+            try
+            {
+                DVRClientReceivePacket<DVRClearPanelResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRClearPanelResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "scene/panel/clear",
+                    data = new DVRClearPanelPacket() // Create Update Route Packet
+                    {
+                        id = panelId
+                    }
+                }); ;
+
+                if (result?.status != "error") Console.WriteLine($"Clear Panel : {result.status}");
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"Clear Panel failed: {ex.Message}");
+            }
+        }
+
+        public void SwapPanel(string panelId)
+        {
+            try
+            {
+                DVRClientReceivePacket<DVRSwapPanelResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRSwapPanelResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "scene/panel/swap",
+                    data = new DVRSwapPanelPacket() // Create Update Route Packet
+                    {
+                        id = panelId
+                    }
+                }); ;
+
+                if (result?.status != "error") Console.WriteLine($"Swap Panel : {result.status}");
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"Swap panel failed: {ex.Message}");
+            }
+        }
+
+        public void DrawTextPanel(string panelId, string text_, decimal[] position_, decimal size_ = 1, decimal[] color_ = null, string font_ = "segoeui")
+        {
+
+            try
+            {
+                DVRClientReceivePacket<DVRDrawTextPanelResult> result = this.SendAndReceiveData<DVRClientReceivePacket<DVRDrawTextPanelResult>>(new DVRClientPacket<DAbstract>() // create VRClient Packet
+                {
+                    id = "scene/panel/drawtext",
+                    data = new DVRDrawTextPanelPacket() // Create Update Route Packet
+                    {
+                        id = panelId,
+                        text = text_,
+                        position = position_,
+                        size = size_,
+                        color = color_,
+                        font = font_
+                    }
+                }); ;
+
+                if (result?.status != "error") Console.WriteLine($"DrawText Panel : {result.status}");
+            }
+            catch (VRClientException ex)
+            {
+                Console.WriteLine($"DrawText panel failed: {ex.Message}");
             }
         }
 
@@ -517,7 +585,7 @@ namespace NESessionList.Core
                     }
                 }); ;
 
-                if (result != null)
+                if (result?.status != "error")
                 {
                     Console.WriteLine($"Scene info: {result.data.sceneData.ToString()}");
 
@@ -556,6 +624,21 @@ namespace NESessionList.Core
             // unpack tunnel receive packet
             if (receivePacket.status != "error") result = receivePacket.data;
             else throw new VRClientException(receivePacket.msg);
+
+            if (result is DVRClientReceivePacket)
+            {
+                if ((result as DVRClientReceivePacket)?.id == "callback")
+                {
+                    throw new VRCallbackException("Invalid package");
+                }
+            }
+            //else if (result is DVRClientPacketArrayResponse<>)
+            //{
+            //    if ((result as DVRClientPacketArrayResponse<>)?.id == "callback")
+            //    {
+            //        throw new VRCallbackException("Invalid package");
+            //    }
+            //}
 
             return result;
         }
