@@ -17,7 +17,6 @@ namespace ServerApplication
     {
         private TcpClient tcpClient;
         private NetworkStream stream;
-        private byte[] buffer = new byte[4];
         private bool isConnected;
         private bool isClient;
 
@@ -29,34 +28,69 @@ namespace ServerApplication
         public string SessionId { get; set; }
         public object BikeDataLock { get; } = new object();
 
+        private int receivedBytes;
+        private byte[] receiveBuffer;
+
         public ServerClient(TcpClient tcpClient)
         {
             isConnected = true;
             this.tcpClient = tcpClient;
 
             this.stream = this.tcpClient.GetStream();
-            stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(ReceiveLengthInt), null);
+
+            this.receivedBytes = 0;
+            this.receiveBuffer = new byte[4];
+
+            stream.BeginRead(this.receiveBuffer, 0, this.receiveBuffer.Length, new AsyncCallback(ReceiveLengthInt), null);
         }
 
         private void ReceiveLengthInt(IAsyncResult ar)
         {
-            int dataLength = BitConverter.ToInt32(Utility.ReverseIfBigEndian(this.buffer));
+            try
+            {
+                this.stream.EndRead(ar);
 
-            // create data buffer
-            this.buffer = new byte[dataLength];
+                int dataLength = BitConverter.ToInt32(Utility.ReverseIfBigEndian(this.receiveBuffer));
 
-            this.stream.BeginRead(this.buffer, 0, this.buffer.Length, new AsyncCallback(ReceiveData), null);
+                // create data buffer
+                this.receivedBytes = 0;
+                this.receiveBuffer = new byte[dataLength];
+
+                this.stream.BeginRead(this.receiveBuffer, 0, this.receiveBuffer.Length, new AsyncCallback(ReceiveData), null);
+            }
+            catch (Exception ex)
+            {
+                // Stream closed/error
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private void ReceiveData(IAsyncResult ar)
         {
-            string data = System.Text.Encoding.ASCII.GetString(this.buffer);
+            try
+            {
+                this.receivedBytes += this.stream.EndRead(ar);
 
-            DataPacket dataPacket = JsonConvert.DeserializeObject<DataPacket>(data);
-            handleData(dataPacket);
+                if (this.receivedBytes < this.receiveBuffer.Length)
+                {
+                    this.stream.BeginRead(this.receiveBuffer, this.receivedBytes, this.receiveBuffer.Length - this.receivedBytes, this.ReceiveData, null);
+                    return;
+                }
 
-            this.buffer = new byte[4];
-            this.stream.BeginRead(this.buffer, 0, this.buffer.Length, new AsyncCallback(ReceiveLengthInt), null);
+                string data = Encoding.ASCII.GetString(this.receiveBuffer);
+
+                DataPacket dataPacket = JsonConvert.DeserializeObject<DataPacket>(data);
+                handleData(dataPacket);
+
+                this.receivedBytes = 0;
+                this.receiveBuffer = new byte[4];
+                this.stream.BeginRead(this.receiveBuffer, 0, this.receiveBuffer.Length, new AsyncCallback(ReceiveLengthInt), null);
+            }
+            catch (Exception ex)
+            {
+                // Stream closed/error
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private void handleData(DataPacket data)
