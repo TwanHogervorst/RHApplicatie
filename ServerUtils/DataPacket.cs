@@ -103,7 +103,7 @@ namespace ServerUtils
         public double speed;
         public int heartbeat;
         public double elapsedTime;
-        public int distanceTraveled;
+        public double distanceTraveled;
         public int power;
         public int resistance;
         public DateTime timestamp;

@@ -49,7 +49,7 @@ namespace ClientApplication
                         break;
                     case BikeDataType.GeneralFEData:
                         labelCurrentElapsedTimeValue.Text = sender.ElapsedTime.ToString("0.00") + " s";
-                        labelCurrentDistanceTraveledValue.Text = sender.DistanceTraveled.ToString() + " m";
+                        labelCurrentDistanceTraveledValue.Text = Math.Round(sender.DistanceTraveled, 2).ToString("0.00") + " m";
                         labelCurrentSpeedValue.Text = sender.Speed.ToString("0.00") + " m/s";
                         break;
                     case BikeDataType.SpecificBikeData:
@@ -116,11 +116,13 @@ namespace ClientApplication
                 {
                     this.Client_OnChatReceived("The session has started\r\n");
                     this.client.SendStartStopSessionResponse(true);
+                    this.bikeDataViewModel.ResetDistanceTraveled();
                 }
                 else
                 {
                     this.Client_OnChatReceived("The session has stopped\r\n");
                     this.client.SendStartStopSessionResponse(false);
+                    this.bikeDataViewModel.ResetDistanceTraveled();
                 }
             } else
             {

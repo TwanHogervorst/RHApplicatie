@@ -119,7 +119,7 @@ namespace DoctorApplication
                 }
                
                 this.labelCurrentSpeedValue.Text = bikeDataPacket.speed.ToString("0.00") + " m/s";
-                this.labelCurrentDistanceValue.Text = bikeDataPacket.distanceTraveled.ToString() + " m";
+                this.labelCurrentDistanceValue.Text = Math.Round(bikeDataPacket.distanceTraveled, 2).ToString("0.00") + " m";
                 this.labelCurrentHearthbeatValue.Text = bikeDataPacket.heartbeat.ToString() + " BPM";
                 this.labelCurrentPowerValue.Text = bikeDataPacket.power.ToString() + " W";
                 labelCurrentResistanceValue.Text = (bikeDataPacket.resistance / 2.0).ToString("0.0") + " %";
@@ -127,7 +127,7 @@ namespace DoctorApplication
                 this.speedValueList.Add((decimal)bikeDataPacket.speed);
                 this.heartbeatValueList.Add(bikeDataPacket.heartbeat);
                 this.resistanceValueList.Add(bikeDataPacket.resistance / 2.0m);
-                this.distanceTraveledValueList.Add(bikeDataPacket.distanceTraveled);
+                this.distanceTraveledValueList.Add((decimal)bikeDataPacket.distanceTraveled);
                 this.powerValueList.Add(bikeDataPacket.power);
 
                 if (this.speedValueList.Count > this.speedGraph.PointsToShow) this.speedValueList.RemoveRange(0, this.speedValueList.Count - this.speedGraph.PointsToShow - 1);
