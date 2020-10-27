@@ -7,6 +7,7 @@ namespace DoctorApplication
     public partial class HomePageForm : Form
     {
         private DoctorClient client;
+        private Dictionary<string, bool> clientList;
 
         public HomePageForm(DoctorClient client)
         {
@@ -18,21 +19,21 @@ namespace DoctorApplication
             this.client.RequestClientList();
         }
 
-        private void Client_OnClientListReceived(Dictionary<string, bool> clientList)
+        private void Client_OnClientListReceived(Dictionary<string, bool> clientList_)
         {
             this.Invoke((Action)delegate
             {
+                this.clientList = clientList_;
+
                 PatientTableLayoutPanel.RowStyles.Clear();
                 PatientTableLayoutPanel.ColumnStyles.Clear();
+                PatientTableLayoutPanel.Controls.Clear();
 
-                foreach (KeyValuePair<string, bool> userClient in clientList)
+                foreach (KeyValuePair<string, bool> userClient in this.clientList)
                 {
-                    if (userClient.Value)
-                    {
                         PatienListViewUserControl patientList = new PatienListViewUserControl(client, userClient.Key);
                         patientList.OnUserSelected += PatientList_OnUserSelected;
                         PatientTableLayoutPanel.Controls.Add(patientList);
-                    }
                 }
             });
         }
@@ -45,7 +46,7 @@ namespace DoctorApplication
 
         private void LiveSessionButton_Click(object sender, System.EventArgs e)
         {
-            if (this.selectedUser != "")
+            if (this.selectedUser != "" && this.clientList[this.selectedUser])
             {
                 this.client.SendUserName(selectedUser);
                 LiveSession liveSession = new LiveSession(this.client, selectedUser);

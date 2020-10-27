@@ -76,6 +76,28 @@ namespace ServerApplication
             {
                 clients.RemoveClient(client);
                 Console.WriteLine("Client disconnected");
+
+                Dictionary<string, bool> temp = new Dictionary<string, bool>();
+                foreach (string userName in Server.clientList.Keys)
+                {
+                    temp.Add(userName, Server.clients.GetClients().FirstOrDefault(client => client.UserName == userName) != null);
+                }
+
+                DataPacket<ClientListPacket> activeClients = new DataPacket<ClientListPacket>()
+                {
+                    sender = client.UserName,
+                    type = "RESPONSE_CLIENTLIST",
+                    data = new ClientListPacket()
+                    {
+                        clientList = temp
+                    }
+
+                };
+
+                foreach (ServerClient doctor in Server.doctors.GetClients())
+                {
+                    client.SendDataToUser(doctor, activeClients);
+                }
             }
             else if (doctors.GetClients().Contains(client))
             {

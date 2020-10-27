@@ -79,6 +79,29 @@ namespace ServerApplication
                                 this.UserName = d.data.username;
                                 Server.tempList.RemoveClient(this);
                                 Server.clients.AddClient(this);
+
+                                Dictionary<string, bool> temp = new Dictionary<string, bool>();
+                                foreach (string userName in Server.clientList.Keys)
+                                {
+                                    temp.Add(userName, Server.clients.GetClients().FirstOrDefault(client => client.UserName == userName) != null);
+                                }
+
+                                DataPacket<ClientListPacket> activeClients = new DataPacket<ClientListPacket>()
+                                {
+                                    sender = this.UserName,
+                                    type = "RESPONSE_CLIENTLIST",
+                                    data = new ClientListPacket()
+                                    {
+                                        clientList = temp
+                                    }
+
+                                };
+
+                                foreach (ServerClient doctor in Server.doctors.GetClients())
+                                {
+                                    SendDataToUser(doctor, activeClients);
+                                }
+
                                 SendData(new DataPacket<LoginResponse>()
                                 {
                                     sender = this.UserName,
@@ -157,7 +180,7 @@ namespace ServerApplication
                         Console.WriteLine("Received a chat packet");
 
                         DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
-                        if (d.data.receiver == "All") 
+                        if (d.data.receiver == "All")
                         {
                             foreach (ServerClient client in Server.clients.GetClients())
                             {
@@ -181,9 +204,9 @@ namespace ServerApplication
                     {
                         DataPacket<BikeDataPacket> d = data.GetData<BikeDataPacket>();
 
-                        if(!string.IsNullOrEmpty(this.SessionId))
+                        if (!string.IsNullOrEmpty(this.SessionId))
                         {
-                            lock(this.BikeDataLock)
+                            lock (this.BikeDataLock)
                             {
                                 try
                                 {
@@ -200,7 +223,7 @@ namespace ServerApplication
                                 }
                             }
                         }
-                    
+
                         if (d.data.receiver != null)
                         {
                             if (Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver) != null)
@@ -261,7 +284,7 @@ namespace ServerApplication
                 case "RESISTANCE":
                     {
                         DataPacket<ResistancePacket> d = data.GetData<ResistancePacket>();
-                       
+
                         if (Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver) != null)
                         {
                             SendDataToUser(Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver), d.ToJson());
@@ -287,18 +310,18 @@ namespace ServerApplication
                                     .ToList();
 
                                 trainingFiles.Sort();
-                                
+
                                 string lastTrainingFileName = trainingFiles.LastOrDefault();
 
-                                if(!string.IsNullOrEmpty(lastTrainingFileName))
+                                if (!string.IsNullOrEmpty(lastTrainingFileName))
                                 {
                                     string lastTrainingId = lastTrainingFileName.Split(' ').LastOrDefault();
 
                                     if (int.TryParse(lastTrainingId, out int trainingsId)) receiver.SessionId = "Training " + (++trainingsId);
                                 }
                             }
-                            
-                            if(string.IsNullOrEmpty(receiver.SessionId))
+
+                            if (string.IsNullOrEmpty(receiver.SessionId))
                             {
                                 try
                                 {
@@ -308,11 +331,11 @@ namespace ServerApplication
                                 {
                                     Console.WriteLine(ex.GetType().Name + ": " + ex.Message);
                                 }
-                                
+
                                 receiver.SessionId = "Training 1";
                             }
 
-                            lock(receiver.BikeDataLock)
+                            lock (receiver.BikeDataLock)
                             {
                                 try
                                 {
@@ -457,7 +480,7 @@ namespace ServerApplication
                                     startTimeSession = this.startTimeSession,
                                     sessionId = receiver.SessionId
                                 }
-                            }.ToJson()) ;
+                            }.ToJson());
                         }
                         break;
                     }
@@ -468,7 +491,7 @@ namespace ServerApplication
                         {
                             SendDataToUser(Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver), d.ToJson());
                         }
-                            break;
+                        break;
                     }
                 case "INVALID_BIKE":
                     {
@@ -537,6 +560,21 @@ namespace ServerApplication
             {
                 // create the sendBuffer based on the message
                 List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(data));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                user.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
+        public void SendDataToUser(ServerClient user, DataPacket<ClientListPacket> data)
+        {
+            if (this.isConnected)
+            {
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(data)));
 
                 // append the message length (in bytes)
                 sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
