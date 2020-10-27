@@ -131,7 +131,7 @@ namespace ClientApplication.Core
             this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
         }
 
-        public void SendData(double speed, int heartbeat, double elapsedTime, int power, int distanceTraveled)
+        public void SendData(double speed, int heartbeat, double elapsedTime, int power, int distanceTraveled, int resistance)
         {
             if (this.loggedIn)
             {
@@ -147,6 +147,7 @@ namespace ClientApplication.Core
                         elapsedTime = elapsedTime,
                         power = power,
                         distanceTraveled = distanceTraveled,
+                        resistance = resistance,
                         timestamp = DateTime.Now
                    }
                 };

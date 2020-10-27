@@ -12,6 +12,7 @@ namespace ClientApplication.Data
         public byte DistanceTraveled { get; set; }
         public double Speed { get; set; }
         public ushort Power { get; set; }
+        public int Resistance { get; set; }
 
 
         public BikeDataViewModel(IBikeTrainer bikeTrainer)

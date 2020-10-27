@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
 namespace DoctorApplication
 {
@@ -18,6 +19,17 @@ namespace DoctorApplication
 
             this.selectedUser = selected;
             this.client = client;
+
+            this.trainingDataDataGridView.AllowUserToAddRows = false;
+            this.trainingDataDataGridView.ColumnCount = 7;
+
+            this.trainingDataDataGridView.Columns[0].Name = "Speed";
+            this.trainingDataDataGridView.Columns[1].Name = "Heartbeat";
+            this.trainingDataDataGridView.Columns[2].Name = "Elapsed Time";
+            this.trainingDataDataGridView.Columns[3].Name = "Distance Traveled";
+            this.trainingDataDataGridView.Columns[4].Name = "Power";
+            this.trainingDataDataGridView.Columns[5].Name = "Resistance";
+            this.trainingDataDataGridView.Columns[6].Name = "Timestamp";
 
             this.client.OnTrainingListReceived += Client_OnTrainingListReceived;
             this.client.OnTrainingDataReceived += Client_OnTrainingDataReceived;
@@ -48,13 +60,80 @@ namespace DoctorApplication
 
         private void Client_OnTrainingDataReceived(string forClient, string trainingName, List<BikeDataPacket> trainingData)
         {
-            this.Invoke((Action)delegate ()
+            if (forClient == this.selectedUser)
             {
-                if (forClient == this.selectedUser)
+                List<string> doctorList = new List<string>();
+                DateTime beginTime = new DateTime();
+                DateTime endTime = DateTime.Now;
+                double averageSpeed = 0;
+                double averageHeartbeat = 0;
+                double averagePower = 0;
+                double averageResistance = 0;
+                double totalDistanceTraveled = 0;
+                TimeSpan trainingLength = new TimeSpan();
+
+                List<string[]> rows = new List<string[]>();
+
+                if (trainingData.Count > 0)
                 {
-                    this.trainingDataTextBox.Text = JsonConvert.SerializeObject(trainingData, Formatting.Indented);
+                    trainingData.Sort((a, b) => a.timestamp.CompareTo(b.timestamp));
+
+                    beginTime = trainingData.FirstOrDefault().timestamp;
+
+                    DateTime previous = trainingData.FirstOrDefault().timestamp;
+                    foreach (BikeDataPacket dataPacket in trainingData)
+                    {
+                        if (!doctorList.Contains(dataPacket.doctor) && !string.IsNullOrEmpty(dataPacket.doctor)) doctorList.Add(dataPacket.doctor);
+                        averageSpeed += dataPacket.speed;
+                        averageHeartbeat += dataPacket.heartbeat;
+                        averagePower += dataPacket.power;
+                        averageResistance += dataPacket.resistance;
+
+                        totalDistanceTraveled += dataPacket.speed * (dataPacket.timestamp - previous).TotalSeconds;
+                        previous = dataPacket.timestamp;
+
+                        rows.Add(new string[] {
+                            $"{dataPacket.speed:0.00} m/s",
+                            $"{dataPacket.heartbeat} BPM",
+                            $"{(dataPacket.timestamp - beginTime).TotalSeconds:0.00} s",
+                            $"{Math.Round(totalDistanceTraveled, 2):0.00} m",
+                            $"{dataPacket.power} Watt",
+                            $"{dataPacket.resistance/2.0:0.0} %",
+                            $"{dataPacket.timestamp:H:mm:ss.ff}"
+                        });
+                    }
+
+                    averageSpeed /= trainingData.Count;
+                    averageHeartbeat /= trainingData.Count;
+                    averagePower /= trainingData.Count;
+                    averageResistance = (averageResistance / 2) / trainingData.Count;
+
+                    endTime = trainingData.LastOrDefault().timestamp;
+
+                    trainingLength = endTime - beginTime;
                 }
-            });
+
+                this.Invoke((Action)delegate ()
+                {
+                    this.trainingNameValueLabel.Text = trainingName;
+                    this.doctorNameValueLabel.Text = string.Join(", ", doctorList);
+                    this.trainingStartTimeValueLabel.Text = beginTime.ToString("dd/MM/yyyy H:mm:ss");
+                    this.trainingEndTimeValueLabel.Text = endTime.ToString("dd/MM/yyyy H:mm:ss");
+                    this.trainingLengthValueLabel.Text = trainingLength.ToString("hh\\:mm\\:ss");
+
+                    this.averageSpeedValueLabel.Text = $"{Math.Round(averageSpeed, 2):0.00} m/s";
+                    this.averageHeartbeatValueLabel.Text = $"{Math.Round(averageHeartbeat)} BPM";
+                    this.averagePowerValueLabel.Text = $"{Math.Round(averagePower)} Watt";
+                    this.averageResistanceValueLabel.Text = $"{Math.Round(averageResistance, 1):0.0} %";
+                    this.distanceTraveledValueLabel.Text = $"{Math.Round(totalDistanceTraveled, 2):0.00} m";
+
+                    this.trainingDataDataGridView.Rows.Clear();
+                    foreach (string[] rowData in rows)
+                    {
+                        this.trainingDataDataGridView.Rows.Add(rowData);
+                    }
+                });
+            }
         }
 
         private void HistoryForm_FormClosing(object sender, FormClosingEventArgs e)
