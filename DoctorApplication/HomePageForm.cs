@@ -22,11 +22,12 @@ namespace DoctorApplication
         {
             this.Invoke((Action)delegate
             {
-                PatientListView.Items.Clear();
+                PatientTableLayoutPanel.RowStyles.Clear();
+                PatientTableLayoutPanel.ColumnStyles.Clear();
 
-                foreach (KeyValuePair<string, bool> client in clientList)
+                foreach (KeyValuePair<string, bool> userClient in clientList)
                 {
-                    PatientListView.Items.Add(client.Key);
+                    PatientTableLayoutPanel.Controls.Add(new PatienListViewUserControl(client, userClient.Key));
                 }
             });
         }
