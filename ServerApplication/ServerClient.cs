@@ -390,6 +390,54 @@ namespace ServerApplication
                         }
                         break;
                     }
+                case "EMERGENCY_STOP":
+                    {
+                        DataPacket<EmergencyStopPacket> d = new DataPacket<EmergencyStopPacket>();
+
+                        ServerClient receiver = Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver);
+
+                        if (receiver != null)
+                        {
+                            receiver.isRunning = false;
+                            SendDataToUser(receiver, d.ToJson());
+
+                            if (!string.IsNullOrEmpty(receiver.SessionId))
+                            {
+                                lock (receiver.BikeDataLock)
+                                {
+                                    try
+                                    {
+                                        using (StreamWriter fileStream = new StreamWriter(new FileStream("Trainingen\\" + receiver.UserName + "\\" + receiver.SessionId + ".json", FileMode.Append, FileAccess.Write)))
+                                        {
+                                            fileStream.Write(']');
+                                            fileStream.Flush();
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine(ex.GetType().Name + ": " + ex.Message);
+                                    }
+                                }
+                            }
+
+                            SendDataToUser(this, new DataPacket<ResponseSessionStatePacket>()
+                            {
+                                sender = this.UserName,
+                                type = "RESPONSE_SESSIONSTATE",
+                                data = new ResponseSessionStatePacket()
+                                {
+                                    receiver = d.data.receiver,
+                                    sessionState = Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver).isRunning,
+                                    startTimeSession = this.startTimeSession,
+                                    sessionId = receiver.SessionId
+                                }
+                            }.ToJson());
+
+                            receiver.SessionId = null;
+                        }
+
+                        break;
+                    }
                 case "REQUEST_SESSIONSTATE":
                     {
                         DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();

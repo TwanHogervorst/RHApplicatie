@@ -107,4 +107,11 @@ namespace ServerUtils
         public int power;
         public DateTime timestamp;
     }
+
+    public class EmergencyStopPacket : DAbstract
+    {
+        public string receiver;
+        public bool startSession;
+        public int resistance;
+    }
 }

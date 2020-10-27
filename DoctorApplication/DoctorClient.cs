@@ -286,6 +286,30 @@ namespace DoctorApplication
             }
         }
 
+        public void EmergencyStopSession()
+        {
+            DataPacket<EmergencyStopPacket> dataPacket = new DataPacket<EmergencyStopPacket>()
+            {
+                sender = this.username,
+                type = "EMERGENCY_STOP",
+                data = new EmergencyStopPacket()
+                {
+                    receiver = clientUserName,
+                    startSession = false,
+                    resistance = 0
+                }
+            };
+
+            // create the sendBuffer based on the message
+            List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+            // append the message length (in bytes)
+            sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+            // send the message
+            this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+        }
+
         public void RequestClientList()
         {
             if (this.loggedIn)
