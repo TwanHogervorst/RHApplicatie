@@ -27,10 +27,12 @@ namespace DoctorApplication
 
                 foreach (KeyValuePair<string, bool> userClient in clientList)
                 {
-                    PatienListViewUserControl patientList = new PatienListViewUserControl(client, userClient.Key);
-                    patientList.OnUserSelected += PatientList_OnUserSelected;
-                    PatientTableLayoutPanel.Controls.Add(patientList);
-                    
+                    if (userClient.Value)
+                    {
+                        PatienListViewUserControl patientList = new PatienListViewUserControl(client, userClient.Key);
+                        patientList.OnUserSelected += PatientList_OnUserSelected;
+                        PatientTableLayoutPanel.Controls.Add(patientList);
+                    }
                 }
             });
         }
