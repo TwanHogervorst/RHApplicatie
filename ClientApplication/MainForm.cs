@@ -96,12 +96,13 @@ namespace ClientApplication
             {
                 labelCurrentResistanceValue.Text = $"{resistance / 2.0:0.0} %";
                 this.bike.SetResistance(resistance);
+                this.bikeDataViewModel.Resistance = resistance;
             });
         }
 
         private void DataSendTimer_Tick(object sender, EventArgs e)
         {
-            this.client.SendData(bikeDataViewModel.Speed, bikeDataViewModel.HeartBeat, bikeDataViewModel.ElapsedTime, bikeDataViewModel.Power, bikeDataViewModel.DistanceTraveled);
+            this.client.SendData(bikeDataViewModel.Speed, bikeDataViewModel.HeartBeat, bikeDataViewModel.ElapsedTime, bikeDataViewModel.Power, bikeDataViewModel.DistanceTraveled, bikeDataViewModel.Resistance);
         }
 
         private void Client_OnChatReceived(string message)
@@ -260,6 +261,7 @@ namespace ClientApplication
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.bike = null; // kills the connection
+            Application.Exit();
         }
 
         #region Bike Events

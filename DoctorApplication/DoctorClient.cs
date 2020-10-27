@@ -17,12 +17,13 @@ namespace DoctorApplication
     public delegate void SessionStateCallback(string clientUserName, DateTime startTimeSession, bool state);
     public delegate void SessionStateMessageCallback(string sender, bool state);
     public delegate void InvalidBikeCallback(string sender);
+    public delegate void TrainingListCallback(string forClient, List<string> trainingList);
+    public delegate void TrainingDataCallback(string forClient, string trainingName, List<BikeDataPacket> trainingData);
 
     public class DoctorClient
     {
         private TcpClient client;
         private NetworkStream stream;
-        private byte[] buffer = new byte[4];
         public string username;
         private bool loggedIn = false;
         private string clientUserName;
@@ -31,6 +32,14 @@ namespace DoctorApplication
         public event ChatCallback OnChatReceived;
         public event ClientListCallback OnClientListReceived;
         public event InvalidBikeCallback OnInvalidBikeReceived;
+        public event BikeDataCallback OnBikeDataReceived;
+        public event SessionStateCallback OnSessionStateReceived;
+        public event SessionStateMessageCallback OnSessionStateMessageReceived;
+        public event TrainingListCallback OnTrainingListReceived;
+        public event TrainingDataCallback OnTrainingDataReceived;
+
+        private int receivedBytes;
+        private byte[] receiveBuffer;
 
         public void RequestSessionState()
         {
@@ -57,10 +66,6 @@ namespace DoctorApplication
             }
         }
 
-        public event BikeDataCallback OnBikeDataReceived;
-        public event SessionStateCallback OnSessionStateReceived;
-        public event SessionStateMessageCallback OnSessionStateMessageReceived;
-
         public DoctorClient()
         {
             this.client = new TcpClient();
@@ -75,7 +80,10 @@ namespace DoctorApplication
             {
                 this.stream = client.GetStream();
             }
-            this.stream.BeginRead(this.buffer, 0, this.buffer.Length, new AsyncCallback(ReceiveLengthInt), null);
+
+            this.receiveBuffer = new byte[4];
+            this.receivedBytes = 0;
+            this.stream.BeginRead(this.receiveBuffer, 0, this.receiveBuffer.Length, new AsyncCallback(ReceiveLengthInt), null);
         }
 
         public void SendLogin(string username, string password)
@@ -97,23 +105,51 @@ namespace DoctorApplication
 
         private void ReceiveLengthInt(IAsyncResult ar)
         {
-            int dataLength = BitConverter.ToInt32(Utility.ReverseIfBigEndian(this.buffer));
+            try
+            {
+                this.stream.EndRead(ar);
 
-            // create data buffer
-            this.buffer = new byte[dataLength];
+                int dataLength = BitConverter.ToInt32(Utility.ReverseIfBigEndian(this.receiveBuffer));
 
-            this.stream.BeginRead(this.buffer, 0, this.buffer.Length, new AsyncCallback(ReceiveData), null);
+                // create data buffer
+                this.receivedBytes = 0;
+                this.receiveBuffer = new byte[dataLength];
+
+                this.stream.BeginRead(this.receiveBuffer, 0, this.receiveBuffer.Length, new AsyncCallback(ReceiveData), null);
+            }
+            catch (Exception ex)
+            {
+                // Stream closed/error
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private void ReceiveData(IAsyncResult ar)
         {
-            string data = System.Text.Encoding.ASCII.GetString(this.buffer);
+            try
+            {
+                this.receivedBytes += this.stream.EndRead(ar);
 
-            DataPacket dataPacket = JsonConvert.DeserializeObject<DataPacket>(data);
-            handleData(dataPacket);
+                if (this.receivedBytes < this.receiveBuffer.Length)
+                {
+                    this.stream.BeginRead(this.receiveBuffer, this.receivedBytes, this.receiveBuffer.Length - this.receivedBytes, this.ReceiveData, null);
+                    return;
+                }
 
-            this.buffer = new byte[4];
-            this.stream.BeginRead(this.buffer, 0, this.buffer.Length, new AsyncCallback(ReceiveLengthInt), null);
+                string data = Encoding.ASCII.GetString(this.receiveBuffer);
+
+                DataPacket dataPacket = JsonConvert.DeserializeObject<DataPacket>(data);
+                handleData(dataPacket);
+
+                this.receivedBytes = 0;
+                this.receiveBuffer = new byte[4];
+                this.stream.BeginRead(this.receiveBuffer, 0, this.receiveBuffer.Length, new AsyncCallback(ReceiveLengthInt), null);
+            }
+            catch (Exception ex)
+            {
+                // Stream closed/error
+                Console.WriteLine(ex.Message);
+            }
         }
 
 
@@ -362,6 +398,57 @@ namespace DoctorApplication
             }
         }
 
+        public void RequestTrainingList(string forClient)
+        {
+            if(this.loggedIn)
+            {
+                DataPacket<RequestTrainingList> dataPacket = new DataPacket<RequestTrainingList>()
+                {
+                    sender = this.username,
+                    type = "REQUEST_TRAINING_LIST",
+                    data = new RequestTrainingList
+                    {
+                        forClient = forClient
+                    }
+                };
+
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
+        public void RequestTrainingData(string forClient, string trainingName)
+        {
+            if (this.loggedIn)
+            {
+                DataPacket<RequestTrainingData> dataPacket = new DataPacket<RequestTrainingData>()
+                {
+                    sender = this.username,
+                    type = "REQUEST_TRAINING_DATA",
+                    data = new RequestTrainingData
+                    {
+                        forClient = forClient,
+                        trainingName = trainingName
+                    }
+                };
+
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
         private void handleData(DataPacket data)
         {
             switch (data.type)
@@ -419,6 +506,18 @@ namespace DoctorApplication
                     {
                         DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
                         OnInvalidBikeReceived?.Invoke(d.sender);
+                        break;
+                    }
+                case "RESPONSE_TRAINING_LIST":
+                    {
+                        DataPacket<ResponseTrainingList> d = data.GetData<ResponseTrainingList>();
+                        this.OnTrainingListReceived?.Invoke(d.data.forClient, d.data.trainingList);
+                        break;
+                    }
+                case "RESPONSE_TRAINING_DATA":
+                    {
+                        DataPacket<ResponseTrainingData> d = data.GetData<ResponseTrainingData>();
+                        this.OnTrainingDataReceived?.Invoke(d.data.forClient, d.data.trainingName, d.data.trainingData);
                         break;
                     }
                 default:

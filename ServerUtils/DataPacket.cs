@@ -99,12 +99,37 @@ namespace ServerUtils
 
     public class BikeDataPacket : DAbstract
     {
-        public string receiver;
+        public string doctor;
         public double speed;
         public int heartbeat;
         public double elapsedTime;
         public int distanceTraveled;
         public int power;
+        public int resistance;
         public DateTime timestamp;
+    }
+
+    class RequestTrainingList : DAbstract
+    {
+        public string forClient;
+    }
+
+    class ResponseTrainingList : DAbstract
+    {
+        public string forClient;
+        public List<string> trainingList = new List<string>();
+    }
+
+    class RequestTrainingData : DAbstract
+    {
+        public string forClient;
+        public string trainingName;
+    }
+
+    class ResponseTrainingData : DAbstract
+    {
+        public string forClient;
+        public string trainingName;
+        public List<BikeDataPacket> trainingData = new List<BikeDataPacket>();
     }
 }
