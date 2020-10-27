@@ -12,6 +12,7 @@ namespace ClientApplication
         private Client client;
         private VRClient vrClient;
         private List<DVRSessionItem> sessionList;
+        private VRTunnel tunnel;
 
         public Form1(Client client)
         {
@@ -42,7 +43,7 @@ namespace ClientApplication
 
         private void continueWithoutVR_Click(object sender, EventArgs e)
         {
-            MainForm mainForm = new MainForm(this.client);
+            MainForm mainForm = new MainForm(this.client, null);
             mainForm.Show();
             this.Close();
         }
@@ -55,8 +56,8 @@ namespace ClientApplication
                 
                 try
                 {
-
-                    VRTunnel tunnel = vrClient.CreateTunnel(this.sessionList[dataGridView1.CurrentRow.Index].id, keyTextBox.ToString());
+                    if(this.tunnel == null)
+                    this.tunnel = vrClient.CreateTunnel(this.sessionList[dataGridView1.CurrentRow.Index].id, keyTextBox.ToString());
 
                     if (tunnel != null)
                     {
@@ -65,7 +66,7 @@ namespace ClientApplication
                         {
                             try
                             {
-                                succeded = SetScene(tunnel);
+                                succeded = SetScene(this.tunnel);
                             }
                             catch (VRCallbackException ex)
                             {
@@ -73,7 +74,7 @@ namespace ClientApplication
                             }
                         }
                     }
-                    MainForm mainForm = new MainForm(this.client);
+                    MainForm mainForm = new MainForm(this.client, this.tunnel);
                     mainForm.Show();
                     this.Close();
                 }
