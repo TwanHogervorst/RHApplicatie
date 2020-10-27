@@ -21,9 +21,10 @@ namespace DoctorApplication
             this.Invoke((Action)delegate {
                 if (status)
                 {
-
-                    MainForm mainForm = new MainForm(this.client);
-                    mainForm.Show();
+                    Form1 VRForm = new Form1(this.client);
+                    VRForm.Show();
+                    //MainForm mainForm = new MainForm(this.client);
+                    //mainForm.Show();
                     this.Hide();
                 }
                 else
