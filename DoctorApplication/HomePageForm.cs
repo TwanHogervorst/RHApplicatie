@@ -65,6 +65,10 @@ namespace DoctorApplication
                 HistoryForm historySession = new HistoryForm(selectedUser);
                 historySession.Show();
             }
+            else
+            {
+                MessageBox.Show("No client selected.", "Error");
+            }
         }
 
         private string selectedUser = "";
