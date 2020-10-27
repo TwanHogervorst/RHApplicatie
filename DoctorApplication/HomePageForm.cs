@@ -52,6 +52,10 @@ namespace DoctorApplication
                 LiveSession liveSession = new LiveSession(this.client, selectedUser);
                 liveSession.Show();
             }
+            else
+            {
+                MessageBox.Show("No client selected/client is offline.", "Error");
+            }
         }
 
         private void HistoryButton_Click(object sender, System.EventArgs e)
