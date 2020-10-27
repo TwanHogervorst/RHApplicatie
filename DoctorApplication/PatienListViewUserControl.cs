@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using System.Net.Sockets;
+using ServerUtils;
 
 namespace DoctorApplication
 {
@@ -30,11 +32,14 @@ namespace DoctorApplication
 
         }
 
-        private void Client_OnBikeDataReceived(ServerUtils.BikeDataPacket bikeDataPacket)
+        private void Client_OnBikeDataReceived(ServerUtils.DataPacket<BikeDataPacket> bikeDataPacket)
         {
             this.Invoke((Action)delegate
             {
-                this.labelCurrentHearthbeatValue.Text = bikeDataPacket.heartbeat.ToString() + " BPM";
+                if (bikeDataPacket.sender == UserControlNameLabel.Text)
+                {
+                    this.labelCurrentHearthbeatValue.Text = bikeDataPacket.data.heartbeat.ToString() + " BPM";
+                }
             });
         }
 

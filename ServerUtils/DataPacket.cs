@@ -14,7 +14,7 @@ namespace ServerUtils
         public T data; // Content of the message
     }
 
-    class DataPacket : DAbstract
+    public class DataPacket : DAbstract
     {
         public string sender;
         public string type;

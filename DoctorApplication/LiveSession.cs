@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ServerUtils;
 
 namespace DoctorApplication
 {
@@ -89,7 +90,7 @@ namespace DoctorApplication
             }
         }
 
-        private void Client_OnBikeDataReceived(ServerUtils.BikeDataPacket bikeDataPacket)
+        private void Client_OnBikeDataReceived(ServerUtils.DataPacket<BikeDataPacket> bikeDataPacket)
         {
             this.Invoke((Action)delegate
             {
@@ -99,10 +100,10 @@ namespace DoctorApplication
                     this.labelTimeValue.Text = $"{(int)ts.TotalMinutes:00}:{ts.Seconds:00}";
                 }
                
-                this.labelCurrentSpeedValue.Text = bikeDataPacket.speed.ToString("0.00") + " m/s";
-                this.labelCurrentDistanceValue.Text = bikeDataPacket.distanceTraveled.ToString() + " m";
-                this.labelCurrentHearthbeatValue.Text = bikeDataPacket.heartbeat.ToString() + " BPM";
-                this.labelCurrentPowerValue.Text = bikeDataPacket.power.ToString() + " W";
+                this.labelCurrentSpeedValue.Text = bikeDataPacket.data.speed.ToString("0.00") + " m/s";
+                this.labelCurrentDistanceValue.Text = bikeDataPacket.data.distanceTraveled.ToString() + " m";
+                this.labelCurrentHearthbeatValue.Text = bikeDataPacket.data.heartbeat.ToString() + " BPM";
+                this.labelCurrentPowerValue.Text = bikeDataPacket.data.power.ToString() + " W";
             });
         }
 

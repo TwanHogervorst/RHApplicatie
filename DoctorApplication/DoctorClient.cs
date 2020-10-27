@@ -13,7 +13,7 @@ namespace DoctorApplication
     public delegate void LoginCallback(bool status);
     public delegate void ChatCallback(string sender, string message);
     public delegate void ClientListCallback(Dictionary<string, bool> clientList);
-    public delegate void BikeDataCallback(BikeDataPacket bikeDataPacket);
+    public delegate void BikeDataCallback(DataPacket<BikeDataPacket> DataPacket);
     public delegate void SessionStateCallback(string clientUserName, DateTime startTimeSession, bool state);
     public delegate void SessionStateMessageCallback(string sender, bool state);
     public delegate void InvalidBikeCallback(string sender);
@@ -424,7 +424,7 @@ namespace DoctorApplication
                 case "BIKEDATA":
                     {
                         DataPacket<BikeDataPacket> d = data.GetData<BikeDataPacket>();
-                        OnBikeDataReceived?.Invoke(d.data);
+                        OnBikeDataReceived?.Invoke(d);
                         break;
                     }
                 case "RESPONSE_SESSIONSTATE":
