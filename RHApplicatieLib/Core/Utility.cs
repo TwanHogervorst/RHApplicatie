@@ -42,6 +42,6 @@ namespace RHApplicationLib.Core
         public static decimal Bound(decimal value, decimal min, decimal max) => Math.Min(Math.Max(min, value), max);
 
         public static decimal Map(decimal value, decimal start1, decimal stop1, decimal start2, decimal stop2)
-            => ((value - start1) / (stop1 - start1)) * (stop2 - start2) + start1;
+            => ((value - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
     }
 }

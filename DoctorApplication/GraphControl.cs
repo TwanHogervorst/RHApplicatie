@@ -113,6 +113,7 @@ namespace DoctorApplication
                         case GraphControlSizeMode.Stretch:
                             {
                                 valuesEnum = this.DataSource.AsEnumerable();
+                                this.PointsToShow = valuesEnum.Count();
                                 break;
                             }
                         case GraphControlSizeMode.None:
@@ -139,7 +140,6 @@ namespace DoctorApplication
                         valuesMapped = valuesEnum.Select(elem => this.Height / 2f)
                             .ToList();
                     }
-
 
                     float pointDistance = (float)this.Width / ((float)this.PointsToShow - 1f);
 

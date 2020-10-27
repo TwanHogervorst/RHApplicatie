@@ -43,6 +43,11 @@
             this.labelCurrentPower = new System.Windows.Forms.Label();
             this.labelCurrentPowerValue = new System.Windows.Forms.Label();
             this.groupBoxCurrentData = new System.Windows.Forms.GroupBox();
+            this.powerGraph = new DoctorApplication.GraphControl();
+            this.distanceTraveledGraph = new DoctorApplication.GraphControl();
+            this.resistanceGraph = new DoctorApplication.GraphControl();
+            this.heartbeatGraph = new DoctorApplication.GraphControl();
+            this.speedGraph = new DoctorApplication.GraphControl();
             this.buttonStartStop = new System.Windows.Forms.Button();
             this.buttonNoodstop = new System.Windows.Forms.Button();
             this.labelRestistance = new System.Windows.Forms.Label();
@@ -68,7 +73,7 @@
             // textBoxSendChat
             // 
             this.textBoxSendChat.Location = new System.Drawing.Point(643, 654);
-            this.textBoxSendChat.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBoxSendChat.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxSendChat.Name = "textBoxSendChat";
             this.textBoxSendChat.Size = new System.Drawing.Size(182, 23);
             this.textBoxSendChat.TabIndex = 1;
@@ -77,7 +82,7 @@
             // textBoxChat
             // 
             this.textBoxChat.Location = new System.Drawing.Point(643, 94);
-            this.textBoxChat.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBoxChat.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxChat.Multiline = true;
             this.textBoxChat.Name = "textBoxChat";
             this.textBoxChat.ReadOnly = true;
@@ -88,7 +93,7 @@
             // buttonSendChat
             // 
             this.buttonSendChat.Location = new System.Drawing.Point(832, 651);
-            this.buttonSendChat.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonSendChat.Margin = new System.Windows.Forms.Padding(4);
             this.buttonSendChat.Name = "buttonSendChat";
             this.buttonSendChat.Size = new System.Drawing.Size(88, 26);
             this.buttonSendChat.TabIndex = 3;
@@ -200,6 +205,11 @@
             // 
             // groupBoxCurrentData
             // 
+            this.groupBoxCurrentData.Controls.Add(this.powerGraph);
+            this.groupBoxCurrentData.Controls.Add(this.distanceTraveledGraph);
+            this.groupBoxCurrentData.Controls.Add(this.resistanceGraph);
+            this.groupBoxCurrentData.Controls.Add(this.heartbeatGraph);
+            this.groupBoxCurrentData.Controls.Add(this.speedGraph);
             this.groupBoxCurrentData.Controls.Add(this.labelCurrentSpeed);
             this.groupBoxCurrentData.Controls.Add(this.labelCurrentPowerValue);
             this.groupBoxCurrentData.Controls.Add(this.labelCurrentSpeedValue);
@@ -211,18 +221,93 @@
             this.groupBoxCurrentData.Controls.Add(this.labelCurrentDistance);
             this.groupBoxCurrentData.Controls.Add(this.labelCurrentResistance);
             this.groupBoxCurrentData.Location = new System.Drawing.Point(20, 84);
-            this.groupBoxCurrentData.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxCurrentData.Margin = new System.Windows.Forms.Padding(4);
             this.groupBoxCurrentData.Name = "groupBoxCurrentData";
-            this.groupBoxCurrentData.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxCurrentData.Padding = new System.Windows.Forms.Padding(4);
             this.groupBoxCurrentData.Size = new System.Drawing.Size(598, 600);
             this.groupBoxCurrentData.TabIndex = 14;
             this.groupBoxCurrentData.TabStop = false;
             this.groupBoxCurrentData.Text = "Current Data";
             // 
+            // powerGraph
+            // 
+            this.powerGraph.BackColor = System.Drawing.Color.White;
+            this.powerGraph.DataSource = null;
+            this.powerGraph.ForeColor = System.Drawing.Color.Red;
+            this.powerGraph.GraphSizeMode = DoctorApplication.GraphControlSizeMode.Scroll;
+            this.powerGraph.LineWidth = 1F;
+            this.powerGraph.Location = new System.Drawing.Point(7, 479);
+            this.powerGraph.MaxValue = null;
+            this.powerGraph.MinValue = null;
+            this.powerGraph.Name = "powerGraph";
+            this.powerGraph.PointsToShow = 50;
+            this.powerGraph.Size = new System.Drawing.Size(256, 108);
+            this.powerGraph.TabIndex = 14;
+            // 
+            // distanceTraveledGraph
+            // 
+            this.distanceTraveledGraph.BackColor = System.Drawing.Color.White;
+            this.distanceTraveledGraph.DataSource = null;
+            this.distanceTraveledGraph.ForeColor = System.Drawing.Color.Red;
+            this.distanceTraveledGraph.GraphSizeMode = DoctorApplication.GraphControlSizeMode.Stretch;
+            this.distanceTraveledGraph.LineWidth = 1F;
+            this.distanceTraveledGraph.Location = new System.Drawing.Point(7, 365);
+            this.distanceTraveledGraph.MaxValue = null;
+            this.distanceTraveledGraph.MinValue = null;
+            this.distanceTraveledGraph.Name = "distanceTraveledGraph";
+            this.distanceTraveledGraph.PointsToShow = 10;
+            this.distanceTraveledGraph.Size = new System.Drawing.Size(256, 108);
+            this.distanceTraveledGraph.TabIndex = 14;
+            // 
+            // resistanceGraph
+            // 
+            this.resistanceGraph.BackColor = System.Drawing.Color.White;
+            this.resistanceGraph.DataSource = null;
+            this.resistanceGraph.ForeColor = System.Drawing.Color.Red;
+            this.resistanceGraph.GraphSizeMode = DoctorApplication.GraphControlSizeMode.Scroll;
+            this.resistanceGraph.LineWidth = 1F;
+            this.resistanceGraph.Location = new System.Drawing.Point(7, 251);
+            this.resistanceGraph.MaxValue = null;
+            this.resistanceGraph.MinValue = null;
+            this.resistanceGraph.Name = "resistanceGraph";
+            this.resistanceGraph.PointsToShow = 50;
+            this.resistanceGraph.Size = new System.Drawing.Size(256, 108);
+            this.resistanceGraph.TabIndex = 14;
+            // 
+            // heartbeatGraph
+            // 
+            this.heartbeatGraph.BackColor = System.Drawing.Color.White;
+            this.heartbeatGraph.DataSource = null;
+            this.heartbeatGraph.ForeColor = System.Drawing.Color.Red;
+            this.heartbeatGraph.GraphSizeMode = DoctorApplication.GraphControlSizeMode.Scroll;
+            this.heartbeatGraph.LineWidth = 1F;
+            this.heartbeatGraph.Location = new System.Drawing.Point(7, 137);
+            this.heartbeatGraph.MaxValue = null;
+            this.heartbeatGraph.MinValue = null;
+            this.heartbeatGraph.Name = "heartbeatGraph";
+            this.heartbeatGraph.PointsToShow = 50;
+            this.heartbeatGraph.Size = new System.Drawing.Size(256, 108);
+            this.heartbeatGraph.TabIndex = 14;
+            // 
+            // speedGraph
+            // 
+            this.speedGraph.BackColor = System.Drawing.Color.White;
+            this.speedGraph.DataSource = null;
+            this.speedGraph.ForeColor = System.Drawing.Color.Red;
+            this.speedGraph.GraphSizeMode = DoctorApplication.GraphControlSizeMode.Scroll;
+            this.speedGraph.LineWidth = 1F;
+            this.speedGraph.Location = new System.Drawing.Point(7, 23);
+            this.speedGraph.MaxValue = null;
+            this.speedGraph.MinValue = null;
+            this.speedGraph.Name = "speedGraph";
+            this.speedGraph.PointsToShow = 50;
+            this.speedGraph.Size = new System.Drawing.Size(256, 108);
+            this.speedGraph.TabIndex = 14;
+            // 
             // buttonStartStop
             // 
             this.buttonStartStop.Location = new System.Drawing.Point(31, 748);
-            this.buttonStartStop.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonStartStop.Margin = new System.Windows.Forms.Padding(4);
             this.buttonStartStop.Name = "buttonStartStop";
             this.buttonStartStop.Size = new System.Drawing.Size(122, 26);
             this.buttonStartStop.TabIndex = 15;
@@ -233,7 +318,7 @@
             // buttonNoodstop
             // 
             this.buttonNoodstop.Location = new System.Drawing.Point(540, 748);
-            this.buttonNoodstop.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonNoodstop.Margin = new System.Windows.Forms.Padding(4);
             this.buttonNoodstop.Name = "buttonNoodstop";
             this.buttonNoodstop.Size = new System.Drawing.Size(88, 26);
             this.buttonNoodstop.TabIndex = 16;
@@ -253,7 +338,7 @@
             // textBoxResistance
             // 
             this.textBoxResistance.Location = new System.Drawing.Point(127, 713);
-            this.textBoxResistance.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBoxResistance.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxResistance.Name = "textBoxResistance";
             this.textBoxResistance.Size = new System.Drawing.Size(116, 23);
             this.textBoxResistance.TabIndex = 18;
@@ -262,7 +347,7 @@
             // trackBarResistance
             // 
             this.trackBarResistance.Location = new System.Drawing.Point(262, 703);
-            this.trackBarResistance.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.trackBarResistance.Margin = new System.Windows.Forms.Padding(4);
             this.trackBarResistance.Maximum = 200;
             this.trackBarResistance.Name = "trackBarResistance";
             this.trackBarResistance.Size = new System.Drawing.Size(122, 45);
@@ -294,7 +379,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(934, 786);
+            this.ClientSize = new System.Drawing.Size(934, 785);
             this.Controls.Add(this.labelTimeValue);
             this.Controls.Add(this.labelTime);
             this.Controls.Add(this.trackBarResistance);
@@ -307,7 +392,7 @@
             this.Controls.Add(this.textBoxChat);
             this.Controls.Add(this.textBoxSendChat);
             this.Controls.Add(this.Patient);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "LiveSession";
             this.Text = "LiveSession";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LiveSession_FormClosing);
@@ -344,5 +429,10 @@
         private System.Windows.Forms.TrackBar trackBarResistance;
         private System.Windows.Forms.Label labelTime;
         private System.Windows.Forms.Label labelTimeValue;
+        private GraphControl speedGraph;
+        private GraphControl powerGraph;
+        private GraphControl distanceTraveledGraph;
+        private GraphControl resistanceGraph;
+        private GraphControl heartbeatGraph;
     }
 }
