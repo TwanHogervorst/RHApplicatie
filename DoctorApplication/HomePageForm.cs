@@ -27,33 +27,40 @@ namespace DoctorApplication
 
                 foreach (KeyValuePair<string, bool> userClient in clientList)
                 {
-                    PatientTableLayoutPanel.Controls.Add(new PatienListViewUserControl(client, userClient.Key));
+                    PatienListViewUserControl patientList = new PatienListViewUserControl(client, userClient.Key);
+                    patientList.OnUserSelected += PatientList_OnUserSelected;
+                    PatientTableLayoutPanel.Controls.Add(patientList);
+                    
                 }
             });
         }
 
+        private void PatientList_OnUserSelected(string username)
+        {
+            this.selectedUser = username;
+            CurrentSelectedUserLabel.Text = this.selectedUser;
+        }
+
         private void LiveSessionButton_Click(object sender, System.EventArgs e)
         {
-            this.client.SendUserName(selectedUser);
-            LiveSession liveSession = new LiveSession(this.client, selectedUser);
-            liveSession.Show();
+            if (this.selectedUser != "")
+            {
+                this.client.SendUserName(selectedUser);
+                LiveSession liveSession = new LiveSession(this.client, selectedUser);
+                liveSession.Show();
+            }
         }
 
         private void HistoryButton_Click(object sender, System.EventArgs e)
         {
-            HistoryForm historySession = new HistoryForm(selectedUser);
-            historySession.Show();
+            if (this.selectedUser != "")
+            {
+                HistoryForm historySession = new HistoryForm(selectedUser);
+                historySession.Show();
+            }
         }
 
         private string selectedUser = "";
-
-        private void PatientListView_SelectedIndexChanged(object sender, System.EventArgs e)
-        {
-            ListView listview = (ListView)sender;
-            if (listview.SelectedItems.Count > 0) {
-                selectedUser = listview.SelectedItems[0].Text;
-            }
-        }
 
         private void BroadcastSendButton_Click(object sender, EventArgs e)
         {

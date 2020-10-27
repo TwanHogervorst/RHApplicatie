@@ -37,9 +37,9 @@
             // 
             // EmergencyShutdownButton
             // 
-            this.EmergencyShutdownButton.Location = new System.Drawing.Point(0, 98);
+            this.EmergencyShutdownButton.Location = new System.Drawing.Point(0, 95);
             this.EmergencyShutdownButton.Name = "EmergencyShutdownButton";
-            this.EmergencyShutdownButton.Size = new System.Drawing.Size(155, 45);
+            this.EmergencyShutdownButton.Size = new System.Drawing.Size(155, 32);
             this.EmergencyShutdownButton.TabIndex = 0;
             this.EmergencyShutdownButton.Text = "Emergency Shutdown";
             this.EmergencyShutdownButton.UseVisualStyleBackColor = true;
@@ -49,7 +49,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(57, 7);
+            this.label1.Location = new System.Drawing.Point(57, 4);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(40, 21);
             this.label1.TabIndex = 1;
@@ -61,18 +61,19 @@
             // 
             this.UserControlNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.UserControlNameLabel.AutoSize = true;
-            this.UserControlNameLabel.Location = new System.Drawing.Point(53, 27);
+            this.UserControlNameLabel.Location = new System.Drawing.Point(53, 24);
             this.UserControlNameLabel.Name = "UserControlNameLabel";
             this.UserControlNameLabel.Size = new System.Drawing.Size(48, 15);
             this.UserControlNameLabel.TabIndex = 2;
             this.UserControlNameLabel.Text = "Waiting";
             this.UserControlNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.UserControlNameLabel.Click += new System.EventHandler(this.UserControlNameLabel_Click);
             // 
             // label3
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(28, 54);
+            this.label3.Location = new System.Drawing.Point(28, 51);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(99, 15);
             this.label3.TabIndex = 3;
@@ -83,7 +84,7 @@
             // 
             this.labelCurrentHearthbeatValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.labelCurrentHearthbeatValue.AutoSize = true;
-            this.labelCurrentHearthbeatValue.Location = new System.Drawing.Point(53, 74);
+            this.labelCurrentHearthbeatValue.Location = new System.Drawing.Point(53, 71);
             this.labelCurrentHearthbeatValue.Name = "labelCurrentHearthbeatValue";
             this.labelCurrentHearthbeatValue.Size = new System.Drawing.Size(48, 15);
             this.labelCurrentHearthbeatValue.TabIndex = 4;
@@ -100,7 +101,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.EmergencyShutdownButton);
             this.Name = "PatienListViewUserControl";
-            this.Size = new System.Drawing.Size(155, 144);
+            this.Size = new System.Drawing.Size(155, 134);
             this.Load += new System.EventHandler(this.PatienListViewUserControl_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

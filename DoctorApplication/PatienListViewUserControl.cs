@@ -8,10 +8,14 @@ using System.Windows.Forms;
 
 namespace DoctorApplication
 {
+    public delegate void UserSelectedCallback(string username);
     public partial class PatienListViewUserControl : UserControl
     {
         private DoctorClient client;
         private bool IsRunning;
+        public string selectedUser;
+
+        public event UserSelectedCallback OnUserSelected;
 
         public PatienListViewUserControl(DoctorClient client, String user)
         {
@@ -36,12 +40,17 @@ namespace DoctorApplication
 
         private void EmergencyShutdownButton_Click(object sender, EventArgs e)
         {
-
+            this.client.EmergencyStopSession();
         }
 
         private void PatienListViewUserControl_Load(object sender, EventArgs e)
         {
             this.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+        }
+
+        private void UserControlNameLabel_Click(object sender, EventArgs e)
+        {
+            OnUserSelected?.Invoke(UserControlNameLabel.Text);
         }
     }
 }
