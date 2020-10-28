@@ -415,7 +415,7 @@ namespace ServerApplication
                     }
                 case "EMERGENCY_STOP":
                     {
-                        DataPacket<EmergencyStopPacket> d = new DataPacket<EmergencyStopPacket>();
+                        DataPacket<EmergencyStopPacket> d = data.GetData<EmergencyStopPacket>();
 
                         ServerClient receiver = Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver);
 

@@ -66,6 +66,7 @@ namespace ClientApplication
             this.client.OnChatReceived += Client_OnChatReceived;
             this.client.OnResistanceReceived += Client_OnResistanceReceived;
             this.client.OnStartStopSession += Client_OnStartStopSession;
+            this.client.OnEmergencyStopSession += Client_OnEmergencyStopSession;
 
             Utility.DisableAllChildControls(groupBoxSimulator);
         }
@@ -85,6 +86,22 @@ namespace ClientApplication
                     this.client.SendStartStopSessionResponse(false);
                 }
             } else
+            {
+                this.client.SendInvalidBike(state);
+            }
+        }
+
+        private void Client_OnEmergencyStopSession(bool state, int resistance)
+        {
+            if (this.bike != null)
+            {
+                if (!state)
+                {
+                    this.Client_OnChatReceived("The session was stopped in emergency!\r\n");
+                    this.client.SendStartStopSessionResponse(false);
+                    this.Client_OnResistanceReceived(resistance);
+                }
+            }else
             {
                 this.client.SendInvalidBike(state);
             }

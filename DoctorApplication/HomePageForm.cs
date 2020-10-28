@@ -41,17 +41,17 @@ namespace DoctorApplication
         private void PatientList_OnUserSelected(string username, string doctorUserName)
         {
             if (this.client.username == doctorUserName) {
-                this.selectedUser = username;
-                CurrentSelectedUserLabel.Text = this.selectedUser;
+                this.client.selectedUser = username;
+                CurrentSelectedUserLabel.Text = this.client.selectedUser;
             }
         }
 
         private void LiveSessionButton_Click(object sender, System.EventArgs e)
         {
-            if (this.selectedUser != "" && this.clientList[this.selectedUser])
+            if (this.client.selectedUser != null && this.clientList[this.client.selectedUser])
             {
-                this.client.SendUserName(selectedUser);
-                LiveSession liveSession = new LiveSession(this.client, selectedUser);
+                this.client.SendUserName(this.client.selectedUser);
+                LiveSession liveSession = new LiveSession(this.client, this.client.selectedUser);
                 liveSession.Show();
             }
             else
@@ -62,9 +62,9 @@ namespace DoctorApplication
 
         private void HistoryButton_Click(object sender, System.EventArgs e)
         {
-            if (this.selectedUser != "")
+            if (this.client.selectedUser != null)
             {
-                HistoryForm historySession = new HistoryForm(selectedUser);
+                HistoryForm historySession = new HistoryForm(this.client.selectedUser);
                 historySession.Show();
             }
             else
@@ -72,8 +72,6 @@ namespace DoctorApplication
                 MessageBox.Show("No client selected.", "Error");
             }
         }
-
-        private string selectedUser = "";
 
         private void BroadcastSendButton_Click(object sender, EventArgs e)
         {

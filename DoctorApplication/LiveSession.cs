@@ -234,5 +234,10 @@ namespace DoctorApplication
                 buttonSendChat_Click();
             }
         }
+
+        private void buttonNoodstop_Click(object sender, EventArgs e)
+        {
+            this.client.EmergencyStopSession();
+        }
     }
 }

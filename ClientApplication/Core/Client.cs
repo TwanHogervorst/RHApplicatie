@@ -16,6 +16,7 @@ namespace ClientApplication.Core
     public delegate void ChatCallback(string message);
     public delegate void ResistanceCallback(int resistance);
     public delegate void StartStopSessionCallback(bool state);
+    public delegate void EmergencyStopSessionCallback(bool state, int resistance);
 
     public class Client
     {
@@ -30,6 +31,7 @@ namespace ClientApplication.Core
         public event ChatCallback OnChatReceived;
         public event ResistanceCallback OnResistanceReceived;
         public event StartStopSessionCallback OnStartStopSession;
+        public event EmergencyStopSessionCallback OnEmergencyStopSession;
 
         public Client()
         {
@@ -283,6 +285,12 @@ namespace ClientApplication.Core
                     {
                         DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
                         OnStartStopSession?.Invoke(d.data.startSession);
+                        break;
+                    }
+                case "EMERGENCY_STOP":
+                    {
+                        DataPacket<EmergencyStopPacket> d = data.GetData<EmergencyStopPacket>();
+                        OnEmergencyStopSession?.Invoke(d.data.startSession, d.data.resistance);
                         break;
                     }
                 case "SERVER_MESSAGE":

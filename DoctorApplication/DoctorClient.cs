@@ -26,6 +26,7 @@ namespace DoctorApplication
         public string username;
         private bool loggedIn = false;
         private string clientUserName;
+        public string selectedUser;
 
         public event LoginCallback OnLogin;
         public event ChatCallback OnChatReceived;
@@ -288,26 +289,29 @@ namespace DoctorApplication
 
         public void EmergencyStopSession()
         {
-            DataPacket<EmergencyStopPacket> dataPacket = new DataPacket<EmergencyStopPacket>()
+            if (this.loggedIn)
             {
-                sender = this.username,
-                type = "EMERGENCY_STOP",
-                data = new EmergencyStopPacket()
+                DataPacket<EmergencyStopPacket> dataPacket = new DataPacket<EmergencyStopPacket>()
                 {
-                    receiver = clientUserName,
-                    startSession = false,
-                    resistance = 0
-                }
-            };
+                    sender = this.username,
+                    type = "EMERGENCY_STOP",
+                    data = new EmergencyStopPacket()
+                    {
+                        receiver = this.selectedUser,
+                        startSession = false,
+                        resistance = 0
+                    }
+                };
 
-            // create the sendBuffer based on the message
-            List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
 
-            // append the message length (in bytes)
-            sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
 
-            // send the message
-            this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
         }
 
         public void RequestClientList()
