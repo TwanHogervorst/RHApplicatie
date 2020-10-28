@@ -343,6 +343,7 @@
             this.textBoxResistance.Name = "textBoxResistance";
             this.textBoxResistance.Size = new System.Drawing.Size(116, 23);
             this.textBoxResistance.TabIndex = 18;
+            this.textBoxResistance.Text = "0.0";
             this.textBoxResistance.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxResistance_KeyPress);
             // 
             // trackBarResistance

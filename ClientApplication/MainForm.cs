@@ -16,8 +16,8 @@ namespace ClientApplication
         private Client client;
         private VRTunnel tunnel;
         private IBikeTrainer _bike; // DONT USE THIS VARIABLE
-        private int currentResistance;
-        private int targetResistance;
+        private int currentResistance = 0;
+        private int targetResistance = 0;
         private System.Windows.Forms.Timer dataSendTimer;
         private System.Windows.Forms.Timer vrUpdateTimer;
         private Thread vrThread;
@@ -166,45 +166,27 @@ namespace ClientApplication
                 if (this.targetResistance > this.currentResistance)
                 {
                     this.currentResistance++;
-                    this.Invoke((Action)delegate
-                    {
-                        labelCurrentResistanceValue.Text = $"{this.currentResistance / 2.0:0.0} %";
-                        this.bike.SetResistance((int)this.currentResistance);
-                        this.bikeDataViewModel.Resistance = this.currentResistance;
-                    });
                     if (this.targetResistance < this.currentResistance)
                     {
                         this.currentResistance = this.targetResistance;
-                        this.Invoke((Action)delegate
-                        {
-                            labelCurrentResistanceValue.Text = $"{this.currentResistance / 2.0:0.0} %";
-                            this.bike.SetResistance((int)this.currentResistance);
-                            this.bikeDataViewModel.Resistance = this.currentResistance;
-                        });
                     }
                 }
                 else if (this.targetResistance < this.currentResistance)
                 {
                     this.currentResistance--;
-                    this.Invoke((Action)delegate
-                    {
-                        labelCurrentResistanceValue.Text = $"{this.currentResistance / 2.0:0.0} %";
-                        this.bike.SetResistance((int)this.currentResistance);
-                        this.bikeDataViewModel.Resistance = this.currentResistance;
-                    });
                     if (this.targetResistance > this.currentResistance)
                     {
                         this.currentResistance = this.targetResistance;
-                        this.Invoke((Action)delegate
-                        {
-                            labelCurrentResistanceValue.Text = $"{this.currentResistance / 2.0:0.0} %";
-                            this.bike.SetResistance((int)this.currentResistance);
-                            this.bikeDataViewModel.Resistance = this.currentResistance;
-                        });
                     }
                 }
-
             }
+
+            this.Invoke((Action)delegate
+            {
+                labelCurrentResistanceValue.Text = $"{this.currentResistance / 2.0:0.0} %";
+                this.bike.SetResistance((int)this.currentResistance);
+                this.bikeDataViewModel.Resistance = this.currentResistance;
+            });
         }
 
         private void UpdateVR()

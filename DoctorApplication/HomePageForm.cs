@@ -42,9 +42,9 @@ namespace DoctorApplication
 
                 foreach (KeyValuePair<string, bool> userClient in this.clientList)
                 {
-                        PatienListViewUserControl patientList = new PatienListViewUserControl(client, userClient.Key);
-                        patientList.OnUserSelected += PatientList_OnUserSelected;
-                        PatientTableLayoutPanel.Controls.Add(patientList);
+                    PatienListViewUserControl patientList = new PatienListViewUserControl(client, userClient.Key);
+                    patientList.OnUserSelected += PatientList_OnUserSelected;
+                    PatientTableLayoutPanel.Controls.Add(patientList);
                 }
             });
         }
