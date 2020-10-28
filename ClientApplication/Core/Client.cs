@@ -185,6 +185,32 @@ namespace ClientApplication.Core
             }
         }
 
+        public void SendEmergencySessionResponse(bool _state)
+        {
+            if (this.loggedIn)
+            {
+                DataPacket<EmergencyResponsePacket> dataPacket = new DataPacket<EmergencyResponsePacket>()
+                {
+                    sender = this.username,
+                    type = "SESSIONSTATE_EMERGENCYRESPONSE",
+                    data = new EmergencyResponsePacket()
+                    {
+                        receiver = this.doctorUserName,
+                        state = _state
+                    }
+                };
+
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
         public void SendInvalidBike(bool state)
         {
             if (this.loggedIn)

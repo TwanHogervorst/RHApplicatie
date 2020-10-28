@@ -17,6 +17,7 @@ namespace DoctorApplication
     public delegate void SessionStateCallback(string clientUserName, DateTime startTimeSession, bool state);
     public delegate void SessionStateMessageCallback(string sender, bool state);
     public delegate void InvalidBikeCallback(string sender);
+    public delegate void EmergencyResponseCallback(string sender, bool state);
 
     public class DoctorClient
     {
@@ -32,6 +33,7 @@ namespace DoctorApplication
         public event ChatCallback OnChatReceived;
         public event ClientListCallback OnClientListReceived;
         public event InvalidBikeCallback OnInvalidBikeReceived;
+        public event EmergencyResponseCallback OnEmergencyResponse;
 
         public void RequestSessionState()
         {
@@ -447,6 +449,12 @@ namespace DoctorApplication
                     {
                         DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
                         OnInvalidBikeReceived?.Invoke(d.sender);
+                        break;
+                    }
+                case "SESSIONSTATE_EMERGENCYRESPONSE":
+                    {
+                        DataPacket<EmergencyResponsePacket> d = data.GetData<EmergencyResponsePacket>();
+                        OnEmergencyResponse?.Invoke(d.sender, d.data.state);
                         break;
                     }
                 default:

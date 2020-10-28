@@ -15,6 +15,7 @@ namespace ClientApplication
         private Client client;
         private IBikeTrainer _bike; // DONT USE THIS VARIABLE
         private Timer dataSendTimer;
+        private bool isRunning = false;
         private IBikeTrainer bike
         {
             get => this._bike;
@@ -79,11 +80,13 @@ namespace ClientApplication
                 {
                     this.Client_OnChatReceived("The session has started\r\n");
                     this.client.SendStartStopSessionResponse(true);
+                    this.isRunning = true;
                 }
                 else
                 {
                     this.Client_OnChatReceived("The session has stopped\r\n");
                     this.client.SendStartStopSessionResponse(false);
+                    this.isRunning = false;
                 }
             } else
             {
@@ -95,11 +98,19 @@ namespace ClientApplication
         {
             if (this.bike != null)
             {
-                if (!state)
+                if (isRunning)
                 {
-                    this.Client_OnChatReceived("The session was stopped in emergency!\r\n");
-                    this.client.SendStartStopSessionResponse(false);
-                    this.Client_OnResistanceReceived(resistance);
+                    if (!state)
+                    {
+                        this.Client_OnChatReceived("The session was stopped in emergency!\r\n");
+                        this.client.SendEmergencySessionResponse(true);
+                        this.Client_OnResistanceReceived(resistance);
+                        this.isRunning = false;
+                    }
+                }
+                else
+                {
+                    this.client.SendEmergencySessionResponse(false);
                 }
             }else
             {

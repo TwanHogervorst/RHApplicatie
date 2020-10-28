@@ -13,10 +13,21 @@ namespace DoctorApplication
         {
             this.client = client;
             this.client.OnClientListReceived += Client_OnClientListReceived;
-
+            this.client.OnEmergencyResponse += Client_OnEmergencyResponse;
             InitializeComponent();
-
+            
             this.client.RequestClientList();
+        }
+
+        private void Client_OnEmergencyResponse(string sender, bool state)
+        {
+            if (state)
+            {
+                MessageBox.Show($"{sender} has been stopped in emergency!", "Emergency stop!");
+            }else
+            {
+                MessageBox.Show("The session was not started", "Error");
+            }
         }
 
         private void Client_OnClientListReceived(Dictionary<string, bool> clientList_)

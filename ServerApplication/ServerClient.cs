@@ -461,6 +461,18 @@ namespace ServerApplication
 
                         break;
                     }
+                case "SESSIONSTATE_EMERGENCYRESPONSE":
+                    {
+                        DataPacket<EmergencyResponsePacket> d = data.GetData<EmergencyResponsePacket>();
+
+                        ServerClient receiver = Server.doctors.GetClients().FirstOrDefault(doctorClient => doctorClient.UserName == d.data.receiver);
+
+                        if (receiver != null)
+                        {
+                            SendDataToUser(receiver, d.ToJson());
+                        }
+                        break;
+                    }
                 case "REQUEST_SESSIONSTATE":
                     {
                         DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();

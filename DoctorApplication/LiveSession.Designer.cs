@@ -44,7 +44,7 @@
             this.labelCurrentPowerValue = new System.Windows.Forms.Label();
             this.groupBoxCurrentData = new System.Windows.Forms.GroupBox();
             this.buttonStartStop = new System.Windows.Forms.Button();
-            this.buttonNoodstop = new System.Windows.Forms.Button();
+            this.EmergencyStopButton = new System.Windows.Forms.Button();
             this.labelRestistance = new System.Windows.Forms.Label();
             this.textBoxResistance = new System.Windows.Forms.TextBox();
             this.trackBarResistance = new System.Windows.Forms.TrackBar();
@@ -68,7 +68,7 @@
             // textBoxSendChat
             // 
             this.textBoxSendChat.Location = new System.Drawing.Point(643, 654);
-            this.textBoxSendChat.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBoxSendChat.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxSendChat.Name = "textBoxSendChat";
             this.textBoxSendChat.Size = new System.Drawing.Size(182, 23);
             this.textBoxSendChat.TabIndex = 1;
@@ -77,7 +77,7 @@
             // textBoxChat
             // 
             this.textBoxChat.Location = new System.Drawing.Point(643, 94);
-            this.textBoxChat.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBoxChat.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxChat.Multiline = true;
             this.textBoxChat.Name = "textBoxChat";
             this.textBoxChat.ReadOnly = true;
@@ -88,7 +88,7 @@
             // buttonSendChat
             // 
             this.buttonSendChat.Location = new System.Drawing.Point(832, 651);
-            this.buttonSendChat.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonSendChat.Margin = new System.Windows.Forms.Padding(4);
             this.buttonSendChat.Name = "buttonSendChat";
             this.buttonSendChat.Size = new System.Drawing.Size(88, 26);
             this.buttonSendChat.TabIndex = 3;
@@ -211,9 +211,9 @@
             this.groupBoxCurrentData.Controls.Add(this.labelCurrentDistance);
             this.groupBoxCurrentData.Controls.Add(this.labelCurrentResistance);
             this.groupBoxCurrentData.Location = new System.Drawing.Point(20, 84);
-            this.groupBoxCurrentData.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxCurrentData.Margin = new System.Windows.Forms.Padding(4);
             this.groupBoxCurrentData.Name = "groupBoxCurrentData";
-            this.groupBoxCurrentData.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxCurrentData.Padding = new System.Windows.Forms.Padding(4);
             this.groupBoxCurrentData.Size = new System.Drawing.Size(598, 600);
             this.groupBoxCurrentData.TabIndex = 14;
             this.groupBoxCurrentData.TabStop = false;
@@ -222,7 +222,7 @@
             // buttonStartStop
             // 
             this.buttonStartStop.Location = new System.Drawing.Point(31, 748);
-            this.buttonStartStop.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonStartStop.Margin = new System.Windows.Forms.Padding(4);
             this.buttonStartStop.Name = "buttonStartStop";
             this.buttonStartStop.Size = new System.Drawing.Size(122, 26);
             this.buttonStartStop.TabIndex = 15;
@@ -230,16 +230,16 @@
             this.buttonStartStop.UseVisualStyleBackColor = true;
             this.buttonStartStop.Click += new System.EventHandler(this.buttonStartStop_Click);
             // 
-            // buttonNoodstop
+            // EmergencyStopButton
             // 
-            this.buttonNoodstop.Location = new System.Drawing.Point(540, 748);
-            this.buttonNoodstop.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.buttonNoodstop.Name = "buttonNoodstop";
-            this.buttonNoodstop.Size = new System.Drawing.Size(88, 26);
-            this.buttonNoodstop.TabIndex = 16;
-            this.buttonNoodstop.Text = "Noodstop";
-            this.buttonNoodstop.UseVisualStyleBackColor = true;
-            this.buttonNoodstop.Click += new System.EventHandler(this.buttonNoodstop_Click);
+            this.EmergencyStopButton.Location = new System.Drawing.Point(540, 748);
+            this.EmergencyStopButton.Margin = new System.Windows.Forms.Padding(4);
+            this.EmergencyStopButton.Name = "EmergencyStopButton";
+            this.EmergencyStopButton.Size = new System.Drawing.Size(144, 26);
+            this.EmergencyStopButton.TabIndex = 16;
+            this.EmergencyStopButton.Text = "Emergency Shutdown";
+            this.EmergencyStopButton.UseVisualStyleBackColor = true;
+            this.EmergencyStopButton.Click += new System.EventHandler(this.EmergencyStopButton_Click);
             // 
             // labelRestistance
             // 
@@ -254,7 +254,7 @@
             // textBoxResistance
             // 
             this.textBoxResistance.Location = new System.Drawing.Point(127, 713);
-            this.textBoxResistance.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBoxResistance.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxResistance.Name = "textBoxResistance";
             this.textBoxResistance.Size = new System.Drawing.Size(116, 23);
             this.textBoxResistance.TabIndex = 18;
@@ -263,7 +263,7 @@
             // trackBarResistance
             // 
             this.trackBarResistance.Location = new System.Drawing.Point(262, 703);
-            this.trackBarResistance.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.trackBarResistance.Margin = new System.Windows.Forms.Padding(4);
             this.trackBarResistance.Name = "trackBarResistance";
             this.trackBarResistance.Size = new System.Drawing.Size(122, 45);
             this.trackBarResistance.TabIndex = 19;
@@ -300,14 +300,14 @@
             this.Controls.Add(this.trackBarResistance);
             this.Controls.Add(this.textBoxResistance);
             this.Controls.Add(this.labelRestistance);
-            this.Controls.Add(this.buttonNoodstop);
+            this.Controls.Add(this.EmergencyStopButton);
             this.Controls.Add(this.buttonStartStop);
             this.Controls.Add(this.groupBoxCurrentData);
             this.Controls.Add(this.buttonSendChat);
             this.Controls.Add(this.textBoxChat);
             this.Controls.Add(this.textBoxSendChat);
             this.Controls.Add(this.Patient);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "LiveSession";
             this.Text = "LiveSession";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LiveSession_FormClosing);
@@ -338,7 +338,7 @@
         private System.Windows.Forms.Label labelCurrentPowerValue;
         private System.Windows.Forms.GroupBox groupBoxCurrentData;
         private System.Windows.Forms.Button buttonStartStop;
-        private System.Windows.Forms.Button buttonNoodstop;
+        private System.Windows.Forms.Button EmergencyStopButton;
         private System.Windows.Forms.Label labelRestistance;
         private System.Windows.Forms.TextBox textBoxResistance;
         private System.Windows.Forms.TrackBar trackBarResistance;

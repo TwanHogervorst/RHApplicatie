@@ -114,4 +114,10 @@ namespace ServerUtils
         public bool startSession;
         public int resistance;
     }
+
+    public class EmergencyResponsePacket : DAbstract
+    {
+        public string receiver;
+        public bool state;
+    }
 }
