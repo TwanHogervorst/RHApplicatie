@@ -259,12 +259,10 @@ namespace ServerApplication
                             }
                         }
 
-                        if (d.data.doctor != null)
+                        string jsonData = d.ToJson();
+                        foreach(ServerClient doctorClient in Server.doctors.GetClients())
                         {
-                            if (Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.doctor) != null)
-                            {
-                                SendDataToUser(Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.doctor), d.ToJson());
-                            }
+                            SendDataToUser(doctorClient, jsonData);
                         }
                         break;
                     }

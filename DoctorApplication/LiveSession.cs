@@ -128,21 +128,10 @@ namespace DoctorApplication
             }
         }
 
-        private void Client_OnBikeDataReceived(ServerUtils.DataPacket<BikeDataPacket> bikeDataPacket)
+        private void Client_OnBikeDataReceived(DataPacket<BikeDataPacket> bikeDataPacket)
         {
-            this.Invoke((Action)delegate
+            if(bikeDataPacket.sender == this.selectedUser)
             {
-                if (this.IsRunning)
-                {
-                    TimeSpan ts = DateTime.Now - this.startTimeSession;
-                    this.labelTimeValue.Text = $"{(int)ts.TotalMinutes:00}:{ts.Seconds:00}";
-                }
-                this.labelCurrentSpeedValue.Text = bikeDataPacket.data.speed.ToString("0.00") + " m/s";
-                this.labelCurrentDistanceValue.Text = Math.Round(bikeDataPacket.data.distanceTraveled, 2).ToString("0.00") + " m";
-                this.labelCurrentHearthbeatValue.Text = bikeDataPacket.data.heartbeat.ToString() + " BPM";
-                this.labelCurrentPowerValue.Text = bikeDataPacket.data.power.ToString() + " W";
-                labelCurrentResistanceValue.Text = (bikeDataPacket.data.resistance / 2.0).ToString("0.0") + " %";
-
                 this.speedValueList.Add((decimal)bikeDataPacket.data.speed);
                 this.heartbeatValueList.Add(bikeDataPacket.data.heartbeat);
                 this.resistanceValueList.Add(bikeDataPacket.data.resistance / 2.0m);
@@ -154,12 +143,27 @@ namespace DoctorApplication
                 if (this.resistanceValueList.Count > this.resistanceGraph.PointsToShow + 1) this.resistanceValueList.RemoveRange(0, this.resistanceValueList.Count - this.resistanceGraph.PointsToShow - 1);
                 if (this.powerValueList.Count > this.powerGraph.PointsToShow + 1) this.powerValueList.RemoveRange(0, this.powerValueList.Count - this.powerGraph.PointsToShow - 1);
 
-                this.speedGraph.DataSource = this.speedValueList.ToArray();
-                this.heartbeatGraph.DataSource = this.heartbeatValueList.ToArray();
-                this.resistanceGraph.DataSource = this.resistanceValueList.ToArray();
-                this.distanceTraveledGraph.DataSource = this.distanceTraveledValueList.ToArray();
-                this.powerGraph.DataSource = this.powerValueList.ToArray();
-            });
+                this.Invoke((Action)delegate
+                {
+                    if (this.IsRunning)
+                    {
+                        TimeSpan ts = DateTime.Now - this.startTimeSession;
+                        this.labelTimeValue.Text = $"{(int)ts.TotalMinutes:00}:{ts.Seconds:00}";
+                    }
+
+                    this.labelCurrentSpeedValue.Text = bikeDataPacket.data.speed.ToString("0.00") + " m/s";
+                    this.labelCurrentDistanceValue.Text = Math.Round(bikeDataPacket.data.distanceTraveled, 2).ToString("0.00") + " m";
+                    this.labelCurrentHearthbeatValue.Text = bikeDataPacket.data.heartbeat.ToString() + " BPM";
+                    this.labelCurrentPowerValue.Text = bikeDataPacket.data.power.ToString() + " W";
+                    labelCurrentResistanceValue.Text = (bikeDataPacket.data.resistance / 2.0).ToString("0.0") + " %";
+
+                    this.speedGraph.DataSource = this.speedValueList.ToArray();
+                    this.heartbeatGraph.DataSource = this.heartbeatValueList.ToArray();
+                    this.resistanceGraph.DataSource = this.resistanceValueList.ToArray();
+                    this.distanceTraveledGraph.DataSource = this.distanceTraveledValueList.ToArray();
+                    this.powerGraph.DataSource = this.powerValueList.ToArray();
+                });
+            }
         }
 
         private void Client_OnChatReceived(string sender, string message)

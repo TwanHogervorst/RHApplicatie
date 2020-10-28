@@ -102,7 +102,6 @@
             this.Controls.Add(this.EmergencyShutdownButton);
             this.Name = "PatienListViewUserControl";
             this.Size = new System.Drawing.Size(155, 134);
-            this.Load += new System.EventHandler(this.PatienListViewUserControl_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
