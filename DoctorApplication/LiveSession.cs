@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ServerUtils;
 
 namespace DoctorApplication
 {
@@ -35,6 +36,7 @@ namespace DoctorApplication
             this.client.OnSessionStateReceived += Client_OnSessionStateReceived;
             this.client.OnSessionStateMessageReceived += Client_OnSessionStateMessageReceived;
             this.client.OnInvalidBikeReceived += Client_OnInvalidBikeReceived;
+            this.client.OnEmergencyResponse += Client_OnEmergencyResponse;
             this.selectedUser = selected;
             Patient.Text += selected;
 
@@ -100,6 +102,28 @@ namespace DoctorApplication
             }
         }
 
+        private void Client_OnEmergencyResponse(string sender, bool state)
+        {
+            this.Invoke((Action)delegate
+            {
+                if (sender == selectedUser)
+                {
+                    if (state)
+                    {
+                        textBoxChat.Text += "The session has been stopped in emergency!\r\n";
+                        textBoxChat.SelectionStart = textBoxChat.Text.Length;
+                        textBoxChat.ScrollToCaret();
+                    }
+                    else
+                    {
+                        textBoxChat.Text += "The session was not started!\r\n";
+                        textBoxChat.SelectionStart = textBoxChat.Text.Length;
+                        textBoxChat.ScrollToCaret();
+                    }
+                }
+            });
+        }
+
         private void Client_OnSessionStateReceived(string clientUserName, DateTime startTimeSession, bool state)
         {
             if (this.selectedUser == clientUserName) {
@@ -108,7 +132,7 @@ namespace DoctorApplication
             }
         }
 
-        private void Client_OnBikeDataReceived(ServerUtils.BikeDataPacket bikeDataPacket)
+        private void Client_OnBikeDataReceived(ServerUtils.DataPacket<BikeDataPacket> bikeDataPacket)
         {
             this.Invoke((Action)delegate
             {
@@ -229,6 +253,7 @@ namespace DoctorApplication
             this.client.OnBikeDataReceived -= this.Client_OnBikeDataReceived;
             this.client.OnSessionStateMessageReceived -= this.Client_OnSessionStateMessageReceived;
             this.client.OnInvalidBikeReceived -= this.Client_OnInvalidBikeReceived;
+            this.client.OnEmergencyResponse -= this.Client_OnEmergencyResponse;
         }
 
         private void textBoxResistance_KeyPress(object sender, KeyPressEventArgs e)
@@ -275,6 +300,11 @@ namespace DoctorApplication
             {
                 buttonSendChat_Click();
             }
+        }
+
+        private void EmergencyStopButton_Click(object sender, EventArgs e)
+        {
+            this.client.EmergencyStopSession();
         }
     }
 }

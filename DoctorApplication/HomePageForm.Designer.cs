@@ -28,13 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.PatientListView = new System.Windows.Forms.ListView();
+            this.PatientTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.BroadcastContainer = new System.Windows.Forms.SplitContainer();
             this.BroadcastTextBox = new System.Windows.Forms.TextBox();
             this.BroadcastSendButton = new System.Windows.Forms.Button();
             this.BoradcastPanel = new System.Windows.Forms.Panel();
             this.PatientInformationGroupBox = new System.Windows.Forms.GroupBox();
             this.PatientButtonContainer = new System.Windows.Forms.SplitContainer();
+            this.CurrentSelectedUserLabel = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.LiveSessionButton = new System.Windows.Forms.Button();
             this.HistoryButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.BroadcastContainer)).BeginInit();
@@ -49,7 +51,7 @@
             this.PatientButtonContainer.SuspendLayout();
             this.SuspendLayout();
             // 
-            // PatientListView
+            // PatientTableLayoutPanel
             // 
             this.PatientListView.Dock = System.Windows.Forms.DockStyle.Left;
             this.PatientListView.HideSelection = false;
@@ -61,6 +63,14 @@
             this.PatientListView.TabIndex = 0;
             this.PatientListView.UseCompatibleStateImageBehavior = false;
             this.PatientListView.SelectedIndexChanged += new System.EventHandler(this.PatientListView_SelectedIndexChanged);
+            this.PatientTableLayoutPanel.AutoScroll = true;
+            this.PatientTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 186F));
+            this.PatientTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.PatientTableLayoutPanel.Location = new System.Drawing.Point(5, 5);
+            this.PatientTableLayoutPanel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.PatientTableLayoutPanel.Name = "PatientTableLayoutPanel";
+            this.PatientTableLayoutPanel.Size = new System.Drawing.Size(186, 530);
+            this.PatientTableLayoutPanel.TabIndex = 0;
             // 
             // BroadcastContainer
             // 
@@ -78,7 +88,7 @@
             // 
             this.BroadcastContainer.Panel2.Controls.Add(this.BroadcastSendButton);
             this.BroadcastContainer.Size = new System.Drawing.Size(561, 53);
-            this.BroadcastContainer.SplitterDistance = 452;
+            this.BroadcastContainer.SplitterDistance = 448;
             this.BroadcastContainer.SplitterWidth = 5;
             this.BroadcastContainer.TabIndex = 1;
             // 
@@ -89,7 +99,7 @@
             this.BroadcastTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.BroadcastTextBox.Multiline = true;
             this.BroadcastTextBox.Name = "BroadcastTextBox";
-            this.BroadcastTextBox.Size = new System.Drawing.Size(452, 53);
+            this.BroadcastTextBox.Size = new System.Drawing.Size(448, 53);
             this.BroadcastTextBox.TabIndex = 0;
             this.BroadcastTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BroadcastTextBox_KeyPress);
             // 
@@ -99,7 +109,7 @@
             this.BroadcastSendButton.Location = new System.Drawing.Point(0, 0);
             this.BroadcastSendButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.BroadcastSendButton.Name = "BroadcastSendButton";
-            this.BroadcastSendButton.Size = new System.Drawing.Size(104, 53);
+            this.BroadcastSendButton.Size = new System.Drawing.Size(108, 53);
             this.BroadcastSendButton.TabIndex = 0;
             this.BroadcastSendButton.Text = "Send Broadcast";
             this.BroadcastSendButton.UseVisualStyleBackColor = true;
@@ -138,6 +148,8 @@
             // 
             // PatientButtonContainer.Panel1
             // 
+            this.PatientButtonContainer.Panel1.Controls.Add(this.CurrentSelectedUserLabel);
+            this.PatientButtonContainer.Panel1.Controls.Add(this.label1);
             this.PatientButtonContainer.Panel1.Controls.Add(this.LiveSessionButton);
             // 
             // PatientButtonContainer.Panel2
@@ -147,6 +159,24 @@
             this.PatientButtonContainer.SplitterDistance = 263;
             this.PatientButtonContainer.SplitterWidth = 5;
             this.PatientButtonContainer.TabIndex = 0;
+            // 
+            // CurrentSelectedUserLabel
+            // 
+            this.CurrentSelectedUserLabel.AutoSize = true;
+            this.CurrentSelectedUserLabel.Location = new System.Drawing.Point(131, 24);
+            this.CurrentSelectedUserLabel.Name = "CurrentSelectedUserLabel";
+            this.CurrentSelectedUserLabel.Size = new System.Drawing.Size(83, 15);
+            this.CurrentSelectedUserLabel.TabIndex = 2;
+            this.CurrentSelectedUserLabel.Text = "None Selected";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(111, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(123, 15);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Current Selected User:";
             // 
             // LiveSessionButton
             // 
@@ -179,10 +209,10 @@
             this.ClientSize = new System.Drawing.Size(761, 540);
             this.Controls.Add(this.PatientInformationGroupBox);
             this.Controls.Add(this.BoradcastPanel);
-            this.Controls.Add(this.PatientListView);
+            this.Controls.Add(this.PatientTableLayoutPanel);
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "HomePageForm";
-            this.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.Padding = new System.Windows.Forms.Padding(5);
             this.Text = "HomePage";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.HomePageForm_FormClosing);
             this.BroadcastContainer.Panel1.ResumeLayout(false);
@@ -193,6 +223,7 @@
             this.BoradcastPanel.ResumeLayout(false);
             this.PatientInformationGroupBox.ResumeLayout(false);
             this.PatientButtonContainer.Panel1.ResumeLayout(false);
+            this.PatientButtonContainer.Panel1.PerformLayout();
             this.PatientButtonContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.PatientButtonContainer)).EndInit();
             this.PatientButtonContainer.ResumeLayout(false);
@@ -202,7 +233,7 @@
 
         #endregion
 
-        private System.Windows.Forms.ListView PatientListView;
+        private System.Windows.Forms.TableLayoutPanel PatientTableLayoutPanel;
         private System.Windows.Forms.SplitContainer BroadcastContainer;
         private System.Windows.Forms.TextBox BroadcastTextBox;
         private System.Windows.Forms.Button BroadcastSendButton;
@@ -211,5 +242,7 @@
         private System.Windows.Forms.SplitContainer PatientButtonContainer;
         private System.Windows.Forms.Button LiveSessionButton;
         private System.Windows.Forms.Button HistoryButton;
+        private System.Windows.Forms.Label CurrentSelectedUserLabel;
+        private System.Windows.Forms.Label label1;
     }
 }

@@ -49,7 +49,7 @@
             this.heartbeatGraph = new DoctorApplication.GraphControl();
             this.speedGraph = new DoctorApplication.GraphControl();
             this.buttonStartStop = new System.Windows.Forms.Button();
-            this.buttonNoodstop = new System.Windows.Forms.Button();
+            this.EmergencyStopButton = new System.Windows.Forms.Button();
             this.labelRestistance = new System.Windows.Forms.Label();
             this.textBoxResistance = new System.Windows.Forms.TextBox();
             this.trackBarResistance = new System.Windows.Forms.TrackBar();
@@ -315,15 +315,16 @@
             this.buttonStartStop.UseVisualStyleBackColor = true;
             this.buttonStartStop.Click += new System.EventHandler(this.buttonStartStop_Click);
             // 
-            // buttonNoodstop
+            // EmergencyStopButton
             // 
-            this.buttonNoodstop.Location = new System.Drawing.Point(540, 748);
-            this.buttonNoodstop.Margin = new System.Windows.Forms.Padding(4);
-            this.buttonNoodstop.Name = "buttonNoodstop";
-            this.buttonNoodstop.Size = new System.Drawing.Size(88, 26);
-            this.buttonNoodstop.TabIndex = 16;
-            this.buttonNoodstop.Text = "Noodstop";
-            this.buttonNoodstop.UseVisualStyleBackColor = true;
+            this.EmergencyStopButton.Location = new System.Drawing.Point(540, 748);
+            this.EmergencyStopButton.Margin = new System.Windows.Forms.Padding(4);
+            this.EmergencyStopButton.Name = "EmergencyStopButton";
+            this.EmergencyStopButton.Size = new System.Drawing.Size(144, 26);
+            this.EmergencyStopButton.TabIndex = 16;
+            this.EmergencyStopButton.Text = "Emergency Shutdown";
+            this.EmergencyStopButton.UseVisualStyleBackColor = true;
+            this.EmergencyStopButton.Click += new System.EventHandler(this.EmergencyStopButton_Click);
             // 
             // labelRestistance
             // 
@@ -379,13 +380,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(934, 785);
+            this.ClientSize = new System.Drawing.Size(934, 786);
             this.Controls.Add(this.labelTimeValue);
             this.Controls.Add(this.labelTime);
             this.Controls.Add(this.trackBarResistance);
             this.Controls.Add(this.textBoxResistance);
             this.Controls.Add(this.labelRestistance);
-            this.Controls.Add(this.buttonNoodstop);
+            this.Controls.Add(this.EmergencyStopButton);
             this.Controls.Add(this.buttonStartStop);
             this.Controls.Add(this.groupBoxCurrentData);
             this.Controls.Add(this.buttonSendChat);
@@ -423,7 +424,7 @@
         private System.Windows.Forms.Label labelCurrentPowerValue;
         private System.Windows.Forms.GroupBox groupBoxCurrentData;
         private System.Windows.Forms.Button buttonStartStop;
-        private System.Windows.Forms.Button buttonNoodstop;
+        private System.Windows.Forms.Button EmergencyStopButton;
         private System.Windows.Forms.Label labelRestistance;
         private System.Windows.Forms.TextBox textBoxResistance;
         private System.Windows.Forms.TrackBar trackBarResistance;

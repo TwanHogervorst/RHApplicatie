@@ -14,7 +14,7 @@ namespace ServerUtils
         public T data; // Content of the message
     }
 
-    class DataPacket : DAbstract
+    public class DataPacket : DAbstract
     {
         public string sender;
         public string type;
@@ -107,6 +107,19 @@ namespace ServerUtils
         public int power;
         public int resistance;
         public DateTime timestamp;
+    }
+
+    public class EmergencyStopPacket : DAbstract
+    {
+        public string receiver;
+        public bool startSession;
+        public int resistance;
+    }
+
+    public class EmergencyResponsePacket : DAbstract
+    {
+        public string receiver;
+        public bool state;
     }
 
     class RequestTrainingList : DAbstract

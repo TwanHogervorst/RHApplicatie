@@ -21,6 +21,7 @@ namespace ClientApplication
         private System.Windows.Forms.Timer dataSendTimer;
         private System.Windows.Forms.Timer vrUpdateTimer;
         private Thread vrThread;
+        private bool isRunning = false;
         private IBikeTrainer bike
         {
             get => this._bike;
@@ -80,6 +81,7 @@ namespace ClientApplication
             this.client.OnChatReceived += Client_OnChatReceived;
             this.client.OnResistanceReceived += Client_OnResistanceReceived;
             this.client.OnStartStopSession += Client_OnStartStopSession;
+            this.client.OnEmergencyStopSession += Client_OnEmergencyStopSession;
 
             Utility.DisableAllChildControls(groupBoxSimulator);
         }
@@ -111,13 +113,39 @@ namespace ClientApplication
                 {
                     this.Client_OnChatReceived("The session has started\r\n");
                     this.client.SendStartStopSessionResponse(true);
+                    this.isRunning = true;
                 }
                 else
                 {
                     this.Client_OnChatReceived("The session has stopped\r\n");
                     this.client.SendStartStopSessionResponse(false);
+                    this.isRunning = false;
                 }
             } else
+            {
+                this.client.SendInvalidBike(state);
+            }
+        }
+
+        private void Client_OnEmergencyStopSession(bool state, int resistance)
+        {
+            if (this.bike != null)
+            {
+                if (isRunning)
+                {
+                    if (!state)
+                    {
+                        this.Client_OnChatReceived("The session was stopped in emergency!\r\n");
+                        this.client.SendEmergencySessionResponse(true);
+                        this.Client_OnResistanceReceived(resistance);
+                        this.isRunning = false;
+                    }
+                }
+                else
+                {
+                    this.client.SendEmergencySessionResponse(false);
+                }
+            }else
             {
                 this.client.SendInvalidBike(state);
             }
