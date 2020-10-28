@@ -144,7 +144,14 @@ namespace DoctorApplication
                 string data = Encoding.ASCII.GetString(this.receiveBuffer);
 
                 DataPacket dataPacket = JsonConvert.DeserializeObject<DataPacket>(data);
-                handleData(dataPacket);
+                try
+                {
+                    handleData(dataPacket);
+                }
+                catch
+                {
+                    //jammer dan
+                }
 
                 this.receivedBytes = 0;
                 this.receiveBuffer = new byte[4];
@@ -482,14 +489,15 @@ namespace DoctorApplication
 
         public void Disconnect()
         {
-            if (!this.isDisconnecting) {
+            if (!this.isDisconnecting)
+            {
                 this.isDisconnecting = true;
-                if (this.client.Connected) {
-                    MessageBox.Show("You are disconnected, this application is closing.", "Disconnect");
-                    this.stream.Close();
-                    this.client.Close();
-                    Application.Exit();
-                }
+
+                MessageBox.Show("You are disconnected, this application is closing.", "Disconnect");
+                this.stream.Close();
+                this.client.Close();
+                Application.Exit();
+
             }
         }
 

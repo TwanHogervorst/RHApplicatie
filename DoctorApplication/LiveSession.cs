@@ -60,9 +60,14 @@ namespace DoctorApplication
         {
             if (clientList.ContainsKey(this.selectedUser))
             {
-                if (!clientList[this.selectedUser]) {
+                if (!clientList[this.selectedUser])
+                {
                     MessageBox.Show("the client went offline, this livesession is closing", "Client offline");
-                    this.Close();
+                    this.Invoke((Action)delegate
+                    {
+                        this.Close();
+                    });
+                    
                 }
             }
         }
