@@ -26,6 +26,7 @@ namespace ClientApplication.Core
         public string username;
         private bool loggedIn = false;
         public string doctorUserName;
+        private bool isDisconnecting = false;
 
         public event LoginCallback OnLogin;
         public event ChatCallback OnChatReceived;
@@ -274,12 +275,15 @@ namespace ClientApplication.Core
 
         public void Disconnect()
         {
-            if (this.client.Connected) {
-                //Send disconnect to server
-                MessageBox.Show("You are disconnected, this application is closing.", "Disconnect");
-                this.stream.Close();
-                this.client.Close();
-                Application.Exit();
+            if (!this.isDisconnecting) {
+                this.isDisconnecting = true;
+                if (this.client.Connected) {
+                    //Send disconnect to server
+                    MessageBox.Show("You are disconnected, this application is closing.", "Disconnect");
+                    this.stream.Close();
+                    this.client.Close();
+                    Application.Exit();
+                }
             }
         }
 

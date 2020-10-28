@@ -30,6 +30,7 @@ namespace DoctorApplication
         private bool loggedIn = false;
         private string clientUserName;
         public string selectedUser;
+        private bool isDisconnecting = false;
 
         public event LoginCallback OnLogin;
         public event ChatCallback OnChatReceived;
@@ -483,11 +484,14 @@ namespace DoctorApplication
 
         public void Disconnect()
         {
-            if (this.client.Connected) {
-                MessageBox.Show("You are disconnected, this application is closing.", "Disconnect");
-                this.stream.Close();
-                this.client.Close();
-                Application.Exit();
+            if (!this.isDisconnecting) {
+                this.isDisconnecting = true;
+                if (this.client.Connected) {
+                    MessageBox.Show("You are disconnected, this application is closing.", "Disconnect");
+                    this.stream.Close();
+                    this.client.Close();
+                    Application.Exit();
+                }
             }
         }
 
