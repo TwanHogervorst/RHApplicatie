@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Timers;
 
 namespace ClientApplication.Core
 {
@@ -63,9 +63,12 @@ namespace ClientApplication.Core
 
             this.bikeName = bikeName;
 
+
+
             this.resistanceSetTimer = new Timer();
             this.resistanceSetTimer.Interval = 250; // send with 4hz, see bike specs
-            this.resistanceSetTimer.Tick += ResistanceSetTimer_Tick;
+            this.resistanceSetTimer.AutoReset = true;
+            this.resistanceSetTimer.Elapsed += ResistanceSetTimer_Tick;
         }
 
         public async void StartReceiving()
@@ -188,12 +191,30 @@ namespace ClientApplication.Core
         {
             if (this.ConnectionState == BikeConnectionState.Connected)
             {
-                this.resistanceSetTimer.Stop();
-                this.bleBike.CloseDevice();
-                this.bleHeart.CloseDevice();
+                try
+                {
+                    this.resistanceSetTimer.Stop();
 
-                this.bleBike.Dispose();
-                this.bleHeart.Dispose();
+                    if(this.bleBike != null)
+                    {
+                        //this.bleBike.CloseDevice();
+                        this.bleBike.Dispose();
+
+                        this.bleBike = null;
+                    }
+                    
+                    if(this.bleHeart != null)
+                    {
+                        //this.bleHeart.CloseDevice();
+                        this.bleHeart.Dispose();
+
+                        this.bleHeart = null;
+                    }
+                }
+                catch
+                {
+                    // jammer dan
+                }
 
                 this.ConnectionState = BikeConnectionState.Disconnected;
             }
@@ -283,7 +304,16 @@ namespace ClientApplication.Core
 
             message.Add(this.GenerateChecksum(message));
 
-            await this.bleBike.WriteCharacteristic(EspBikeTrainer.BIKE_SEND_CHARACTERISTIC, message.ToArray());
+            try
+            {
+                await this.bleBike.WriteCharacteristic(EspBikeTrainer.BIKE_SEND_CHARACTERISTIC, message.ToArray());
+            }
+            catch
+            {
+                this.BikeConnectionChanged?.Invoke(this, new BikeConnectionStateChangedEventArgs(
+                                BikeConnectionState.Error,
+                                new BLEException(0, $"The connection with {this.bikeName} has been lost.")));
+            }
         }
 
         #endregion

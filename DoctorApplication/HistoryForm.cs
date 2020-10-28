@@ -34,8 +34,6 @@ namespace DoctorApplication
             this.client.OnTrainingListReceived += Client_OnTrainingListReceived;
             this.client.OnTrainingDataReceived += Client_OnTrainingDataReceived;
 
-            this.client.RequestTrainingList(this.selectedUser);
-
             this.trainingListView.SelectedIndexChanged += TrainingListView_SelectedIndexChanged;
         }
 
@@ -137,6 +135,11 @@ namespace DoctorApplication
         {
             this.client.OnTrainingListReceived -= this.Client_OnTrainingListReceived;
             this.client.OnTrainingDataReceived -= this.Client_OnTrainingDataReceived;
+        }
+
+        private void HistoryForm_Shown(object sender, EventArgs e)
+        {
+            this.client.RequestTrainingList(this.selectedUser);
         }
     }
 }

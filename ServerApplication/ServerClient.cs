@@ -169,8 +169,10 @@ namespace ServerApplication
                             {
                                 this.isClient = false;
                                 this.UserName = d.data.username;
+
                                 Server.tempList.RemoveClient(this);
                                 Server.doctors.AddClient(this);
+
                                 SendData(new DataPacket<LoginResponse>()
                                 {
                                     sender = this.UserName,
@@ -284,8 +286,14 @@ namespace ServerApplication
                             result.forClient = d.data.forClient;
                             string[] trainingFiles = Directory.GetFiles(trainingDirPath);
 
+                            ServerClient forClient = Server.clients.GetClients().FirstOrDefault(c => c.UserName == d.data.forClient);
+                            
+                            string filterTraining = null;
+                            if (forClient != null && !string.IsNullOrEmpty(forClient.SessionId)) filterTraining = forClient.SessionId;
+
                             result.trainingList = trainingFiles.Where(f => Path.GetExtension(f) == ".json")
                                 .Select(f => Path.GetFileNameWithoutExtension(f))
+                                .Where(t => t != filterTraining)
                                 .ToList();
                         }
 

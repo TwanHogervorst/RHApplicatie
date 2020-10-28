@@ -27,7 +27,12 @@ namespace ClientApplication
             get => this._bike;
             set
             {
-                this._bike?.StopReceiving();
+                if (this._bike != null)
+                {
+                    this._bike.BikeConnectionChanged -= this.Bike_BikeConnectionChanged;
+                    this._bike.StopReceiving();
+                }
+                
                 this.dataSendTimer.Stop();
                 this._bike = value;
 
@@ -35,9 +40,13 @@ namespace ClientApplication
                 {
                     this.bikeDataViewModel = new BikeDataViewModel(this._bike);
                     this.bikeDataViewModel.OnBikeDataChanged += BikeDataViewModel_OnBikeDataChanged;
+
                     this._bike.BikeConnectionChanged += Bike_BikeConnectionChanged;
+
                     this._bike.StartReceiving();
+
                     this.dataSendTimer.Start();
+
                     if (this.tunnel != null)
                     {
                         this.vrUpdateTimer.Start();
@@ -366,34 +375,36 @@ namespace ClientApplication
 
         private void Bike_BikeConnectionChanged(object sender, BikeConnectionStateChangedEventArgs args)
         {
-            if (args.ConnectionState == BikeConnectionState.Connected)
-            {
-                //labelCurrentResistanceValue.Text = $"{trackBarResistance.Value / 2.0:0.0} %";
-
-                if (sender is EspBikeTrainer) this.buttonConnect.Text = "Connected";
-            }
-            if (args.ConnectionState == BikeConnectionState.Error)
-            {
-                MessageBox.Show(args.Exception.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            if (args.ConnectionState == BikeConnectionState.Error || args.ConnectionState == BikeConnectionState.Disconnected)
-            {
-                this.bike = null;
-
-                // reset values for data labels
-                foreach (Control control in this.groupBoxBikeData.Controls)
+            this.Invoke((Action)delegate () {
+                if (args.ConnectionState == BikeConnectionState.Connected)
                 {
-                    if (control is Label && control.Name.EndsWith("Value")) control.Text = "waiting for value";
-                }
+                    //labelCurrentResistanceValue.Text = $"{trackBarResistance.Value / 2.0:0.0} %";
 
-                if (sender is EspBikeTrainer)
+                    if (sender is EspBikeTrainer) this.buttonConnect.Text = "Connected";
+                }
+                if (args.ConnectionState == BikeConnectionState.Error)
                 {
-                    this.textBoxBikeName.Enabled = true;
-
-                    this.buttonConnect.Text = "Connect";
-                    this.buttonConnect.Enabled = true;
+                    MessageBox.Show(args.Exception.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-            }
+                if (args.ConnectionState == BikeConnectionState.Error || args.ConnectionState == BikeConnectionState.Disconnected)
+                {
+                    this.bike = null;
+
+                    // reset values for data labels
+                    foreach (Control control in this.groupBoxBikeData.Controls)
+                    {
+                        if (control is Label && control.Name.EndsWith("Value")) control.Text = "waiting for value";
+                    }
+
+                    if (sender is EspBikeTrainer)
+                    {
+                        this.textBoxBikeName.Enabled = true;
+
+                        this.buttonConnect.Text = "Connect";
+                        this.buttonConnect.Enabled = true;
+                    }
+                }
+            });
         }
 
         #endregion

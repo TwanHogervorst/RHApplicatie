@@ -142,7 +142,15 @@ namespace DoctorApplication
                 string data = Encoding.ASCII.GetString(this.receiveBuffer);
 
                 DataPacket dataPacket = JsonConvert.DeserializeObject<DataPacket>(data);
-                handleData(dataPacket);
+
+                try
+                {
+                    handleData(dataPacket);
+                }
+                catch
+                {
+                    // jammer dan
+                }
 
                 this.receivedBytes = 0;
                 this.receiveBuffer = new byte[4];
