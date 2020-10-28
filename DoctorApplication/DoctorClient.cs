@@ -11,7 +11,7 @@ namespace DoctorApplication
 {
 
     public delegate void LoginCallback(bool status);
-    public delegate void ChatCallback(string sender, string message);
+    public delegate void ChatCallback(string sender, string receiver, string message, bool isDoctorMessage);
     public delegate void ClientListCallback(Dictionary<string, bool> clientList);
     public delegate void BikeDataCallback(DataPacket<BikeDataPacket> DataPacket);
     public delegate void SessionStateCallback(string clientUserName, DateTime startTimeSession, bool state);
@@ -180,7 +180,8 @@ namespace DoctorApplication
                     data = new ChatPacket()
                     {
                         receiver = clientUserName,
-                        chatMessage = message
+                        chatMessage = message,
+                        isDoctorMessage = true
                     }
                 };
 
@@ -206,7 +207,8 @@ namespace DoctorApplication
                     data = new ChatPacket()
                     {
                         receiver = clientUserName,
-                        chatMessage = message
+                        chatMessage = message,
+                        isDoctorMessage = true
                     }
                 };
 
@@ -232,7 +234,8 @@ namespace DoctorApplication
                     data = new ChatPacket()
                     {
                         receiver = "All",
-                        chatMessage = message
+                        chatMessage = message,
+                        isDoctorMessage = true
                     }
                 };
 
@@ -506,7 +509,7 @@ namespace DoctorApplication
                     {
                         DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
 
-                        OnChatReceived?.Invoke(d.sender, $"{d.sender}: {d.data.chatMessage}\r\n");
+                        OnChatReceived?.Invoke(d.sender, d.data.receiver, $"{d.sender}: {d.data.chatMessage}\r\n", d.data.isDoctorMessage);
                         break;
                     }
                 case "RESPONSE_CLIENTLIST":

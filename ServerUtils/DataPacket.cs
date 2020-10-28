@@ -48,6 +48,7 @@ namespace ServerUtils
     {
         public string receiver;
         public string chatMessage;
+        public bool isDoctorMessage;
     }
 
     class ClientListPacket : DAbstract

@@ -176,7 +176,8 @@ namespace ClientApplication.Core
                     data = new ChatPacket()
                     {
                         receiver = this.doctorUserName,
-                        chatMessage = message
+                        chatMessage = message,
+                        isDoctorMessage = false
                     }
                 };
 

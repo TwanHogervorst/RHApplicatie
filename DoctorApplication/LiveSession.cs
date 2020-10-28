@@ -166,11 +166,11 @@ namespace DoctorApplication
             }
         }
 
-        private void Client_OnChatReceived(string sender, string message)
+        private void Client_OnChatReceived(string sender, string receiver, string message, bool isDoctorMessage)
         {
             this.Invoke((Action)delegate
             {
-                if (sender == selectedUser)
+                if (sender == selectedUser || (isDoctorMessage && receiver == selectedUser))
                 {
                     textBoxChat.Text += message;
                     textBoxChat.SelectionStart = textBoxChat.Text.Length;
@@ -222,25 +222,17 @@ namespace DoctorApplication
 
         private void buttonSendChat_Click(object sender, EventArgs e)
         {
-            this.Invoke((Action)delegate
-            {
-                textBoxChat.Text += $"{this.client.username}: {textBoxSendChat.Text}\r\n";
-                textBoxChat.SelectionStart = textBoxChat.Text.Length;
-                textBoxChat.ScrollToCaret();
-            });
-
-            this.client.SendChatMessage(textBoxSendChat.Text);
-            textBoxSendChat.Text = "";
+            this.buttonSendChat_Click();
         }
 
         private void buttonSendChat_Click()
         {
-            this.Invoke((Action)delegate
+            /*this.Invoke((Action)delegate
             {
                 textBoxChat.Text += $"{this.client.username}: {textBoxSendChat.Text}\r\n";
                 textBoxChat.SelectionStart = textBoxChat.Text.Length;
                 textBoxChat.ScrollToCaret();
-            });
+            });*/
 
             this.client.SendChatMessage(textBoxSendChat.Text);
             textBoxSendChat.Text = "";

@@ -11,6 +11,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Xml.Schema;
 
 namespace ServerApplication
 {
@@ -213,26 +214,31 @@ namespace ServerApplication
                 case "CHAT":
                     {
                         Console.WriteLine("Received a chat packet");
-
                         DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
-                        if (d.data.receiver == "All")
+
+                        d.data.isDoctorMessage = !this.isClient;
+
+                        string chatJson = d.ToJson();
+                        if (!this.isClient)
                         {
-                            foreach (ServerClient client in Server.clients.GetClients())
+                            if (d.data.receiver == "All")
                             {
-                                SendDataToUser(client, d.ToJson());
-                            }
-                        }
-                        else
-                        {
-                            if (Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver) != null)
-                            {
-                                SendDataToUser(Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver), d.ToJson());
+                                foreach (ServerClient client in Server.clients.GetClients())
+                                {
+                                    SendDataToUser(client, chatJson);
+                                }
                             }
                             else if (Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver) != null)
                             {
-                                SendDataToUser(Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver), d.ToJson());
+                                SendDataToUser(Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver), chatJson);
                             }
                         }
+
+                        foreach (ServerClient doctorClient in Server.doctors.GetClients())
+                        {
+                            SendDataToUser(doctorClient, chatJson);
+                        }
+
                         break;
                     }
                 case "BIKEDATA":
