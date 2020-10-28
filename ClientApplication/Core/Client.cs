@@ -131,7 +131,7 @@ namespace ClientApplication.Core
             this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
         }
 
-        public void SendData(double speed, int heartbeat, double elapsedTime, int power, int distanceTraveled, int resistance)
+        public void SendData(double speed, int heartbeat, double elapsedTime, int power, double distanceTraveled, int resistance)
         {
             if (this.loggedIn)
             {

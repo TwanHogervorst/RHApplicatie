@@ -80,7 +80,6 @@ namespace DoctorApplication
 
                     beginTime = trainingData.FirstOrDefault().timestamp;
 
-                    DateTime previous = trainingData.FirstOrDefault().timestamp;
                     foreach (BikeDataPacket dataPacket in trainingData)
                     {
                         if (!doctorList.Contains(dataPacket.doctor) && !string.IsNullOrEmpty(dataPacket.doctor)) doctorList.Add(dataPacket.doctor);
@@ -89,14 +88,11 @@ namespace DoctorApplication
                         averagePower += dataPacket.power;
                         averageResistance += dataPacket.resistance;
 
-                        totalDistanceTraveled += dataPacket.speed * (dataPacket.timestamp - previous).TotalSeconds;
-                        previous = dataPacket.timestamp;
-
                         rows.Add(new string[] {
                             $"{dataPacket.speed:0.00} m/s",
                             $"{dataPacket.heartbeat} BPM",
                             $"{(dataPacket.timestamp - beginTime).TotalSeconds:0.00} s",
-                            $"{Math.Round(totalDistanceTraveled, 2):0.00} m",
+                            $"{Math.Round(dataPacket.distanceTraveled, 2):0.00} m",
                             $"{dataPacket.power} Watt",
                             $"{dataPacket.resistance/2.0:0.0} %",
                             $"{dataPacket.timestamp:H:mm:ss.ff}"
@@ -107,6 +103,7 @@ namespace DoctorApplication
                     averageHeartbeat /= trainingData.Count;
                     averagePower /= trainingData.Count;
                     averageResistance = (averageResistance / 2) / trainingData.Count;
+                    totalDistanceTraveled = trainingData.LastOrDefault().distanceTraveled;
 
                     endTime = trainingData.LastOrDefault().timestamp;
 

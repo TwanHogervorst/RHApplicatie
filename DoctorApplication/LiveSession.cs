@@ -19,11 +19,18 @@ namespace DoctorApplication
         private DoctorClient client;
         private bool IsRunning;
         private DateTime startTimeSession;
+
+        private List<decimal> speedValueList = new List<decimal>();
+        private List<decimal> heartbeatValueList = new List<decimal>();
+        private List<decimal> resistanceValueList = new List<decimal>();
+        private List<decimal> distanceTraveledValueList = new List<decimal>();
+        private List<decimal> powerValueList = new List<decimal>();
+
         public LiveSession(DoctorClient client, String selected)
         {
             InitializeComponent();
             this.client = client;
-            this.client.OnChatReceived += Client_OnChatReceived; ;
+            this.client.OnChatReceived += Client_OnChatReceived;
             this.client.OnBikeDataReceived += Client_OnBikeDataReceived;
             this.client.OnSessionStateReceived += Client_OnSessionStateReceived;
             this.client.OnSessionStateMessageReceived += Client_OnSessionStateMessageReceived;
@@ -31,7 +38,19 @@ namespace DoctorApplication
             this.selectedUser = selected;
             Patient.Text += selected;
 
-           this.client.RequestSessionState();
+            this.client.RequestSessionState();
+
+            this.speedGraph.MinValue = -1;
+            this.speedGraph.MaxValue = 41;
+
+            this.heartbeatGraph.MinValue = 40;
+            this.heartbeatGraph.MaxValue = 240;
+
+            this.resistanceGraph.MinValue = -1;
+            this.resistanceGraph.MaxValue = 100;
+
+            this.powerGraph.MinValue = -1;
+            this.powerGraph.MaxValue = 500;
         }
 
         private void Client_OnInvalidBikeReceived(string sender)
@@ -100,10 +119,27 @@ namespace DoctorApplication
                 }
                
                 this.labelCurrentSpeedValue.Text = bikeDataPacket.speed.ToString("0.00") + " m/s";
-                this.labelCurrentDistanceValue.Text = bikeDataPacket.distanceTraveled.ToString() + " m";
+                this.labelCurrentDistanceValue.Text = Math.Round(bikeDataPacket.distanceTraveled, 2).ToString("0.00") + " m";
                 this.labelCurrentHearthbeatValue.Text = bikeDataPacket.heartbeat.ToString() + " BPM";
                 this.labelCurrentPowerValue.Text = bikeDataPacket.power.ToString() + " W";
                 labelCurrentResistanceValue.Text = (bikeDataPacket.resistance / 2.0).ToString("0.0") + " %";
+
+                this.speedValueList.Add((decimal)bikeDataPacket.speed);
+                this.heartbeatValueList.Add(bikeDataPacket.heartbeat);
+                this.resistanceValueList.Add(bikeDataPacket.resistance / 2.0m);
+                this.distanceTraveledValueList.Add((decimal)bikeDataPacket.distanceTraveled);
+                this.powerValueList.Add(bikeDataPacket.power);
+
+                if (this.speedValueList.Count > this.speedGraph.PointsToShow) this.speedValueList.RemoveRange(0, this.speedValueList.Count - this.speedGraph.PointsToShow - 1);
+                if (this.heartbeatValueList.Count > this.heartbeatGraph.PointsToShow + 1) this.heartbeatValueList.RemoveRange(0, this.heartbeatValueList.Count - this.heartbeatGraph.PointsToShow - 1);
+                if (this.resistanceValueList.Count > this.resistanceGraph.PointsToShow + 1) this.resistanceValueList.RemoveRange(0, this.resistanceValueList.Count - this.resistanceGraph.PointsToShow - 1);
+                if (this.powerValueList.Count > this.powerGraph.PointsToShow + 1) this.powerValueList.RemoveRange(0, this.powerValueList.Count - this.powerGraph.PointsToShow - 1);
+
+                this.speedGraph.DataSource = this.speedValueList.ToArray();
+                this.heartbeatGraph.DataSource = this.heartbeatValueList.ToArray();
+                this.resistanceGraph.DataSource = this.resistanceValueList.ToArray();
+                this.distanceTraveledGraph.DataSource = this.distanceTraveledValueList.ToArray();
+                this.powerGraph.DataSource = this.powerValueList.ToArray();
             });
         }
 
@@ -141,6 +177,12 @@ namespace DoctorApplication
             {
                 this.client.StartSession();
             }
+
+            this.speedValueList.Clear();
+            this.heartbeatValueList.Clear();
+            this.resistanceValueList.Clear();
+            this.distanceTraveledValueList.Clear();
+            this.powerValueList.Clear();
         }
 
         private void speedGraph_Click(object sender, EventArgs e)
