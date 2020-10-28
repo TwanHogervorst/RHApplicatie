@@ -5,6 +5,7 @@ using RHApplicationLib.Core;
 using ServerUtils;
 using System;
 using System.Globalization;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace ClientApplication
@@ -13,11 +14,13 @@ namespace ClientApplication
     {
         private BikeDataViewModel bikeDataViewModel;
         private Client client;
+        private VRTunnel tunnel;
         private IBikeTrainer _bike; // DONT USE THIS VARIABLE
-        private Timer dataSendTimer;
-        private Timer resistanceTimer;
         private int currentResistance;
         private int targetResistance;
+        private System.Windows.Forms.Timer dataSendTimer;
+        private System.Windows.Forms.Timer vrUpdateTimer;
+        private Thread vrThread;
         private IBikeTrainer bike
         {
             get => this._bike;
@@ -34,6 +37,10 @@ namespace ClientApplication
                     this._bike.BikeConnectionChanged += Bike_BikeConnectionChanged;
                     this._bike.StartReceiving();
                     this.dataSendTimer.Start();
+                    if (this.tunnel != null)
+                    {
+                        this.vrUpdateTimer.Start();
+                    }
                 }
             }
         }
@@ -59,16 +66,17 @@ namespace ClientApplication
             });
         }
 
-        public MainForm(Client client)
+        public MainForm(Client client, VRTunnel tunnel)
         {
             InitializeComponent();
-            dataSendTimer = new Timer();
+            dataSendTimer = new System.Windows.Forms.Timer();
             dataSendTimer.Interval = 500;
             dataSendTimer.Tick += DataSendTimer_Tick;
-            this.resistanceTimer = new Timer();
-            this.resistanceTimer.Interval = 1000;
-            this.resistanceTimer.Tick += ResistanceTimer_Tick1;
+            vrUpdateTimer = new System.Windows.Forms.Timer();
+            vrUpdateTimer.Interval = 1000;
+            vrUpdateTimer.Tick += VrUpdateTimer_Tick;
             this.client = client;
+            this.tunnel = tunnel;
             this.client.OnChatReceived += Client_OnChatReceived;
             this.client.OnResistanceReceived += Client_OnResistanceReceived;
             this.client.OnStartStopSession += Client_OnStartStopSession;
@@ -76,36 +84,23 @@ namespace ClientApplication
             Utility.DisableAllChildControls(groupBoxSimulator);
         }
 
-        private void ResistanceTimer_Tick1(object sender, EventArgs e)
+        private void VrUpdateTimer_Tick(object sender, EventArgs e)
         {
-            if (this.targetResistance > this.currentResistance)
+            if(this.vrThread == null)
             {
-                this.currentResistance--;
-                if (this.targetResistance < this.currentResistance)
+                if(this.tunnel != null)
                 {
-                    this.currentResistance = this.targetResistance;
-                    this.resistanceTimer.Stop();
+                    this.vrThread = new Thread(UpdateVR);
+                    vrThread.Start();
+                }
+            }else if(this.tunnel != null)
+            {
+                if (!this.vrThread.IsAlive)
+                {
+                    this.vrThread = new Thread(UpdateVR);
+                    vrThread.Start();
                 }
             }
-            else if (this.targetResistance < this.currentResistance)
-            {
-                this.currentResistance++;
-                if (this.targetResistance > this.currentResistance)
-                {
-                    this.currentResistance = this.targetResistance;
-                    this.resistanceTimer.Stop();
-                }
-            }
-            else if (this.currentResistance == this.targetResistance)
-            {
-                this.resistanceTimer.Stop();
-            }
-
-            this.Invoke((Action)delegate
-            {
-                labelCurrentResistanceValue.Text = $"{this.currentResistance / 2.0:0.0} %";
-                this.bike.SetResistance((int)this.currentResistance);
-            });
         }
 
         private void Client_OnStartStopSession(bool state)
@@ -182,6 +177,23 @@ namespace ClientApplication
                 }
 
             }
+        }
+
+        private void UpdateVR()
+        {
+            tunnel.ClearPanel(tunnel.nodeList["panel"]);
+            //tunnel.SwapPanel(tunnel.nodeList["panel"]);
+            tunnel.DrawTextPanel(tunnel.nodeList["panel"], "Bikedata", new decimal[] { 200, 50 }, new decimal(50), new decimal[] { 255, 0, 0, 1 });
+            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Current Speed: {bikeDataViewModel.Speed}", new decimal[] { 25, 100 }, new decimal(50));
+            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Current Heartbeat: {bikeDataViewModel.HeartBeat}", new decimal[] { 25, 150 }, new decimal(50));
+            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Elapsed Time: {bikeDataViewModel.ElapsedTime}", new decimal[] { 25, 200 }, new decimal(50));
+            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Distance traveled: {bikeDataViewModel.DistanceTraveled}", new decimal[] { 25, 250 }, new decimal(50));
+            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Power: {bikeDataViewModel.Power}", new decimal[] { 25, 300 }, new decimal(50));
+            //TODO restistance nog meegeven
+            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Resistance: value", new decimal[] { 25, 350 }, new decimal(50));
+            tunnel.SwapPanel(tunnel.nodeList["panel"]);
+
+            tunnel.FollowRouteSpeed(tunnel.nodeList["bike"], new decimal(bikeDataViewModel.Speed / 5));
         }
 
         private void Client_OnChatReceived(string message)

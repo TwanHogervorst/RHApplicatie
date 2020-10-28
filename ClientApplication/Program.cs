@@ -1,5 +1,9 @@
+using ClientApplication.Core;
+using ClientApplication.Data;
+using ClientApplication.Exception;
 using DoctorApplication;
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace ClientApplication
@@ -17,5 +21,6 @@ namespace ClientApplication
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new LoginForm());
         }
+
     }
 }
