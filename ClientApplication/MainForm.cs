@@ -56,7 +56,7 @@ namespace ClientApplication
                         break;
                     case BikeDataType.GeneralFEData:
                         labelCurrentElapsedTimeValue.Text = sender.ElapsedTime.ToString("0.00") + " s";
-                        labelCurrentDistanceTraveledValue.Text = Math.Round(sender.DistanceTraveled, 2).ToString("0.00") + " m";
+                        labelCurrentDistanceTraveledValue.Text = sender.DistanceTraveled.ToString() + " m";
                         labelCurrentSpeedValue.Text = sender.Speed.ToString("0.00") + " m/s";
                         break;
                     case BikeDataType.SpecificBikeData:
@@ -111,13 +111,11 @@ namespace ClientApplication
                 {
                     this.Client_OnChatReceived("The session has started\r\n");
                     this.client.SendStartStopSessionResponse(true);
-                    this.bikeDataViewModel.ResetDistanceTraveled();
                 }
                 else
                 {
                     this.Client_OnChatReceived("The session has stopped\r\n");
                     this.client.SendStartStopSessionResponse(false);
-                    this.bikeDataViewModel.ResetDistanceTraveled();
                 }
             } else
             {
@@ -184,14 +182,13 @@ namespace ClientApplication
         private void UpdateVR()
         {
             tunnel.ClearPanel(tunnel.nodeList["panel"]);
-            //tunnel.SwapPanel(tunnel.nodeList["panel"]);
             tunnel.DrawTextPanel(tunnel.nodeList["panel"], "Bikedata", new decimal[] { 200, 50 }, new decimal(50), new decimal[] { 255, 0, 0, 1 });
             tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Current Speed: {bikeDataViewModel.Speed}", new decimal[] { 25, 100 }, new decimal(50));
             tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Current Heartbeat: {bikeDataViewModel.HeartBeat}", new decimal[] { 25, 150 }, new decimal(50));
             tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Elapsed Time: {bikeDataViewModel.ElapsedTime}", new decimal[] { 25, 200 }, new decimal(50));
             tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Distance traveled: {bikeDataViewModel.DistanceTraveled}", new decimal[] { 25, 250 }, new decimal(50));
             tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Power: {bikeDataViewModel.Power}", new decimal[] { 25, 300 }, new decimal(50));
-            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Resistance: {this.currentResistance}", new decimal[] { 25, 350 }, new decimal(50));
+            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Resistance: {this.currentResistance / 2}", new decimal[] { 25, 350 }, new decimal(50));
             tunnel.SwapPanel(tunnel.nodeList["panel"]);
 
             tunnel.FollowRouteSpeed(tunnel.nodeList["bike"], new decimal(bikeDataViewModel.Speed / 5));
