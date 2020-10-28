@@ -376,6 +376,14 @@ namespace ClientApplication
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            this.client.OnChatReceived -= Client_OnChatReceived;
+            this.client.OnResistanceReceived -= Client_OnResistanceReceived;
+            this.client.OnStartStopSession -= Client_OnStartStopSession;
+            this.client.OnEmergencyStopSession -= Client_OnEmergencyStopSession;
+
+            if(this.tunnel != null)
+            this.tunnel.Disconnect();
+            this.client.DisconnectClient();
             this.bike = null; // kills the connection
             Application.Exit();
         }

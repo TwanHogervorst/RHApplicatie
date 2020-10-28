@@ -119,29 +119,44 @@ namespace ClientApplication.Core
 
         private string ReceiveData()
         {
-            string result = null;
-
-            // Get data length
-            byte[] dataLengthBytes = new byte[4];
-            this.stream.Read(dataLengthBytes, 0, 4);
-            int dataLength = BitConverter.ToInt32(Utility.ReverseIfBigEndian(dataLengthBytes));
-
-            // create data buffer
-            byte[] dataBuffer = new byte[dataLength];
-
-            // read data and fill buffer
-            int bytesRead = 0;
-            while (bytesRead < dataLength)
+            try
             {
-                bytesRead += this.stream.Read(dataBuffer, bytesRead, dataLength - bytesRead);
+                string result = null;
+
+                // Get data length
+                byte[] dataLengthBytes = new byte[4];
+                this.stream.Read(dataLengthBytes, 0, 4);
+                int dataLength = BitConverter.ToInt32(Utility.ReverseIfBigEndian(dataLengthBytes));
+
+                // create data buffer
+                byte[] dataBuffer = new byte[dataLength];
+
+                // read data and fill buffer
+                int bytesRead = 0;
+                while (bytesRead < dataLength)
+                {
+                    bytesRead += this.stream.Read(dataBuffer, bytesRead, dataLength - bytesRead);
+                }
+
+                // get message as string
+                result = Encoding.ASCII.GetString(dataBuffer);
+
+                //Console.WriteLine(result);
+
+                return result;
             }
+            catch
+            {
+                Disconnect();
+                return null;
+            }
+        }
 
-            // get message as string
-            result = Encoding.ASCII.GetString(dataBuffer);
-
-            //Console.WriteLine(result);
-            
-            return result;
+        internal void Disconnect()
+        {
+            //TODO disconnect the vrClient
+            this.stream.Close();
+            this.client.Close();
         }
     }
 }

@@ -66,5 +66,9 @@ namespace DoctorApplication
                 LoginButton_Click();
             }
         }
+
+        private void LoginForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+        }
     }
 }

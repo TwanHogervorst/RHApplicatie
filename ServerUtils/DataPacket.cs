@@ -145,4 +145,8 @@ namespace ServerUtils
         public string trainingName;
         public List<BikeDataPacket> trainingData = new List<BikeDataPacket>();
     }
+
+    class DisconnectRequestPacket : DAbstract
+    {
+    }
 }

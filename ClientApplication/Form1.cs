@@ -13,6 +13,7 @@ namespace ClientApplication
         private VRClient vrClient;
         private List<DVRSessionItem> sessionList;
         private VRTunnel tunnel;
+        private bool isDisconnecting = false;
 
         public Form1(Client client)
         {
@@ -45,6 +46,7 @@ namespace ClientApplication
         {
             MainForm mainForm = new MainForm(this.client, null);
             mainForm.Show();
+            this.isDisconnecting = true;
             this.Close();
         }
 
@@ -76,6 +78,7 @@ namespace ClientApplication
                     }
                     MainForm mainForm = new MainForm(this.client, this.tunnel);
                     mainForm.Show();
+                    this.isDisconnecting = true;
                     this.Close();
                 }
                 catch (VRClientException ex)
@@ -215,6 +218,15 @@ namespace ClientApplication
             return true;
         }
 
-      
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!this.isDisconnecting)
+            {
+                if(this.tunnel != null)
+                this.tunnel.Disconnect();
+                this.client.DisconnectClient();
+                Application.Exit();
+            }
+        }
     }
 }

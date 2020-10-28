@@ -61,7 +61,7 @@ namespace ServerApplication
             }
             catch (Exception ex)
             {
-                // Stream closed/error
+                Disconnect();
                 Console.WriteLine(ex.Message);
             }
         }
@@ -89,7 +89,7 @@ namespace ServerApplication
             }
             catch (Exception ex)
             {
-                // Stream closed/error
+                Disconnect();
                 Console.WriteLine(ex.Message);
             }
         }
@@ -639,10 +639,21 @@ namespace ServerApplication
                         }
                         break;
                     }
+                case "DISCONNECT":
+                    {
+                        DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
+                        Disconnect();
+                        break;
+                    }
                 default:
                     Console.WriteLine("Unkown packetType");
                     break;
             }
+        }
+
+        public void Disconnect()
+        {
+            Server.Disconnect(this);
         }
 
         private void SendData(string message)
