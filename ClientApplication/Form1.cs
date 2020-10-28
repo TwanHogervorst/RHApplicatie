@@ -165,7 +165,7 @@ namespace ClientApplication
                                true,
                                new decimal[] { 0, 0, 0 },
                                new decimal[] { 0, 0, 0 });
-            tunnel.FollowRouteSpeed(tunnel.nodeList["bike"], new decimal(1));
+            tunnel.FollowRouteSpeed(tunnel.nodeList["bike"], new decimal(0));
 
             tunnel.AddNode("water1",
                 new DVRAddNodePacket.DComponents.DTransform

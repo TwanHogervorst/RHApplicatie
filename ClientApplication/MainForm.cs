@@ -189,8 +189,7 @@ namespace ClientApplication
             tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Elapsed Time: {bikeDataViewModel.ElapsedTime}", new decimal[] { 25, 200 }, new decimal(50));
             tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Distance traveled: {bikeDataViewModel.DistanceTraveled}", new decimal[] { 25, 250 }, new decimal(50));
             tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Power: {bikeDataViewModel.Power}", new decimal[] { 25, 300 }, new decimal(50));
-            //TODO restistance nog meegeven
-            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Resistance: value", new decimal[] { 25, 350 }, new decimal(50));
+            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Resistance: {this.currentResistance}", new decimal[] { 25, 350 }, new decimal(50));
             tunnel.SwapPanel(tunnel.nodeList["panel"]);
 
             tunnel.FollowRouteSpeed(tunnel.nodeList["bike"], new decimal(bikeDataViewModel.Speed / 5));
