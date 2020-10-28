@@ -426,8 +426,6 @@ namespace DoctorApplication
                 this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
 
                 this.clientUserName = null;
-
-
             }
         }
 

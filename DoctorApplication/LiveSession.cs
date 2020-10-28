@@ -37,6 +37,7 @@ namespace DoctorApplication
             this.client.OnSessionStateMessageReceived += Client_OnSessionStateMessageReceived;
             this.client.OnInvalidBikeReceived += Client_OnInvalidBikeReceived;
             this.client.OnEmergencyResponse += Client_OnEmergencyResponse;
+            this.client.OnClientListReceived += Client_OnClientListReceived;
             this.selectedUser = selected;
             Patient.Text += selected;
 
@@ -53,6 +54,17 @@ namespace DoctorApplication
 
             this.powerGraph.MinValue = -1;
             this.powerGraph.MaxValue = 500;
+        }
+
+        private void Client_OnClientListReceived(Dictionary<string, bool> clientList)
+        {
+            if (clientList.ContainsKey(this.selectedUser))
+            {
+                if (!clientList[this.selectedUser]) {
+                    MessageBox.Show("the client went offline, this livesession is closing", "Client offline");
+                    this.Close();
+                }
+            }
         }
 
         private void Client_OnInvalidBikeReceived(string sender)
@@ -251,6 +263,7 @@ namespace DoctorApplication
             this.client.OnSessionStateMessageReceived -= this.Client_OnSessionStateMessageReceived;
             this.client.OnInvalidBikeReceived -= this.Client_OnInvalidBikeReceived;
             this.client.OnEmergencyResponse -= this.Client_OnEmergencyResponse;
+            this.client.OnClientListReceived -= this.Client_OnClientListReceived;
         }
 
         private void textBoxResistance_KeyPress(object sender, KeyPressEventArgs e)
