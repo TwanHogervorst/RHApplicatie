@@ -53,16 +53,6 @@
             // 
             // PatientTableLayoutPanel
             // 
-            this.PatientListView.Dock = System.Windows.Forms.DockStyle.Left;
-            this.PatientListView.HideSelection = false;
-            this.PatientListView.Location = new System.Drawing.Point(5, 5);
-            this.PatientListView.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.PatientListView.MultiSelect = false;
-            this.PatientListView.Name = "PatientListView";
-            this.PatientListView.Size = new System.Drawing.Size(186, 530);
-            this.PatientListView.TabIndex = 0;
-            this.PatientListView.UseCompatibleStateImageBehavior = false;
-            this.PatientListView.SelectedIndexChanged += new System.EventHandler(this.PatientListView_SelectedIndexChanged);
             this.PatientTableLayoutPanel.AutoScroll = true;
             this.PatientTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 186F));
             this.PatientTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Left;

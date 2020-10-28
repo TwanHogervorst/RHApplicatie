@@ -259,7 +259,7 @@ namespace ServerApplication
                             }
                         }
 
-                        if (d.data.receiver != null)
+                        if (d.data.doctor != null)
                         {
                             if (Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.doctor) != null)
                             {

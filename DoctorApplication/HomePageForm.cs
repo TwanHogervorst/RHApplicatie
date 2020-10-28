@@ -59,8 +59,6 @@ namespace DoctorApplication
 
         private void LiveSessionButton_Click(object sender, System.EventArgs e)
         {
-            HistoryForm historySession = new HistoryForm(this.client, selectedUser);
-            historySession.Show();
             if (this.client.selectedUser != null && this.clientList[this.client.selectedUser])
             {
                 this.client.SendUserName(this.client.selectedUser);
@@ -77,7 +75,7 @@ namespace DoctorApplication
         {
             if (this.client.selectedUser != null)
             {
-                HistoryForm historySession = new HistoryForm(this.client.selectedUser);
+                HistoryForm historySession = new HistoryForm(this.client, this.client.selectedUser);
                 historySession.Show();
             }
             else

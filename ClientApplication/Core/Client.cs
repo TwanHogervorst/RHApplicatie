@@ -249,31 +249,16 @@ namespace ClientApplication.Core
             {
                 DataPacket<StartStopPacket> dataPacket;
 
-                if (state) {
-                    dataPacket = new DataPacket<StartStopPacket>()
-                    {
-                        sender = this.username,
-                        type = "INVALID_BIKE",
-                        data = new StartStopPacket()
-                        {
-                            receiver = this.doctorUserName,
-                            startSession = state
-                        }
-                    };
-                }
-                else
+                dataPacket = new DataPacket<StartStopPacket>()
                 {
-                    dataPacket = new DataPacket<StartStopPacket>()
+                    sender = this.username,
+                    type = "INVALID_BIKE",
+                    data = new StartStopPacket()
                     {
-                        sender = this.username,
-                        type = "INVALID_BIKE",
-                        data = new StartStopPacket()
-                        {
-                            receiver = this.doctorUserName,
-                            startSession = state
-                        }
-                    };
-                }
+                        receiver = this.doctorUserName,
+                        startSession = state
+                    }
+                };
 
                 // create the sendBuffer based on the message
                 List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));

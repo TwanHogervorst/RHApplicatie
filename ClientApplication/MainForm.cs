@@ -57,7 +57,7 @@ namespace ClientApplication
                         break;
                     case BikeDataType.GeneralFEData:
                         labelCurrentElapsedTimeValue.Text = sender.ElapsedTime.ToString("0.00") + " s";
-                        labelCurrentDistanceTraveledValue.Text = sender.DistanceTraveled.ToString() + " m";
+                        labelCurrentDistanceTraveledValue.Text = Math.Round(sender.DistanceTraveled, 2).ToString("0.00") + " m";
                         labelCurrentSpeedValue.Text = sender.Speed.ToString("0.00") + " m/s";
                         break;
                     case BikeDataType.SpecificBikeData:
@@ -333,7 +333,6 @@ namespace ClientApplication
                 this.buttonConnect.Text = "Connect";
             }
 
-            this.client.SendInvalidBike(false);
         }
 
         private void radioButtonSimulator_CheckedChanged(object sender, EventArgs e)
@@ -353,7 +352,7 @@ namespace ClientApplication
                 Utility.DisableAllChildControls(groupBoxSimulator);
             }
 
-            this.client.SendInvalidBike(false);
+            
         }
 
         #endregion

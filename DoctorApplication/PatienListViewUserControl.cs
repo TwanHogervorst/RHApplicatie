@@ -16,13 +16,13 @@ namespace DoctorApplication
         private DoctorClient client;
         private bool IsRunning;
         public string selectedUser;
-
         public event UserSelectedCallback OnUserSelected;
 
         public PatienListViewUserControl(DoctorClient client, String user)
         {
             InitializeComponent();
             this.client = client;
+            this.selectedUser = user;
             this.client.OnBikeDataReceived += Client_OnBikeDataReceived;
             this.UserControlNameLabel.Text = user;
             this.UserControlNameLabel.Location = new System.Drawing.Point((this.Width / 2) - (this.UserControlNameLabel.Width / 2), this.UserControlNameLabel.Location.Y);
@@ -45,7 +45,7 @@ namespace DoctorApplication
 
         private void EmergencyShutdownButton_Click(object sender, EventArgs e)
         {
-            this.client.EmergencyStopSession();
+            this.client.EmergencyStopSession(this.selectedUser);
         }
 
         private void PatienListViewUserControl_Load(object sender, EventArgs e)

@@ -325,7 +325,7 @@ namespace DoctorApplication
             }
         }
 
-        public void EmergencyStopSession()
+        public void EmergencyStopSession(string _selectedUser)
         {
             if (this.loggedIn)
             {
@@ -335,9 +335,10 @@ namespace DoctorApplication
                     type = "EMERGENCY_STOP",
                     data = new EmergencyStopPacket()
                     {
-                        receiver = this.selectedUser,
+                        receiver = _selectedUser,
                         startSession = false,
                         resistance = 0
+                        
                     }
                 };
 

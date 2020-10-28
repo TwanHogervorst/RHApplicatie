@@ -57,20 +57,16 @@ namespace DoctorApplication
 
         private void Client_OnInvalidBikeReceived(string sender)
         {
+            IsRunning = false;
             if (sender == selectedUser)
             {
-                if (this.IsRunning)
+                this.Invoke((Action)delegate
                 {
-                    this.Invoke((Action)delegate
-                    {
-                        textBoxChat.Text += "Bike is not connected!\r\n";
+                    textBoxChat.Text += "Bike is not connected!\r\n";
                     textBoxChat.SelectionStart = textBoxChat.Text.Length;
                     textBoxChat.ScrollToCaret();
-
-                    this.client.SendServerMessage(this.selectedUser,"Bike is not connected!");
-                    });
-                }
-                this.IsRunning = false;
+                    this.client.SendServerMessage(this.selectedUser, "Bike is not connected!\r\n");
+                });
             }
         }
 
@@ -141,18 +137,17 @@ namespace DoctorApplication
                     TimeSpan ts = DateTime.Now - this.startTimeSession;
                     this.labelTimeValue.Text = $"{(int)ts.TotalMinutes:00}:{ts.Seconds:00}";
                 }
-               
-                this.labelCurrentSpeedValue.Text = bikeDataPacket.speed.ToString("0.00") + " m/s";
-                this.labelCurrentDistanceValue.Text = Math.Round(bikeDataPacket.distanceTraveled, 2).ToString("0.00") + " m";
-                this.labelCurrentHearthbeatValue.Text = bikeDataPacket.heartbeat.ToString() + " BPM";
-                this.labelCurrentPowerValue.Text = bikeDataPacket.power.ToString() + " W";
-                labelCurrentResistanceValue.Text = (bikeDataPacket.resistance / 2.0).ToString("0.0") + " %";
+                this.labelCurrentSpeedValue.Text = bikeDataPacket.data.speed.ToString("0.00") + " m/s";
+                this.labelCurrentDistanceValue.Text = Math.Round(bikeDataPacket.data.distanceTraveled, 2).ToString("0.00") + " m";
+                this.labelCurrentHearthbeatValue.Text = bikeDataPacket.data.heartbeat.ToString() + " BPM";
+                this.labelCurrentPowerValue.Text = bikeDataPacket.data.power.ToString() + " W";
+                labelCurrentResistanceValue.Text = (bikeDataPacket.data.resistance / 2.0).ToString("0.0") + " %";
 
-                this.speedValueList.Add((decimal)bikeDataPacket.speed);
-                this.heartbeatValueList.Add(bikeDataPacket.heartbeat);
-                this.resistanceValueList.Add(bikeDataPacket.resistance / 2.0m);
-                this.distanceTraveledValueList.Add((decimal)bikeDataPacket.distanceTraveled);
-                this.powerValueList.Add(bikeDataPacket.power);
+                this.speedValueList.Add((decimal)bikeDataPacket.data.speed);
+                this.heartbeatValueList.Add(bikeDataPacket.data.heartbeat);
+                this.resistanceValueList.Add(bikeDataPacket.data.resistance / 2.0m);
+                this.distanceTraveledValueList.Add((decimal)bikeDataPacket.data.distanceTraveled);
+                this.powerValueList.Add(bikeDataPacket.data.power);
 
                 if (this.speedValueList.Count > this.speedGraph.PointsToShow) this.speedValueList.RemoveRange(0, this.speedValueList.Count - this.speedGraph.PointsToShow - 1);
                 if (this.heartbeatValueList.Count > this.heartbeatGraph.PointsToShow + 1) this.heartbeatValueList.RemoveRange(0, this.heartbeatValueList.Count - this.heartbeatGraph.PointsToShow - 1);
@@ -196,10 +191,12 @@ namespace DoctorApplication
             if (this.IsRunning)
             {
                 this.client.StopSession();
+                this.IsRunning = false;
             }
             else
             {
                 this.client.StartSession();
+                this.IsRunning = true;
             }
 
             this.speedValueList.Clear();
@@ -304,7 +301,7 @@ namespace DoctorApplication
 
         private void EmergencyStopButton_Click(object sender, EventArgs e)
         {
-            this.client.EmergencyStopSession();
+            this.client.EmergencyStopSession(selectedUser);
         }
     }
 }
