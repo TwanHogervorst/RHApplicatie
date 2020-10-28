@@ -295,6 +295,15 @@ namespace ServerApplication
                                 .Select(f => Path.GetFileNameWithoutExtension(f))
                                 .Where(t => t != filterTraining)
                                 .ToList();
+
+                            result.trainingList.Sort((a, b) =>
+                            {
+                                string aIdString = a.Split(' ').LastOrDefault();
+                                string bIdString = b.Split(' ').LastOrDefault();
+
+                                if (int.TryParse(aIdString, out int aId) && int.TryParse(bIdString, out int bId)) return aId - bId;
+                                else return -1;
+                            });
                         }
 
                         this.SendData(new DataPacket<ResponseTrainingList>
@@ -412,10 +421,18 @@ namespace ServerApplication
                             if (Directory.Exists("Trainingen\\" + receiver.UserName))
                             {
                                 List<string> trainingFiles = Directory.GetFiles("Trainingen\\" + receiver.UserName)
+                                    .Where(path => Path.GetExtension(path) == ".json")
                                     .Select((path) => Path.GetFileNameWithoutExtension(path))
                                     .ToList();
 
-                                trainingFiles.Sort();
+                                trainingFiles.Sort((a, b) =>
+                                {
+                                    string aIdString = a.Split(' ').LastOrDefault();
+                                    string bIdString = b.Split(' ').LastOrDefault();
+
+                                    if (int.TryParse(aIdString, out int aId) && int.TryParse(bIdString, out int bId)) return aId - bId;
+                                    else return -1;
+                                });
 
                                 string lastTrainingFileName = trainingFiles.LastOrDefault();
 

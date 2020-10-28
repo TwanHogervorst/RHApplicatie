@@ -146,7 +146,10 @@ namespace ClientApplication
                     {
                         this.Client_OnChatReceived("The session was stopped in emergency!\r\n");
                         this.client.SendEmergencySessionResponse(true);
-                        this.Client_OnResistanceReceived(resistance);
+
+                        this.currentResistance = 0;
+                        this.targetResistance = 0;
+
                         this.isRunning = false;
                     }
                 }
