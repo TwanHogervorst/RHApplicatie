@@ -31,6 +31,7 @@ namespace ServerApplication
 
             doctorList = new Dictionary<string, string>();
             doctorList.Add("test1", "test1");
+            doctorList.Add("test4","test4");
 
             clientData = new Dictionary<string, List<BikeDataPacket>>();
             string pathToClientData = "ClientData.txt";

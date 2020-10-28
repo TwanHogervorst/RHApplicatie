@@ -38,10 +38,12 @@ namespace DoctorApplication
             });
         }
 
-        private void PatientList_OnUserSelected(string username)
+        private void PatientList_OnUserSelected(string username, string doctorUserName)
         {
-            this.selectedUser = username;
-            CurrentSelectedUserLabel.Text = this.selectedUser;
+            if (this.client.username == doctorUserName) {
+                this.selectedUser = username;
+                CurrentSelectedUserLabel.Text = this.selectedUser;
+            }
         }
 
         private void LiveSessionButton_Click(object sender, System.EventArgs e)

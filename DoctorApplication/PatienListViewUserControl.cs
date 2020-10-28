@@ -10,7 +10,7 @@ using ServerUtils;
 
 namespace DoctorApplication
 {
-    public delegate void UserSelectedCallback(string username);
+    public delegate void UserSelectedCallback(string username, string doctor);
     public partial class PatienListViewUserControl : UserControl
     {
         private DoctorClient client;
@@ -55,7 +55,7 @@ namespace DoctorApplication
 
         private void UserControlNameLabel_Click(object sender, EventArgs e)
         {
-            OnUserSelected?.Invoke(UserControlNameLabel.Text);
+            OnUserSelected?.Invoke(UserControlNameLabel.Text, this.client.username);
         }
     }
 }
