@@ -26,13 +26,18 @@ namespace ServerApplication.Core
         {
             Console.WriteLine("Hello Server!");
             clientList = new Dictionary<string, string>();
-            clientList.Add("test", "test");
-            clientList.Add("test2", "test2");
-            clientList.Add("test3", "test3");
+            clientList.Add("client1", "client1");
+            clientList.Add("client2", "letmein");
+            clientList.Add("client3", "p@ssw0rd");
+            clientList.Add("client4", "f#ckD0ct3r$");
+            clientList.Add("client5", "w@chtw00rd");
+            clientList.Add("henk", "henkhenk2");
 
             doctorList = new Dictionary<string, string>();
-            doctorList.Add("test1", "test1");
-            doctorList.Add("test4","test4");
+            doctorList.Add("doctor1", "doctor1");
+            doctorList.Add("doctor2", "st3th3r");
+            doctorList.Add("doctor3", "ihatemyjob");
+            doctorList.Add("doctor4", "mriscan69");
 
             clientData = new Dictionary<string, List<BikeDataPacket>>();
             string pathToClientData = "ClientData.txt";
