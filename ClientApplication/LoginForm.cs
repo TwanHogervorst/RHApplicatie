@@ -14,6 +14,8 @@ namespace DoctorApplication
             InitializeComponent();
             this.client = new Client();
             this.client.OnLogin += Client_OnLogin;
+
+            this.AcceptButton = this.LoginButton;
         }
 
         private void Client_OnLogin(bool status)
@@ -26,6 +28,7 @@ namespace DoctorApplication
                     //MainForm mainForm = new MainForm(this.client);
                     //mainForm.Show();
                     this.Hide();
+
                 }
                 else
                 {
@@ -43,28 +46,12 @@ namespace DoctorApplication
             }
         }
 
-        private void LoginButton_Click()
-        {
-            if (NameTextBox.Text != null || PasswordTextBox.Text != null)
-            {
-                client.SendLogin(NameTextBox.Text, PasswordTextBox.Text);
-            }
-        }
-
         private void NameTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == (char)Keys.Enter)
-            {
-                LoginButton_Click();
-            }
         }
 
         private void PasswordTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == (char)Keys.Enter)
-            {
-                LoginButton_Click();
-            }
         }
     }
 }
