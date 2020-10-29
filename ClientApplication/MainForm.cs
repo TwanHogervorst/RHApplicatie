@@ -224,12 +224,12 @@ namespace ClientApplication
         {
             tunnel.ClearPanel(tunnel.nodeList["panel"]);
             tunnel.DrawTextPanel(tunnel.nodeList["panel"], "Bikedata", new decimal[] { 200, 50 }, new decimal(50), new decimal[] { 255, 0, 0, 1 });
-            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Current Speed: {bikeDataViewModel.Speed}", new decimal[] { 25, 100 }, new decimal(50));
-            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Current Heartbeat: {bikeDataViewModel.HeartBeat}", new decimal[] { 25, 150 }, new decimal(50));
-            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Elapsed Time: {bikeDataViewModel.ElapsedTime}", new decimal[] { 25, 200 }, new decimal(50));
-            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Distance traveled: {bikeDataViewModel.DistanceTraveled}", new decimal[] { 25, 250 }, new decimal(50));
-            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Power: {bikeDataViewModel.Power}", new decimal[] { 25, 300 }, new decimal(50));
-            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Resistance: {this.currentResistance / 2}", new decimal[] { 25, 350 }, new decimal(50));
+            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Current Speed: {bikeDataViewModel.Speed} m/s", new decimal[] { 25, 100 }, new decimal(50));
+            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Current Heartbeat: {bikeDataViewModel.HeartBeat} BPM", new decimal[] { 25, 150 }, new decimal(50));
+            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Elapsed Time: {bikeDataViewModel.ElapsedTime} s", new decimal[] { 25, 200 }, new decimal(50));
+            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Distance traveled: {Math.Round(bikeDataViewModel.DistanceTraveled, 2).ToString("0.00")} m", new decimal[] { 25, 250 }, new decimal(50));
+            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Power: {bikeDataViewModel.Power} W", new decimal[] { 25, 300 }, new decimal(50));
+            tunnel.DrawTextPanel(tunnel.nodeList["panel"], $"Resistance: {this.currentResistance / 2} %", new decimal[] { 25, 350 }, new decimal(50));
             tunnel.SwapPanel(tunnel.nodeList["panel"]);
 
             tunnel.FollowRouteSpeed(tunnel.nodeList["bike"], new decimal(bikeDataViewModel.Speed / 5));
