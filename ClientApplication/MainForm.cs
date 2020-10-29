@@ -45,12 +45,18 @@ namespace ClientApplication
 
                     this._bike.StartReceiving();
 
+                    this.client.SendBikeState(true);
+
                     this.dataSendTimer.Start();
 
                     if (this.tunnel != null)
                     {
                         this.vrUpdateTimer.Start();
                     }
+                }
+                else
+                {
+                    this.client.SendBikeState(false);
                 }
             }
         }
@@ -91,8 +97,18 @@ namespace ClientApplication
             this.client.OnResistanceReceived += Client_OnResistanceReceived;
             this.client.OnStartStopSession += Client_OnStartStopSession;
             this.client.OnEmergencyStopSession += Client_OnEmergencyStopSession;
+            this.client.OnBikeStateRequested += Client_OnBikeStateRequested;
 
             Utility.DisableAllChildControls(groupBoxSimulator);
+        }
+
+        private void Client_OnBikeStateRequested()
+        {
+            bool result = false;
+
+            if (this.bike != null) result = true;
+
+            this.client.SendBikeState(result);
         }
 
         private void VrUpdateTimer_Tick(object sender, EventArgs e)
@@ -134,7 +150,7 @@ namespace ClientApplication
                 }
             } else
             {
-                this.client.SendInvalidBike(state);
+                this.client.SendBikeState(false);
             }
         }
 
@@ -162,7 +178,7 @@ namespace ClientApplication
                 }
             }else
             {
-                this.client.SendInvalidBike(state);
+                this.client.SendBikeState(false);
             }
         }
 

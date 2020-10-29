@@ -306,6 +306,7 @@
             // 
             // buttonStartStop
             // 
+            this.buttonStartStop.Enabled = false;
             this.buttonStartStop.Location = new System.Drawing.Point(31, 748);
             this.buttonStartStop.Margin = new System.Windows.Forms.Padding(4);
             this.buttonStartStop.Name = "buttonStartStop";
@@ -338,6 +339,7 @@
             // 
             // textBoxResistance
             // 
+            this.textBoxResistance.Enabled = false;
             this.textBoxResistance.Location = new System.Drawing.Point(127, 713);
             this.textBoxResistance.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxResistance.Name = "textBoxResistance";
@@ -348,6 +350,7 @@
             // 
             // trackBarResistance
             // 
+            this.trackBarResistance.Enabled = false;
             this.trackBarResistance.Location = new System.Drawing.Point(262, 703);
             this.trackBarResistance.Margin = new System.Windows.Forms.Padding(4);
             this.trackBarResistance.Maximum = 200;
@@ -399,6 +402,7 @@
             this.Text = "LiveSession";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LiveSession_FormClosing);
             this.Load += new System.EventHandler(this.LiveSession_Load);
+            this.Shown += new System.EventHandler(this.LiveSession_Shown);
             this.groupBoxCurrentData.ResumeLayout(false);
             this.groupBoxCurrentData.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarResistance)).EndInit();

@@ -151,4 +151,14 @@ namespace ServerUtils
     class DisconnectRequestPacket : DAbstract
     {
     }
+
+    public class RequestBikeStatePacket : DAbstract
+    {
+        public string forClient;
+    }
+
+    public class ResponseBikeState : DAbstract
+    {
+        public bool bikeIsConnected;
+    }
 }

@@ -18,6 +18,7 @@ namespace ClientApplication.Core
     public delegate void ResistanceCallback(int resistance);
     public delegate void StartStopSessionCallback(bool state);
     public delegate void EmergencyStopSessionCallback(bool state, int resistance);
+    public delegate void RequestBikeState();
 
     public class Client
     {
@@ -33,6 +34,7 @@ namespace ClientApplication.Core
         public event ResistanceCallback OnResistanceReceived;
         public event StartStopSessionCallback OnStartStopSession;
         public event EmergencyStopSessionCallback OnEmergencyStopSession;
+        public event RequestBikeState OnBikeStateRequested;
 
         private int receivedBytes;
         private byte[] receiveBuffer;
@@ -213,18 +215,17 @@ namespace ClientApplication.Core
             }
         }
 
-        public void SendInvalidBike(bool state)
+        public void SendBikeState(bool state)
         {
             if (this.loggedIn)
             {
-                this.SendData(new DataPacket<StartStopPacket>()
+                this.SendData(new DataPacket<ResponseBikeState>()
                 {
                     sender = this.username,
-                    type = "INVALID_BIKE",
-                    data = new StartStopPacket()
+                    type = "RESPONSE_BIKE_STATE",
+                    data = new ResponseBikeState()
                     {
-                        receiver = this.doctorUserName,
-                        startSession = false
+                        bikeIsConnected = state
                     }
                 }.ToJson());
             }
@@ -314,6 +315,11 @@ namespace ClientApplication.Core
                         DataPacket<ResistancePacket> d = data.GetData<ResistancePacket>();
                         //TODO set Resistance of the bike
                         OnResistanceReceived?.Invoke(d.data.resistance);
+                        break;
+                    }
+                case "REQUEST_BIKE_STATE":
+                    {
+                        this.OnBikeStateRequested?.Invoke();
                         break;
                     }
                 case "START_SESSION":

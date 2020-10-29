@@ -637,14 +637,23 @@ namespace ServerApplication
                         }
                         break;
                     }
-                case "INVALID_BIKE":
+                case "REQUEST_BIKE_STATE":
                     {
-                        DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
+                        DataPacket<RequestBikeStatePacket> d = data.GetData<RequestBikeStatePacket>();
+
+                        ServerClient receiver = Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.forClient);
+                        if (receiver != null) this.SendDataToUser(receiver, d.ToJson());
+
+                        break;
+                    }
+                case "RESPONSE_BIKE_STATE":
+                    {
+                        DataPacket<ResponseBikeState> d = data.GetData<ResponseBikeState>();
 
                         string response = d.ToJson();
                         foreach (ServerClient doctorClient in Server.doctors.GetClients()) SendDataToUser(doctorClient, response);
-
-                        if (!string.IsNullOrEmpty(this.SessionId))
+                        
+                        if (!d.data.bikeIsConnected && !string.IsNullOrEmpty(this.SessionId))
                         {
                             lock (this.BikeDataLock)
                             {

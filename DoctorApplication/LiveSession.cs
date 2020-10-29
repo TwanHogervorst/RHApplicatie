@@ -35,13 +35,11 @@ namespace DoctorApplication
             this.client.OnBikeDataReceived += Client_OnBikeDataReceived;
             this.client.OnSessionStateReceived += Client_OnSessionStateReceived;
             this.client.OnSessionStateMessageReceived += Client_OnSessionStateMessageReceived;
-            this.client.OnInvalidBikeReceived += Client_OnInvalidBikeReceived;
+            this.client.OnBikeStateChanged += Client_OnBikeStateChanged;
             this.client.OnEmergencyResponse += Client_OnEmergencyResponse;
             this.client.OnClientListReceived += Client_OnClientListReceived;
             this.selectedUser = selected;
             Patient.Text += selected;
-
-            this.client.RequestSessionState();
 
             this.speedGraph.MinValue = -1;
             this.speedGraph.MaxValue = 41;
@@ -72,21 +70,40 @@ namespace DoctorApplication
             }
         }
 
-        private void Client_OnInvalidBikeReceived(string sender)
+        private void Client_OnBikeStateChanged(string sender, bool bikeIsConnected)
         {
-            IsRunning = false;
             if (sender == selectedUser)
             {
-                this.Invoke((Action)delegate
+                if (bikeIsConnected)
                 {
-                    textBoxChat.Text += "Bike is not connected!\r\n";
-                    textBoxChat.SelectionStart = textBoxChat.Text.Length;
-                    textBoxChat.ScrollToCaret();
-                    this.client.SendServerMessage(this.selectedUser, "Bike is not connected!\r\n");
+                    this.Invoke((Action)delegate
+                    {
+                        this.buttonStartStop.Enabled = true;
+                        this.textBoxResistance.Enabled = true;
+                        this.trackBarResistance.Enabled = true;
+                    });
+                    
+                }
+                else
+                {
+                    IsRunning = false;
+                    this.Invoke((Action)delegate
+                    {
+                        textBoxChat.Text += "Bike is not connected!\r\n";
+                        textBoxChat.SelectionStart = textBoxChat.Text.Length;
+                        textBoxChat.ScrollToCaret();
+                        this.client.SendServerMessage(this.selectedUser, "Bike is not connected!\r\n");
 
-                    this.IsRunning = false;
-                });
+                        this.IsRunning = false;
+
+                        this.buttonStartStop.Enabled = false;
+                        this.textBoxResistance.Enabled = false;
+                        this.trackBarResistance.Enabled = false;
+                    });
+                    
+                }
             }
+            
         }
 
         private void Client_OnSessionStateMessageReceived(string sender, bool state)
@@ -270,7 +287,7 @@ namespace DoctorApplication
             this.client.OnSessionStateReceived -= this.Client_OnSessionStateReceived;
             this.client.OnBikeDataReceived -= this.Client_OnBikeDataReceived;
             this.client.OnSessionStateMessageReceived -= this.Client_OnSessionStateMessageReceived;
-            this.client.OnInvalidBikeReceived -= this.Client_OnInvalidBikeReceived;
+            this.client.OnBikeStateChanged -= this.Client_OnBikeStateChanged;
             this.client.OnEmergencyResponse -= this.Client_OnEmergencyResponse;
             this.client.OnClientListReceived -= this.Client_OnClientListReceived;
         }
@@ -324,6 +341,12 @@ namespace DoctorApplication
         private void EmergencyStopButton_Click(object sender, EventArgs e)
         {
             this.client.EmergencyStopSession(selectedUser);
+        }
+
+        private void LiveSession_Shown(object sender, EventArgs e)
+        {
+            this.client.RequestSessionState();
+            this.client.RequestBikeState(this.selectedUser);
         }
     }
 }

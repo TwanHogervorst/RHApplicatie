@@ -17,7 +17,7 @@ namespace DoctorApplication
     public delegate void BikeDataCallback(DataPacket<BikeDataPacket> DataPacket);
     public delegate void SessionStateCallback(string clientUserName, DateTime startTimeSession, bool state);
     public delegate void SessionStateMessageCallback(string sender, bool state);
-    public delegate void InvalidBikeCallback(string sender);
+    public delegate void BikeStateCallback(string sender, bool bikeIsConnected);
     public delegate void EmergencyResponseCallback(string sender, bool state);
     public delegate void TrainingListCallback(string forClient, List<string> trainingList);
     public delegate void TrainingDataCallback(string forClient, string trainingName, List<BikeDataPacket> trainingData);
@@ -35,7 +35,7 @@ namespace DoctorApplication
         public event LoginCallback OnLogin;
         public event ChatCallback OnChatReceived;
         public event ClientListCallback OnClientListReceived;
-        public event InvalidBikeCallback OnInvalidBikeReceived;
+        public event BikeStateCallback OnBikeStateChanged;
         public event EmergencyResponseCallback OnEmergencyResponse;
         public event BikeDataCallback OnBikeDataReceived;
         public event SessionStateCallback OnSessionStateReceived;
@@ -417,6 +417,22 @@ namespace DoctorApplication
             }
         }
 
+        public void RequestBikeState(string forClient)
+        {
+            if (this.loggedIn)
+            {
+                this.SendData(new DataPacket<RequestBikeStatePacket>
+                {
+                    type = "REQUEST_BIKE_STATE",
+                    sender = this.username,
+                    data = new RequestBikeStatePacket
+                    {
+                        forClient = forClient
+                    }
+                }.ToJson());
+            }
+        }
+
         private void handleData(DataPacket data)
         {
             switch (data.type)
@@ -470,10 +486,10 @@ namespace DoctorApplication
                         OnSessionStateMessageReceived?.Invoke(d.sender, d.data.startSession);
                         break;
                     }
-                case "INVALID_BIKE":
+                case "RESPONSE_BIKE_STATE":
                     {
-                        DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
-                        OnInvalidBikeReceived?.Invoke(d.sender);
+                        DataPacket<ResponseBikeState> d = data.GetData<ResponseBikeState>();
+                        OnBikeStateChanged?.Invoke(d.sender, d.data.bikeIsConnected);
                         break;
                     }
                 case "SESSIONSTATE_EMERGENCYRESPONSE":
