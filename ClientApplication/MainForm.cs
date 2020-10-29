@@ -123,12 +123,14 @@ namespace ClientApplication
                     this.Client_OnChatReceived("The session has started\r\n");
                     this.client.SendStartStopSessionResponse(true);
                     this.isRunning = true;
+                    this.bikeDataViewModel.ResetDistanceTraveled();
                 }
                 else
                 {
                     this.Client_OnChatReceived("The session has stopped\r\n");
                     this.client.SendStartStopSessionResponse(false);
                     this.isRunning = false;
+                    this.bikeDataViewModel.ResetDistanceTraveled();
                 }
             } else
             {
@@ -151,6 +153,7 @@ namespace ClientApplication
                         this.targetResistance = 0;
 
                         this.isRunning = false;
+                        this.bikeDataViewModel.ResetDistanceTraveled();
                     }
                 }
                 else
