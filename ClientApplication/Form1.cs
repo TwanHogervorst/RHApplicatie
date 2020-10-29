@@ -23,7 +23,7 @@ namespace ClientApplication
             if (this.vrClient.Connect())
             {
                 this.sessionList = vrClient.GetSessionList();
-                foreach(var sessionItem in this.sessionList)
+                foreach (var sessionItem in this.sessionList)
                 {
                     dataGridView1.Rows.Add(sessionItem.clientinfo.user);
                 }
@@ -39,7 +39,7 @@ namespace ClientApplication
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            
+
         }
 
         private void continueWithoutVR_Click(object sender, EventArgs e)
@@ -55,11 +55,14 @@ namespace ClientApplication
 
             if (vrClient.IsConnected)
             {
-                
+
                 try
                 {
-                    if(this.tunnel == null)
-                    this.tunnel = vrClient.CreateTunnel(this.sessionList[dataGridView1.CurrentRow.Index].id, keyTextBox.ToString());
+                    if (this.tunnel == null)
+                    {
+                        MessageBox.Show("Press \"OK\" to set up the VR scene...", "VR scene init");
+                        this.tunnel = vrClient.CreateTunnel(this.sessionList[dataGridView1.CurrentRow.Index].id, keyTextBox.Text);
+                    }
 
                     if (tunnel != null)
                     {
@@ -75,14 +78,16 @@ namespace ClientApplication
                                 Console.WriteLine($"Error package: {ex.Message}");
                             }
                         }
+                        MainForm mainForm = new MainForm(this.client, this.tunnel);
+                        mainForm.Show();
+                        this.isDisconnecting = true;
+                        this.Close();
                     }
-                    MainForm mainForm = new MainForm(this.client, this.tunnel);
-                    mainForm.Show();
-                    this.isDisconnecting = true;
-                    this.Close();
                 }
                 catch (VRClientException ex)
                 {
+                    keyTextBox.Text = "";
+                    MessageBox.Show("Something went wrong! Please enter a valid key, and press \"Connect\"", "Error");
                     Console.WriteLine($"Create Tunnel failed: {ex.Message}");
                 }
 
@@ -222,8 +227,8 @@ namespace ClientApplication
         {
             if (!this.isDisconnecting)
             {
-                if(this.tunnel != null)
-                this.tunnel.Disconnect();
+                if (this.tunnel != null)
+                    this.tunnel.Disconnect();
                 this.client.DisconnectClient();
                 Application.Exit();
             }
