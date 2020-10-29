@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace DoctorApplication
@@ -17,6 +19,11 @@ namespace DoctorApplication
             InitializeComponent();
             
             this.client.RequestClientList();
+
+            this.PatientTableLayoutPanel.AutoScroll = false;
+            this.PatientTableLayoutPanel.HorizontalScroll.Enabled = false;
+            this.PatientTableLayoutPanel.HorizontalScroll.Visible = false;
+            this.PatientTableLayoutPanel.AutoScroll = true;
         }
 
         private void Client_OnEmergencyResponse(string sender, bool state)
@@ -43,21 +50,28 @@ namespace DoctorApplication
                 foreach (KeyValuePair<string, bool> userClient in this.clientList)
                 {
                     PatienListViewUserControl patientList = new PatienListViewUserControl(client, userClient.Key);
-                    patientList.OnUserSelected += PatientList_OnUserSelected;
+                    patientList.OnPatientListViewItemClick += PatientList_OnUserSelected;
                     PatientTableLayoutPanel.Controls.Add(patientList);
                 }
+
+                Func<PatienListViewUserControl, bool> selectPredicate;
+                if (!string.IsNullOrEmpty(this.client.selectedUser) && this.clientList.ContainsKey(this.client.selectedUser)) selectPredicate = (plvcu) => plvcu.selectedUser == this.client.selectedUser;
+                else selectPredicate = (plvcu) => true;
+
+                this.PatientTableLayoutPanel.Controls.OfType<PatienListViewUserControl>().FirstOrDefault(selectPredicate)?.SelectUser();
             });
         }
 
-        private void PatientList_OnUserSelected(string username, string doctorUserName)
+        private void PatientList_OnUserSelected(string username)
         {
-            if (this.client.username == doctorUserName) {
-                this.client.selectedUser = username;
-                CurrentSelectedUserLabel.Text = this.client.selectedUser;
-            }
+            foreach (PatienListViewUserControl plvuc in this.PatientTableLayoutPanel.Controls.OfType<PatienListViewUserControl>())
+                plvuc.BackColor = SystemColors.Control;
+
+            this.client.selectedUser = username;
+            this.CurrentSelectedUserLabel.Text = this.client.selectedUser;
         }
 
-        private void LiveSessionButton_Click(object sender, System.EventArgs e)
+        private void LiveSessionButton_Click(object sender, EventArgs e)
         {
             if (this.client.selectedUser != null && this.clientList[this.client.selectedUser])
             {
@@ -71,7 +85,7 @@ namespace DoctorApplication
             }
         }
 
-        private void HistoryButton_Click(object sender, System.EventArgs e)
+        private void HistoryButton_Click(object sender, EventArgs e)
         {
             if (this.client.selectedUser != null)
             {

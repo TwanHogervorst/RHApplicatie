@@ -313,6 +313,7 @@
             this.Padding = new System.Windows.Forms.Padding(2);
             this.Text = "History";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.HistoryForm_FormClosing);
+            this.Shown += new System.EventHandler(this.HistoryForm_Shown);
             this.statsGroupBox.ResumeLayout(false);
             this.statsGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trainingDataDataGridView)).EndInit();

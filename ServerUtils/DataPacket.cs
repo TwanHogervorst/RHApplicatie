@@ -48,6 +48,7 @@ namespace ServerUtils
     {
         public string receiver;
         public string chatMessage;
+        public bool isDoctorMessage;
     }
 
     class ClientListPacket : DAbstract
@@ -79,6 +80,7 @@ namespace ServerUtils
     public class StartStopPacket : DAbstract
     {
         public string receiver;
+        public string doctor;
         public bool startSession;
     }
 

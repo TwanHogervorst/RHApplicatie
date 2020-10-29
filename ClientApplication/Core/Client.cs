@@ -176,7 +176,8 @@ namespace ClientApplication.Core
                     data = new ChatPacket()
                     {
                         receiver = this.doctorUserName,
-                        chatMessage = message
+                        chatMessage = message,
+                        isDoctorMessage = false
                     }
                 };
 
@@ -256,7 +257,7 @@ namespace ClientApplication.Core
                     data = new StartStopPacket()
                     {
                         receiver = this.doctorUserName,
-                        startSession = state
+                        startSession = false
                     }
                 };
 
@@ -321,6 +322,7 @@ namespace ClientApplication.Core
                 case "START_SESSION":
                     {
                         DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
+                        this.doctorUserName = d.data.doctor;
                         OnStartStopSession?.Invoke(d.data.startSession);
                         break;
                     }
