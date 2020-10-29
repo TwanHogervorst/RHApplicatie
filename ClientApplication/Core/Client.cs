@@ -61,7 +61,7 @@ namespace ClientApplication.Core
         {
             this.username = username;
             //Send username and password to check
-            sendData(new DataPacket<LoginPacket>()
+            SendData(new DataPacket<LoginPacket>()
             {
                 type = "LOGIN",
                 data = new LoginPacket()
@@ -71,7 +71,7 @@ namespace ClientApplication.Core
                     password = password
 
                 }
-            });
+            }.ToJson());
         }
 
         private void ReceiveLengthInt(IAsyncResult ar)
@@ -123,23 +123,26 @@ namespace ClientApplication.Core
 
 
 
-        private void sendData(DataPacket<LoginPacket> loginInfo)
+        private void SendData(string data)
         {
-            // create the sendBuffer based on the message
-            List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(loginInfo)));
+            if(this.client.Connected && this.stream.CanWrite)
+            {
+                // create the sendBuffer based on the message
+                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(data));
 
-            // append the message length (in bytes)
-            sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+                // append the message length (in bytes)
+                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
 
-            // send the message
-            this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+                // send the message
+                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
         }
 
         public void SendData(double speed, int heartbeat, double elapsedTime, int power, double distanceTraveled, int resistance)
         {
             if (this.loggedIn)
             {
-                DataPacket<BikeDataPacket> dataPacket = new DataPacket<BikeDataPacket>()
+                this.SendData(new DataPacket<BikeDataPacket>()
                 {
                     sender = this.username,
                     type = "BIKEDATA",
@@ -153,17 +156,8 @@ namespace ClientApplication.Core
                         distanceTraveled = distanceTraveled,
                         resistance = resistance,
                         timestamp = DateTime.Now
-                   }
-                };
-
-                // create the sendBuffer based on the message
-                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
-
-                // append the message length (in bytes)
-                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
-
-                // send the message
-                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+                    }
+                }.ToJson());
             }
         }
 
@@ -171,7 +165,7 @@ namespace ClientApplication.Core
         {
             if (this.loggedIn)
             {
-                DataPacket<ChatPacket> dataPacket = new DataPacket<ChatPacket>()
+                this.SendData(new DataPacket<ChatPacket>()
                 {
                     sender = this.username,
                     type = "CHAT",
@@ -181,16 +175,7 @@ namespace ClientApplication.Core
                         chatMessage = message,
                         isDoctorMessage = false
                     }
-                };
-
-                // create the sendBuffer based on the message
-                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
-
-                // append the message length (in bytes)
-                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
-
-                // send the message
-                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+                }.ToJson());
             }
         }
 
@@ -198,7 +183,7 @@ namespace ClientApplication.Core
         {
             if (this.loggedIn)
             {
-                DataPacket<StartStopPacket> dataPacket = new DataPacket<StartStopPacket>()
+                this.SendData(new DataPacket<StartStopPacket>()
                 {
                     sender = this.username,
                     type = "SESSIONSTATE_RESPONSE",
@@ -207,16 +192,7 @@ namespace ClientApplication.Core
                         receiver = this.doctorUserName,
                         startSession = state
                     }
-                };
-
-                // create the sendBuffer based on the message
-                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
-
-                // append the message length (in bytes)
-                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
-
-                // send the message
-                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+                }.ToJson());
             }
         }
 
@@ -224,7 +200,7 @@ namespace ClientApplication.Core
         {
             if (this.loggedIn)
             {
-                DataPacket<EmergencyResponsePacket> dataPacket = new DataPacket<EmergencyResponsePacket>()
+                this.SendData(new DataPacket<EmergencyResponsePacket>()
                 {
                     sender = this.username,
                     type = "SESSIONSTATE_EMERGENCYRESPONSE",
@@ -233,16 +209,7 @@ namespace ClientApplication.Core
                         receiver = this.doctorUserName,
                         state = _state
                     }
-                };
-
-                // create the sendBuffer based on the message
-                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
-
-                // append the message length (in bytes)
-                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
-
-                // send the message
-                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+                }.ToJson());
             }
         }
 
@@ -250,9 +217,7 @@ namespace ClientApplication.Core
         {
             if (this.loggedIn)
             {
-                DataPacket<StartStopPacket> dataPacket;
-
-                dataPacket = new DataPacket<StartStopPacket>()
+                this.SendData(new DataPacket<StartStopPacket>()
                 {
                     sender = this.username,
                     type = "INVALID_BIKE",
@@ -261,16 +226,7 @@ namespace ClientApplication.Core
                         receiver = this.doctorUserName,
                         startSession = false
                     }
-                };
-
-                // create the sendBuffer based on the message
-                List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
-
-                // append the message length (in bytes)
-                sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
-
-                // send the message
-                this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+                }.ToJson());
             }
         }
 
@@ -294,23 +250,14 @@ namespace ClientApplication.Core
             {
                 if (this.loggedIn)
                 {
-                    DataPacket<DisconnectRequestPacket> dataPacket = new DataPacket<DisconnectRequestPacket>()
+                    this.SendData(new DataPacket<DisconnectRequestPacket>()
                     {
                         sender = this.username,
                         type = "DISCONNECT",
                         data = new DisconnectRequestPacket()
                         {
                         }
-                    };
-
-                    // create the sendBuffer based on the message
-                    List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
-
-                    // append the message length (in bytes)
-                    sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
-
-                    // send the message
-                    this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+                    }.ToJson());
                     this.stream.Flush();
 
                     Disconnect();
