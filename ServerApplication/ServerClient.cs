@@ -408,7 +408,6 @@ namespace ServerApplication
                     }
                 case "START_SESSION":
                     {
-                        this.startTimeSession = DateTime.Now;
                         DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
 
                         ServerClient receiver = Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver);
@@ -416,8 +415,9 @@ namespace ServerApplication
                         if (receiver != null)
                         {
                             receiver.isRunning = true;
+                            receiver.startTimeSession = DateTime.Now;
 
-                           SendDataToUser(receiver, d.ToJson());
+                            SendDataToUser(receiver, d.ToJson());
 
                             if (Directory.Exists("Trainingen\\" + receiver.UserName))
                             {
@@ -475,7 +475,7 @@ namespace ServerApplication
                                 }
                             }
 
-                            SendDataToUser(this, new DataPacket<ResponseSessionStatePacket>()
+                            string response = new DataPacket<ResponseSessionStatePacket>()
                             {
                                 sender = this.UserName,
                                 type = "RESPONSE_SESSIONSTATE",
@@ -483,10 +483,12 @@ namespace ServerApplication
                                 {
                                     receiver = d.data.receiver,
                                     sessionState = receiver.isRunning,
-                                    startTimeSession = this.startTimeSession,
+                                    startTimeSession = receiver.startTimeSession,
                                     sessionId = receiver.SessionId
                                 }
-                            }.ToJson());
+                            }.ToJson();
+
+                            foreach (ServerClient doctorClient in Server.doctors.GetClients()) SendDataToUser(doctorClient, response);
                         }
                         break;
                     }
@@ -520,18 +522,20 @@ namespace ServerApplication
                                 }
                             }
 
-                            SendDataToUser(this, new DataPacket<ResponseSessionStatePacket>()
+                            string response = new DataPacket<ResponseSessionStatePacket>()
                             {
                                 sender = this.UserName,
                                 type = "RESPONSE_SESSIONSTATE",
                                 data = new ResponseSessionStatePacket()
                                 {
                                     receiver = d.data.receiver,
-                                    sessionState = Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver).isRunning,
-                                    startTimeSession = this.startTimeSession,
+                                    sessionState = receiver.isRunning,
+                                    startTimeSession = receiver.startTimeSession,
                                     sessionId = receiver.SessionId
                                 }
-                            }.ToJson());
+                            }.ToJson();
+
+                            foreach(ServerClient doctorClient in Server.doctors.GetClients()) SendDataToUser(doctorClient, response);
 
                             receiver.SessionId = null;
                         }
@@ -567,7 +571,7 @@ namespace ServerApplication
                                 }
                             }
 
-                            SendDataToUser(this, new DataPacket<ResponseSessionStatePacket>()
+                            string response = new DataPacket<ResponseSessionStatePacket>()
                             {
                                 sender = this.UserName,
                                 type = "RESPONSE_SESSIONSTATE",
@@ -575,10 +579,12 @@ namespace ServerApplication
                                 {
                                     receiver = d.data.receiver,
                                     sessionState = Server.clients.GetClients().FirstOrDefault(client => client.UserName == d.data.receiver).isRunning,
-                                    startTimeSession = this.startTimeSession,
+                                    startTimeSession = receiver.startTimeSession,
                                     sessionId = receiver.SessionId
                                 }
-                            }.ToJson());
+                            }.ToJson();
+
+                            foreach (ServerClient doctorClient in Server.doctors.GetClients()) SendDataToUser(doctorClient, response);
 
                             receiver.SessionId = null;
                         }
@@ -613,7 +619,7 @@ namespace ServerApplication
                                 {
                                     receiver = d.data.receiver,
                                     sessionState = receiver.isRunning,
-                                    startTimeSession = this.startTimeSession,
+                                    startTimeSession = receiver.startTimeSession,
                                     sessionId = receiver.SessionId
                                 }
                             }.ToJson());
@@ -632,10 +638,9 @@ namespace ServerApplication
                 case "INVALID_BIKE":
                     {
                         DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
-                        if (Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver) != null)
-                        {
-                            SendDataToUser(Server.doctors.GetClients().FirstOrDefault(doctor => doctor.UserName == d.data.receiver), d.ToJson());
-                        }
+
+                        string response = d.ToJson();
+                        foreach (ServerClient doctorClient in Server.doctors.GetClients()) SendDataToUser(doctorClient, response);
 
                         if (!string.IsNullOrEmpty(this.SessionId))
                         {
@@ -647,6 +652,11 @@ namespace ServerApplication
                                     {
                                         fileStream.Write(']');
                                         fileStream.Flush();
+                                    }
+
+                                    if(new FileInfo("Trainingen\\" + this.UserName + "\\" + this.SessionId + ".json").Length == 2)
+                                    {
+                                        File.Delete("Trainingen\\" + this.UserName + "\\" + this.SessionId + ".json");
                                     }
                                 }
                                 catch (Exception ex)

@@ -257,7 +257,7 @@ namespace ClientApplication.Core
                     data = new StartStopPacket()
                     {
                         receiver = this.doctorUserName,
-                        startSession = state
+                        startSession = false
                     }
                 };
 

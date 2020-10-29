@@ -350,7 +350,6 @@ namespace DoctorApplication
                         receiver = _selectedUser,
                         startSession = false,
                         resistance = 0
-                        
                     }
                 };
 

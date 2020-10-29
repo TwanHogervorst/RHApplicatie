@@ -66,6 +66,8 @@ namespace DoctorApplication
                     textBoxChat.SelectionStart = textBoxChat.Text.Length;
                     textBoxChat.ScrollToCaret();
                     this.client.SendServerMessage(this.selectedUser, "Bike is not connected!\r\n");
+
+                    this.IsRunning = false;
                 });
             }
         }
@@ -93,6 +95,8 @@ namespace DoctorApplication
                         textBoxChat.Text += "The session has stopped!\r\n";
                         textBoxChat.SelectionStart = textBoxChat.Text.Length;
                         textBoxChat.ScrollToCaret();
+
+                        this.IsRunning = false;
                     }
                 });
             }
@@ -109,12 +113,16 @@ namespace DoctorApplication
                         textBoxChat.Text += "The session has been stopped in emergency!\r\n";
                         textBoxChat.SelectionStart = textBoxChat.Text.Length;
                         textBoxChat.ScrollToCaret();
+
+                        this.IsRunning = false;
                     }
                     else
                     {
                         textBoxChat.Text += "The session was not started!\r\n";
                         textBoxChat.SelectionStart = textBoxChat.Text.Length;
                         textBoxChat.ScrollToCaret();
+
+                        this.IsRunning = false;
                     }
                 }
             });
