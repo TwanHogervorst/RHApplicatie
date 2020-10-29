@@ -1,9 +1,6 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace ClientApplication.Interface
+namespace RHApplicatieLib.Abstract
 {
     public abstract class DAbstract
     {

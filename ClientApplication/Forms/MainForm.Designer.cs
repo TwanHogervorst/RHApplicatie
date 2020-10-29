@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.textBoxSpeed = new System.Windows.Forms.TextBox();
             this.textBoxHeartbeat = new System.Windows.Forms.TextBox();
             this.labelSpeed = new System.Windows.Forms.Label();
@@ -40,9 +41,6 @@
             this.labelCurrentHeartbeatValue = new System.Windows.Forms.Label();
             this.labelCurrentResistanceText = new System.Windows.Forms.Label();
             this.labelCurrentResistanceValue = new System.Windows.Forms.Label();
-            this.labelResistance = new System.Windows.Forms.Label();
-            this.textBoxResistance = new System.Windows.Forms.TextBox();
-            this.trackBarResistance = new System.Windows.Forms.TrackBar();
             this.labelCurrentElapsedTimeText = new System.Windows.Forms.Label();
             this.labelCurrentElapsedTimeValue = new System.Windows.Forms.Label();
             this.labelDistanceTraveledText = new System.Windows.Forms.Label();
@@ -58,9 +56,12 @@
             this.labelUseText = new System.Windows.Forms.Label();
             this.labelBikeNameText = new System.Windows.Forms.Label();
             this.groupBoxBikeData = new System.Windows.Forms.GroupBox();
+            this.textBoxChat = new System.Windows.Forms.TextBox();
+            this.textBoxSendChat = new System.Windows.Forms.TextBox();
+            this.buttonChatSend = new System.Windows.Forms.Button();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarHeartbeat)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarResistance)).BeginInit();
             this.groupBoxSimulator.SuspendLayout();
             this.groupBoxBikeSettings.SuspendLayout();
             this.groupBoxBikeData.SuspendLayout();
@@ -83,7 +84,7 @@
             this.textBoxHeartbeat.Name = "textBoxHeartbeat";
             this.textBoxHeartbeat.Size = new System.Drawing.Size(129, 23);
             this.textBoxHeartbeat.TabIndex = 1;
-            this.textBoxHeartbeat.Text = "0";
+            this.textBoxHeartbeat.Text = "50";
             this.textBoxHeartbeat.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxHeartbeat_KeyPress);
             // 
             // labelSpeed
@@ -183,36 +184,6 @@
             this.labelCurrentResistanceValue.TabIndex = 13;
             this.labelCurrentResistanceValue.Text = "waiting for value";
             // 
-            // labelResistance
-            // 
-            this.labelResistance.AutoSize = true;
-            this.labelResistance.Location = new System.Drawing.Point(6, 89);
-            this.labelResistance.Name = "labelResistance";
-            this.labelResistance.Size = new System.Drawing.Size(83, 15);
-            this.labelResistance.TabIndex = 14;
-            this.labelResistance.Text = "Resistance (%)";
-            // 
-            // textBoxResistance
-            // 
-            this.textBoxResistance.Location = new System.Drawing.Point(89, 86);
-            this.textBoxResistance.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBoxResistance.Name = "textBoxResistance";
-            this.textBoxResistance.Size = new System.Drawing.Size(129, 23);
-            this.textBoxResistance.TabIndex = 15;
-            this.textBoxResistance.Text = "0.0";
-            this.textBoxResistance.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxResistance_KeyPress);
-            // 
-            // trackBarResistance
-            // 
-            this.trackBarResistance.Location = new System.Drawing.Point(234, 86);
-            this.trackBarResistance.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.trackBarResistance.Maximum = 200;
-            this.trackBarResistance.Name = "trackBarResistance";
-            this.trackBarResistance.Size = new System.Drawing.Size(129, 45);
-            this.trackBarResistance.TabIndex = 16;
-            this.trackBarResistance.Value = 1;
-            this.trackBarResistance.ValueChanged += new System.EventHandler(this.trackBarResistance_Changed);
-            // 
             // labelCurrentElapsedTimeText
             // 
             this.labelCurrentElapsedTimeText.AutoSize = true;
@@ -292,9 +263,6 @@
             this.groupBoxBikeSettings.Controls.Add(this.radioButtonSimulator);
             this.groupBoxBikeSettings.Controls.Add(this.radioButtonBike);
             this.groupBoxBikeSettings.Controls.Add(this.labelUseText);
-            this.groupBoxBikeSettings.Controls.Add(this.textBoxResistance);
-            this.groupBoxBikeSettings.Controls.Add(this.labelResistance);
-            this.groupBoxBikeSettings.Controls.Add(this.trackBarResistance);
             this.groupBoxBikeSettings.Location = new System.Drawing.Point(12, 141);
             this.groupBoxBikeSettings.Name = "groupBoxBikeSettings";
             this.groupBoxBikeSettings.Size = new System.Drawing.Size(369, 136);
@@ -383,11 +351,48 @@
             this.groupBoxBikeData.TabStop = false;
             this.groupBoxBikeData.Text = "Bike Data";
             // 
-            // Form1
+            // textBoxChat
+            // 
+            this.textBoxChat.Location = new System.Drawing.Point(770, 12);
+            this.textBoxChat.Multiline = true;
+            this.textBoxChat.Name = "textBoxChat";
+            this.textBoxChat.ReadOnly = true;
+            this.textBoxChat.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxChat.Size = new System.Drawing.Size(219, 233);
+            this.textBoxChat.TabIndex = 35;
+            // 
+            // textBoxSendChat
+            // 
+            this.textBoxSendChat.Location = new System.Drawing.Point(770, 243);
+            this.textBoxSendChat.Name = "textBoxSendChat";
+            this.textBoxSendChat.Size = new System.Drawing.Size(176, 23);
+            this.textBoxSendChat.TabIndex = 36;
+            this.textBoxSendChat.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSendChat_KeyPress);
+            // 
+            // buttonChatSend
+            // 
+            this.buttonChatSend.Location = new System.Drawing.Point(943, 243);
+            this.buttonChatSend.Name = "buttonChatSend";
+            this.buttonChatSend.Size = new System.Drawing.Size(46, 23);
+            this.buttonChatSend.TabIndex = 37;
+            this.buttonChatSend.Text = "Send";
+            this.buttonChatSend.UseVisualStyleBackColor = true;
+            this.buttonChatSend.Click += new System.EventHandler(this.buttonChatSend_Click);
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(700, 285);
+            this.ClientSize = new System.Drawing.Size(996, 288);
+            this.Controls.Add(this.buttonChatSend);
+            this.Controls.Add(this.textBoxSendChat);
+            this.Controls.Add(this.textBoxChat);
             this.Controls.Add(this.groupBoxBikeData);
             this.Controls.Add(this.labelBikeNameText);
             this.Controls.Add(this.groupBoxBikeSettings);
@@ -395,12 +400,11 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.MaximizeBox = false;
-            this.Name = "Form1";
-            this.Text = "Main Form";
+            this.Name = "MainForm";
+            this.Text = "Training";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarHeartbeat)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarResistance)).EndInit();
             this.groupBoxSimulator.ResumeLayout(false);
             this.groupBoxSimulator.PerformLayout();
             this.groupBoxBikeSettings.ResumeLayout(false);
@@ -426,9 +430,6 @@
         private System.Windows.Forms.Label labelCurrentHeartbeatValue;
         private System.Windows.Forms.Label labelCurrentResistanceText;
         private System.Windows.Forms.Label labelCurrentResistanceValue;
-        private System.Windows.Forms.Label labelResistance;
-        private System.Windows.Forms.TextBox textBoxResistance;
-        private System.Windows.Forms.TrackBar trackBarResistance;
         private System.Windows.Forms.Label labelCurrentElapsedTimeText;
         private System.Windows.Forms.Label labelCurrentElapsedTimeValue;
         private System.Windows.Forms.Label labelDistanceTraveledText;
@@ -444,6 +445,10 @@
         private System.Windows.Forms.Label labelBikeNameText;
         private System.Windows.Forms.Button buttonConnect;
         private System.Windows.Forms.GroupBox groupBoxBikeData;
+        private System.Windows.Forms.TextBox textBoxChat;
+        private System.Windows.Forms.TextBox textBoxSendChat;
+        private System.Windows.Forms.Button buttonChatSend;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
     }
 }
 

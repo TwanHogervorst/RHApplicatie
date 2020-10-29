@@ -1,10 +1,7 @@
-﻿using ClientApplication.Interface;
+﻿using ClientApplication.Data;
+using ClientApplication.Interface;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Forms;
-using System.Linq;
-using ClientApplication.Data;
 
 namespace ClientApplication.Core
 {
@@ -14,18 +11,18 @@ namespace ClientApplication.Core
         public event BikeConnectionStateChanged BikeConnectionChanged;
 
         private BikeConnectionState _connectionState; // DONT USE
-        public BikeConnectionState ConnectionState 
-        { 
-            get 
-            { 
+        public BikeConnectionState ConnectionState
+        {
+            get
+            {
                 return this._connectionState;
-            }  
-            private set 
-            { 
+            }
+            private set
+            {
                 this._connectionState = value;
-                if(this._connectionState != BikeConnectionState.Error)
+                if (this._connectionState != BikeConnectionState.Error)
                     this.BikeConnectionChanged?.Invoke(this, new BikeConnectionStateChangedEventArgs(this._connectionState));
-            } 
+            }
         }
 
         private ushort heartbeat;
@@ -95,7 +92,7 @@ namespace ClientApplication.Core
 
         public void StartReceiving()
         {
-            if(this.ConnectionState != BikeConnectionState.Connected)
+            if (this.ConnectionState != BikeConnectionState.Connected)
             {
                 this.sendTimer.Start();
                 this.ConnectionState = BikeConnectionState.Connected;
@@ -104,7 +101,7 @@ namespace ClientApplication.Core
 
         public void StopReceiving()
         {
-            if(this.ConnectionState == BikeConnectionState.Connected)
+            if (this.ConnectionState == BikeConnectionState.Connected)
             {
                 this.sendTimer.Stop();
                 this.ConnectionState = BikeConnectionState.Disconnected;

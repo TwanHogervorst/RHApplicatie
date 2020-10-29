@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
-namespace ClientApplication
+namespace RHApplicatieLib.Core
 {
     public static class Utility
     {
@@ -14,6 +13,12 @@ namespace ClientApplication
         public static byte[] ReverseIfBigEndian(byte[] byteArray) => Utility.ReverseIfBigEndian((IEnumerable<byte>)byteArray).ToArray();
 
         public static List<byte> ReverseIfBigEndian(List<byte> byteList) => Utility.ReverseIfBigEndian((IEnumerable<byte>)byteList).ToList();
+
+        public static IEnumerable<byte> ReverseIfLittleEndian(IEnumerable<byte> byteEnumerable) => BitConverter.IsLittleEndian ? byteEnumerable.Reverse() : byteEnumerable;
+
+        public static byte[] ReverseIfLittleEndian(byte[] byteArray) => Utility.ReverseIfLittleEndian((IEnumerable<byte>)byteArray).ToArray();
+
+        public static List<byte> ReverseIfLittleEndian(List<byte> byteList) => Utility.ReverseIfLittleEndian((IEnumerable<byte>)byteList).ToList();
 
         public static void EnableAllChildControls(GroupBox groupBox)
         {
@@ -35,5 +40,8 @@ namespace ClientApplication
         /// <param name="max"></param>
         /// <returns></returns>
         public static decimal Bound(decimal value, decimal min, decimal max) => Math.Min(Math.Max(min, value), max);
+
+        public static decimal Map(decimal value, decimal start1, decimal stop1, decimal start2, decimal stop2)
+            => ((value - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
     }
 }

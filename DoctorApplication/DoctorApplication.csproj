@@ -1,0 +1,67 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<UseWindowsForms>true</UseWindowsForms>
+	</PropertyGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\RHApplicatieLib\RHApplicatieLib.csproj" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Forms\HistoryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\HistoryForm.Designer.cs">
+      <DependentUpon>Forms\HistoryForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Forms\HomePageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\HomePageForm.Designer.cs">
+      <DependentUpon>Forms\HomePageForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Forms\LiveSession.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\LiveSession.Designer.cs">
+      <DependentUpon>Forms\LiveSession.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Forms\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\LoginForm.Designer.cs">
+      <DependentUpon>Forms\LoginForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="UserControls\GraphControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\GraphControl.Designer.cs">
+      <DependentUpon>UserControls\GraphControl.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="UserControls\PatientListViewUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserControls\PatientListViewUserControl.Designer.cs">
+      <DependentUpon>UserControls\PatientListViewUserControl.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  
+</Project>
+
+

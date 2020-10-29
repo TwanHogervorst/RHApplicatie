@@ -16,4 +16,36 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NESessionList\NESessionList.csproj" />
+    <ProjectReference Include="..\RHApplicatieLib\RHApplicatieLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Forms\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\LoginForm.Designer.cs">
+      <DependentUpon>Forms\LoginForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Forms\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\MainForm.Designer.cs">
+      <DependentUpon>Forms\MainForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Forms\VRConnectForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\VRConnectForm.Designer.cs">
+      <DependentUpon>Forms\VRConnectForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>
