@@ -71,7 +71,7 @@ namespace DoctorApplication
             this.CurrentSelectedUserLabel.Text = this.client.selectedUser;
         }
 
-        private void LiveSessionButton_Click(object sender, System.EventArgs e)
+        private void LiveSessionButton_Click(object sender, EventArgs e)
         {
             if (this.client.selectedUser != null && this.clientList[this.client.selectedUser])
             {
@@ -85,7 +85,7 @@ namespace DoctorApplication
             }
         }
 
-        private void HistoryButton_Click(object sender, System.EventArgs e)
+        private void HistoryButton_Click(object sender, EventArgs e)
         {
             if (this.client.selectedUser != null)
             {

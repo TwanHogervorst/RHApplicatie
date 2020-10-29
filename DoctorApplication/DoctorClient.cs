@@ -295,6 +295,7 @@ namespace DoctorApplication
                     data = new StartStopPacket()
                     {
                         receiver = this.clientUserName,
+                        doctor = this.username,
                         startSession = true
                     }
                 };

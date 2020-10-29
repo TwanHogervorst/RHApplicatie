@@ -416,7 +416,8 @@ namespace ServerApplication
                         if (receiver != null)
                         {
                             receiver.isRunning = true;
-                            SendDataToUser(receiver, d.ToJson());
+
+                           SendDataToUser(receiver, d.ToJson());
 
                             if (Directory.Exists("Trainingen\\" + receiver.UserName))
                             {

@@ -27,7 +27,7 @@ namespace DoctorApplication
         private List<decimal> distanceTraveledValueList = new List<decimal>();
         private List<decimal> powerValueList = new List<decimal>();
 
-        public LiveSession(DoctorClient client, String selected)
+        public LiveSession(DoctorClient client, string selected)
         {
             InitializeComponent();
             this.client = client;
