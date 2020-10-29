@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using System.Windows.Forms;
 
 namespace DoctorApplication
 {
@@ -29,6 +30,7 @@ namespace DoctorApplication
         private bool loggedIn = false;
         private string clientUserName;
         public string selectedUser;
+        private bool isDisconnecting = false;
 
         public event LoginCallback OnLogin;
         public event ChatCallback OnChatReceived;
@@ -122,7 +124,7 @@ namespace DoctorApplication
             }
             catch (Exception ex)
             {
-                // Stream closed/error
+                Disconnect();
                 Console.WriteLine(ex.Message);
             }
         }
@@ -158,7 +160,7 @@ namespace DoctorApplication
             }
             catch (Exception ex)
             {
-                // Stream closed/error
+                Disconnect();
                 Console.WriteLine(ex.Message);
             }
         }
@@ -435,14 +437,12 @@ namespace DoctorApplication
                 this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
 
                 this.clientUserName = null;
-
-
             }
         }
 
         public void RequestTrainingList(string forClient)
         {
-            if(this.loggedIn)
+            if (this.loggedIn)
             {
                 DataPacket<RequestTrainingList> dataPacket = new DataPacket<RequestTrainingList>()
                 {
@@ -488,6 +488,54 @@ namespace DoctorApplication
 
                 // send the message
                 this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+            }
+        }
+
+        public void Disconnect()
+        {
+            if (!this.isDisconnecting)
+            {
+                this.isDisconnecting = true;
+
+                MessageBox.Show("You are disconnected, this application is closing.", "Disconnect");
+                this.stream.Close();
+                this.client.Close();
+                Application.Exit();
+
+            }
+        }
+
+        public void DisconnectDoctor()
+        {
+            try
+            {
+                if (this.loggedIn)
+                {
+                    DataPacket<DisconnectRequestPacket> dataPacket = new DataPacket<DisconnectRequestPacket>()
+                    {
+                        sender = this.username,
+                        type = "DISCONNECT",
+                        data = new DisconnectRequestPacket()
+                        {
+                        }
+                    };
+
+                    // create the sendBuffer based on the message
+                    List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                    // append the message length (in bytes)
+                    sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                    // send the message
+                    this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+                    this.stream.Flush();
+
+                    Disconnect();
+                }
+            }
+            catch
+            {
+                Disconnect();
             }
         }
 
@@ -541,7 +589,7 @@ namespace DoctorApplication
                 case "SESSIONSTATE_RESPONSE":
                     {
                         DataPacket<StartStopPacket> d = data.GetData<StartStopPacket>();
-                        OnSessionStateMessageReceived?.Invoke(d.sender,d.data.startSession);
+                        OnSessionStateMessageReceived?.Invoke(d.sender, d.data.startSession);
                         break;
                     }
                 case "INVALID_BIKE":
@@ -566,6 +614,12 @@ namespace DoctorApplication
                     {
                         DataPacket<ResponseTrainingData> d = data.GetData<ResponseTrainingData>();
                         this.OnTrainingDataReceived?.Invoke(d.data.forClient, d.data.trainingName, d.data.trainingData);
+                        break;
+                    }
+                case "DISCONNECT_REQUEST":
+                    {
+                        DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
+                        Disconnect();
                         break;
                     }
                 default:

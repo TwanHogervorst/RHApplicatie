@@ -53,5 +53,9 @@ namespace DoctorApplication
         private void PasswordTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
         }
+
+        private void LoginForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+        }
     }
 }

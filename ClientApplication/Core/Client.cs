@@ -8,6 +8,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace ClientApplication.Core
 {
@@ -25,6 +26,7 @@ namespace ClientApplication.Core
         public string username;
         private bool loggedIn = false;
         public string doctorUserName;
+        private bool isDisconnecting = false;
 
         public event LoginCallback OnLogin;
         public event ChatCallback OnChatReceived;
@@ -88,7 +90,7 @@ namespace ClientApplication.Core
             }
             catch (System.Exception ex)
             {
-                // Stream closed/error
+                Disconnect();
             }
         }
 
@@ -115,7 +117,7 @@ namespace ClientApplication.Core
             }
             catch
             {
-                // Stream closed/error
+                Disconnect();
             }
         }
 
@@ -272,6 +274,54 @@ namespace ClientApplication.Core
             }
         }
 
+        public void Disconnect()
+        {
+            if (!this.isDisconnecting) {
+                this.isDisconnecting = true;
+                if (this.client.Connected) {
+                    //Send disconnect to server
+                    MessageBox.Show("You are disconnected, this application is closing.", "Disconnect");
+                    this.stream.Close();
+                    this.client.Close();
+                    Application.Exit();
+                }
+            }
+        }
+
+        public void DisconnectClient()
+        {
+            try
+            {
+                if (this.loggedIn)
+                {
+                    DataPacket<DisconnectRequestPacket> dataPacket = new DataPacket<DisconnectRequestPacket>()
+                    {
+                        sender = this.username,
+                        type = "DISCONNECT",
+                        data = new DisconnectRequestPacket()
+                        {
+                        }
+                    };
+
+                    // create the sendBuffer based on the message
+                    List<byte> sendBuffer = new List<byte>(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(dataPacket)));
+
+                    // append the message length (in bytes)
+                    sendBuffer.InsertRange(0, Utility.ReverseIfBigEndian(BitConverter.GetBytes(sendBuffer.Count)));
+
+                    // send the message
+                    this.stream.Write(sendBuffer.ToArray(), 0, sendBuffer.Count);
+                    this.stream.Flush();
+
+                    Disconnect();
+                }
+            }
+            catch
+            {
+                Disconnect();
+            }
+        }
+
         private void handleData(DataPacket data)
         {
             switch (data.type)
@@ -342,6 +392,12 @@ namespace ClientApplication.Core
                     {
                         DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
                         OnChatReceived?.Invoke(d.data.chatMessage);
+                        break;
+                    }
+                case "DISCONNECT_REQUEST":
+                    {
+                        DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
+                        Disconnect();
                         break;
                     }
                 default:

@@ -643,5 +643,12 @@ namespace ClientApplication.Core
 
             return result;
         }
+
+        public void Disconnect()
+        {
+            //TODO disconnect the tunnel VREngine
+            this.client.Disconnect();
+        }
     }
+
 }

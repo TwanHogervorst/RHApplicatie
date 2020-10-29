@@ -62,7 +62,7 @@ namespace ServerApplication
             }
             catch (Exception ex)
             {
-                // Stream closed/error
+                Disconnect();
                 Console.WriteLine(ex.Message);
             }
         }
@@ -82,7 +82,9 @@ namespace ServerApplication
                 string data = Encoding.ASCII.GetString(this.receiveBuffer);
 
                 DataPacket dataPacket = JsonConvert.DeserializeObject<DataPacket>(data);
-                handleData(dataPacket);
+
+                if (dataPacket != null)
+                    handleData(dataPacket);
 
                 this.receivedBytes = 0;
                 this.receiveBuffer = new byte[4];
@@ -90,7 +92,7 @@ namespace ServerApplication
             }
             catch (Exception ex)
             {
-                // Stream closed/error
+                Disconnect();
                 Console.WriteLine(ex.Message);
             }
         }
@@ -321,7 +323,7 @@ namespace ServerApplication
                         ResponseTrainingData result = new ResponseTrainingData();
 
                         string trainingFilePath = $"Trainingen\\{d.data.forClient}\\{d.data.trainingName}.json";
-                        if(!string.IsNullOrEmpty(d.data.forClient) && !string.IsNullOrEmpty(d.data.trainingName) && File.Exists(trainingFilePath))
+                        if (!string.IsNullOrEmpty(d.data.forClient) && !string.IsNullOrEmpty(d.data.trainingName) && File.Exists(trainingFilePath))
                         {
                             result.forClient = d.data.forClient;
                             result.trainingName = d.data.trainingName;
@@ -338,7 +340,7 @@ namespace ServerApplication
                                 Console.WriteLine($"{ex.GetType().Name}: {ex.Message}");
                                 result.trainingData = new List<BikeDataPacket>();
                             }
-                        } 
+                        }
 
                         this.SendData(new DataPacket<ResponseTrainingData>
                         {
@@ -679,10 +681,21 @@ namespace ServerApplication
                         }
                         break;
                     }
+                case "DISCONNECT":
+                    {
+                        DataPacket<ChatPacket> d = data.GetData<ChatPacket>();
+                        Disconnect();
+                        break;
+                    }
                 default:
                     Console.WriteLine("Unkown packetType");
                     break;
             }
+        }
+
+        public void Disconnect()
+        {
+            Server.Disconnect(this);
         }
 
         private void SendData(string message)

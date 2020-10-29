@@ -126,6 +126,7 @@ namespace DoctorApplication
 
         private void HomePageForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            this.client.DisconnectDoctor();
             Application.Exit();
         }
     }

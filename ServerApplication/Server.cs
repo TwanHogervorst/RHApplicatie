@@ -57,7 +57,21 @@ namespace ServerApplication
 
             this.listener = new TcpListener(IPAddress.Any, 15243);
             this.listener.Start();
-            this.listener.BeginAcceptTcpClient(new AsyncCallback(OnConnect), null);
+            try
+            {
+                this.listener.BeginAcceptTcpClient(new AsyncCallback(OnConnect), null);
+            }
+            catch (Exception ex)
+            {
+                foreach (ServerClient client in clients.GetClients()) {
+                    Disconnect(client);
+                }
+                foreach (ServerClient doctor in doctors.GetClients())
+                {
+                    Disconnect(doctor);
+                }
+                Environment.Exit(0);
+            }
         }
 
         private void OnConnect(IAsyncResult ar)
@@ -71,10 +85,18 @@ namespace ServerApplication
             this.listener.BeginAcceptTcpClient(new AsyncCallback(OnConnect), null);
         }
 
-        internal void Disconnect(ServerClient client)
+        public static void Disconnect(ServerClient client)
         {
             if (clients.GetClients().Contains(client))
             {
+                client.SendDataToUser(client,new DataPacket<DisconnectRequestPacket>()
+                {
+                    sender = "Server",
+                    type = "DISCONNECT_REQUEST",
+                    data = new DisconnectRequestPacket()
+                    {
+                    }
+                }.ToJson());
                 clients.RemoveClient(client);
                 Console.WriteLine("Client disconnected");
 
@@ -102,6 +124,14 @@ namespace ServerApplication
             }
             else if (doctors.GetClients().Contains(client))
             {
+                client.SendDataToUser(client, new DataPacket<DisconnectRequestPacket>()
+                {
+                    sender = "Server",
+                    type = "DISCONNECT_REQUEST",
+                    data = new DisconnectRequestPacket()
+                    {
+                    }
+                }.ToJson());
                 doctors.RemoveClient(client);
                 Console.WriteLine("Doctor disconnected");
             }
