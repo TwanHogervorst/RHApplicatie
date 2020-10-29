@@ -22,29 +22,30 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Form1.cs">
+    <Compile Update="Forms\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="LoginForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="LoginForm.Designer.cs">
-      <DependentUpon>LoginForm.cs</DependentUpon>
+    <Compile Update="Forms\LoginForm.Designer.cs">
+      <DependentUpon>Forms\LoginForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="LoginForm.resx">
-      <DependentUpon>LoginForm.cs</DependentUpon>
-    </EmbeddedResource>
+    <Compile Update="Forms\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\MainForm.Designer.cs">
+      <DependentUpon>Forms\MainForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="ClientList.txt">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
+    <Compile Update="Forms\VRConnectForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\VRConnectForm.Designer.cs">
+      <DependentUpon>Forms\VRConnectForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
-
-  <Import Project="..\ServerUtils\ServerUtils.projitems" Label="Shared" />
 
 </Project>

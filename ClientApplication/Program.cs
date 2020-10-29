@@ -1,10 +1,5 @@
-using ClientApplication.Core;
-using ClientApplication.Data;
-using ClientApplication.Exception;
 using DoctorApplication;
-using RHApplicationLib.Core;
 using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace ClientApplication

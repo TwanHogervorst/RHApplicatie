@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace RHApplicationLib.Abstract
+namespace RHApplicatieLib.Abstract
 {
     public abstract class DAbstract
     {

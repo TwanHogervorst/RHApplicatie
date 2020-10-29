@@ -1,45 +1,64 @@
+﻿using ClientApplication.Core;
+using ClientApplication.Data;
+using ClientApplication.Exception;
 using RHApplicatieLib.Core;
 using RHApplicatieLib.Data;
 using RHApplicatieLib.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Windows.Forms;
 
-namespace NESessionList
+namespace ClientApplication
 {
-    static class Program
+    public partial class VRConnectForm : Form
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
+        private Client client;
+        private VRClient vrClient;
+        private List<DVRSessionItem> sessionList;
+        private VRTunnel tunnel;
+        private bool isDisconnecting = false;
+
+        public VRConnectForm(Client client)
         {
-            /*Application.SetHighDpiMode(HighDpiMode.SystemAware);
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());*/
-
-            VRClient client = new VRClient("145.48.6.10", 6666);
-            if (client.Connect())
+            InitializeComponent();
+            this.client = client;
+            this.vrClient = new VRClient("145.48.6.10", 6666);
+            if (this.vrClient.Connect())
             {
-                List<DVRSessionItem> sessionList = client.GetSessionList();
-                for (int i = 0; i < sessionList.Count; i++)
+                this.sessionList = vrClient.GetSessionList();
+                foreach (var sessionItem in this.sessionList)
                 {
-                    Console.WriteLine($"{i + 1} {sessionList[i].clientinfo.user}");
+                    dataGridView1.Rows.Add(sessionItem.clientinfo.user, sessionItem.id);
                 }
+            }
+        }
 
-                Console.Write("Select Session: ");
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
 
-                int selectedSession;
-                while (!int.TryParse(Console.ReadLine(), out selectedSession)) Console.Write("Select Session: ");
+        }
 
-                Console.Write("Enter key (leave empty if not needed): ");
-                string key = Console.ReadLine();
+        private void continueWithoutVR_Click(object sender, EventArgs e)
+        {
+            MainForm mainForm = new MainForm(this.client, null);
+            mainForm.Show();
+            this.isDisconnecting = true;
+            this.Close();
+        }
+
+        private void ConnectButton_Click(object sender, EventArgs e)
+        {
+
+            if (vrClient.IsConnected)
+            {
 
                 try
                 {
-                    VRTunnel tunnel = client.CreateTunnel(sessionList[selectedSession - 1].id, key);
+                    if (this.tunnel == null)
+                    {
+                        MessageBox.Show("Press \"OK\" to set up the VR scene...", "VR scene init");
+                        this.tunnel = vrClient.CreateTunnel(this.sessionList[dataGridView1.CurrentRow.Index].id, keyTextBox.Text);
+                    }
 
                     if (tunnel != null)
                     {
@@ -48,17 +67,23 @@ namespace NESessionList
                         {
                             try
                             {
-                                succeded = SetScene(tunnel);
+                                succeded = SetScene(this.tunnel);
                             }
                             catch (VRCallbackException ex)
                             {
                                 Console.WriteLine($"Error package: {ex.Message}");
                             }
                         }
+                        MainForm mainForm = new MainForm(this.client, this.tunnel);
+                        mainForm.Show();
+                        this.isDisconnecting = true;
+                        this.Close();
                     }
                 }
                 catch (VRClientException ex)
                 {
+                    keyTextBox.Text = "";
+                    MessageBox.Show("Something went wrong! Please enter a valid key, and press \"Connect\"", "Error");
                     Console.WriteLine($"Create Tunnel failed: {ex.Message}");
                 }
 
@@ -68,10 +93,12 @@ namespace NESessionList
             {
                 Console.WriteLine("Connection Failed!");
             }
-
         }
 
+
+
         public static bool SetScene(VRTunnel tunnel)
+
         {
             tunnel.SceneReset();
 
@@ -142,7 +169,7 @@ namespace NESessionList
                                true,
                                new decimal[] { 0, 0, 0 },
                                new decimal[] { 0, 0, 0 });
-            tunnel.FollowRouteSpeed(tunnel.nodeList["bike"], new decimal(1));
+            tunnel.FollowRouteSpeed(tunnel.nodeList["bike"], new decimal(0));
 
             tunnel.AddNode("water1",
                 new DVRAddNodePacket.DComponents.DTransform
@@ -190,6 +217,17 @@ namespace NESessionList
             tunnel.SwapPanel(tunnel.nodeList["panel"]);
 
             return true;
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!this.isDisconnecting)
+            {
+                if (this.tunnel != null)
+                    this.tunnel.Disconnect();
+                this.client.DisconnectClient();
+                Application.Exit();
+            }
         }
     }
 }

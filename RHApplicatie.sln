@@ -14,17 +14,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RHApplicatieLib", "RHApplic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerApplication", "ServerApplication\ServerApplication.csproj", "{C50B0BB1-839D-4ACC-9E49-C50EF2050EB5}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ServerUtils", "ServerUtils\ServerUtils.shproj", "{6F6A5BAD-79CD-4D38-AC2A-EECFC9CA0E8D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoctorApplication", "DoctorApplication\DoctorApplication.csproj", "{5FF30FFC-D346-4429-A4EA-C5D63B53EEAA}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		ServerUtils\ServerUtils.projitems*{14e0df78-9b3f-4ded-b2a6-2a344f71b085}*SharedItemsImports = 5
-		ServerUtils\ServerUtils.projitems*{5ff30ffc-d346-4429-a4ea-c5d63b53eeaa}*SharedItemsImports = 5
-		ServerUtils\ServerUtils.projitems*{6f6a5bad-79cd-4d38-ac2a-eecfc9ca0e8d}*SharedItemsImports = 13
-		ServerUtils\ServerUtils.projitems*{c50b0bb1-839d-4acc-9e49-c50ef2050eb5}*SharedItemsImports = 5
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

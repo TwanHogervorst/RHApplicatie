@@ -1,7 +1,4 @@
 using Newtonsoft.Json;
-using RHApplicationLib.Abstract;
-using RHApplicationLib.Core;
-using ServerUtils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,6 +6,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using RHApplicatieLib.Data;
+using RHApplicatieLib.Core;
 
 namespace ClientApplication.Core
 {
@@ -90,7 +89,7 @@ namespace ClientApplication.Core
 
                 this.stream.BeginRead(this.receiveBuffer, 0, this.receiveBuffer.Length, new AsyncCallback(ReceiveData), null);
             }
-            catch (System.Exception ex)
+            catch
             {
                 Disconnect();
             }

@@ -1,5 +1,5 @@
 ﻿using ClientApplication.Exception;
-using RHApplicationLib.Abstract;
+using RHApplicatieLib.Abstract;
 
 namespace ClientApplication.Interface
 {
